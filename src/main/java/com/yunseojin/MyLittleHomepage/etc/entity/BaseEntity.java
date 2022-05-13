@@ -19,17 +19,17 @@ import java.util.Date;
 @MappedSuperclass
 public abstract class BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     protected Long id;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "CREATED_AT")
+    @Column(name = "CREATED_AT", nullable = false, updatable = false, insertable = false)
     @CreatedDate
     protected Date createdAt;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "UPDATED_AT")
+    @Column(name = "UPDATED_AT", nullable = false, updatable = false, insertable = false)
     @LastModifiedDate
     protected Date updatedAt;
 
