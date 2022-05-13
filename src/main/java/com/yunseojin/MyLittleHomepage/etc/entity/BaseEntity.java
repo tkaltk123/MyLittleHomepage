@@ -1,5 +1,6 @@
 package com.yunseojin.MyLittleHomepage.etc.entity;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,7 +14,6 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @SuperBuilder
 @MappedSuperclass
@@ -34,6 +34,7 @@ public abstract class BaseEntity {
     protected Date updatedAt;
 
     @Basic(optional = false)
+    @Builder.Default
     @Column(name = "IS_DELETED")
     protected int isDeleted = 0;
 }
