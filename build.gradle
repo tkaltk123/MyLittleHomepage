@@ -25,6 +25,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.session:spring-session-core'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     //lombok
     compileOnly 'org.projectlombok:lombok'

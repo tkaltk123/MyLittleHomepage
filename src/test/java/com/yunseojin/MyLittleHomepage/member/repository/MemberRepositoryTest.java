@@ -7,8 +7,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.Date;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -103,9 +105,29 @@ public class MemberRepositoryTest {
         memberRepository.delete(member);
         var dbMember = memberRepository.findById(member.getId());
         var dbMember2 = memberRepository.findByLoginId(member.getLoginId());
-
         // then
         assertEquals(Optional.empty(), dbMember);
         assertNull(dbMember2);
     }
+
+    @Test
+    @DisplayName("중복 확인")
+    public void existsBy(){
+        //given
+        var member = MemberEntity.builder()
+                .loginId("login_id")
+                .password(PasswordUtil.getHashedPassword("1234"))
+                .nickname("pungun")
+                .memberType(MemberType.ADMIN)
+                .build();
+
+        //when
+        memberRepository.save(member);
+        // then
+        assertTrue(memberRepository.existsByLoginId(member.getLoginId()));
+        assertFalse(memberRepository.existsByLoginId("temp"));
+        assertTrue(memberRepository.existsByNickname(member.getNickname()));
+        assertFalse(memberRepository.existsByLoginId("temp"));
+    }
+
 }
