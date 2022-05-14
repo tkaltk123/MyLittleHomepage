@@ -5,12 +5,11 @@ import com.yunseojin.MyLittleHomepage.member.dto.MemberRequest;
 import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.member.repository.MemberRepository;
 import com.yunseojin.MyLittleHomepage.util.PasswordUtil;
-import com.yunseojin.MyLittleHomepage.util.enumtype.MemberType;
+import com.yunseojin.MyLittleHomepage.etc.enums.MemberType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Map;
 
 @RequiredArgsConstructor
 @Service

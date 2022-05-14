@@ -1,4 +1,4 @@
-package com.yunseojin.MyLittleHomepage.util.enumtype;
+package com.yunseojin.MyLittleHomepage.etc.enums;
 
 public enum EvaluationType {
     NONE, LIKE, DISLIKE

@@ -1,7 +1,7 @@
 package com.yunseojin.MyLittleHomepage.evaluation.entity;
 
 import com.yunseojin.MyLittleHomepage.etc.entity.BaseEntity;
-import com.yunseojin.MyLittleHomepage.util.enumtype.EvaluationType;
+import com.yunseojin.MyLittleHomepage.etc.enums.EvaluationType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

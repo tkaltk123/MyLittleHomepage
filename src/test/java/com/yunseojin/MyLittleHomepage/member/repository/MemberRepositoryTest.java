@@ -2,15 +2,12 @@ package com.yunseojin.MyLittleHomepage.member.repository;
 
 import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.util.PasswordUtil;
-import com.yunseojin.MyLittleHomepage.util.enumtype.MemberType;
-import org.junit.jupiter.api.Assertions;
+import com.yunseojin.MyLittleHomepage.etc.enums.MemberType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.util.Date;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
