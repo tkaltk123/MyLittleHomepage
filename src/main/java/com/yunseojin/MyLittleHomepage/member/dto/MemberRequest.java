@@ -24,7 +24,7 @@ public class MemberRequest {
             ValidationGroups.SignUp.class,
             ValidationGroups.Update.class,
             ValidationGroups.LogIn.class
-    },message = "ID는 알파벳과 숫자만 사용할 수 있습니다.")
+    }, message = "ID는 알파벳과 숫자만 사용할 수 있습니다.")
     @NotNull(groups = {
             ValidationGroups.SignUp.class,
             ValidationGroups.LogIn.class
@@ -40,8 +40,9 @@ public class MemberRequest {
     @Pattern(regexp = "[a-zA-Z0-9~!@#$%^&*()]+", groups = {
             ValidationGroups.SignUp.class,
             ValidationGroups.Update.class,
+            ValidationGroups.Delete.class,
             ValidationGroups.LogIn.class
-    },message = "비밀번호는 알파벳과 숫자, 일부 특수기호만 사용할 수 있습니다.")
+    }, message = "비밀번호는 알파벳과 숫자, 일부 특수기호만 사용할 수 있습니다.")
     @NotNull(groups = {
             ValidationGroups.SignUp.class,
             ValidationGroups.Delete.class,
@@ -56,7 +57,7 @@ public class MemberRequest {
     @Pattern(regexp = "[a-zA-Z0-9가-힣_]+", groups = {
             ValidationGroups.SignUp.class,
             ValidationGroups.Update.class
-    },message = "닉네임은 알파벳, 한글, 숫자, _만 사용할 수 있습니다.")
+    }, message = "닉네임은 알파벳, 한글, 숫자, _만 사용할 수 있습니다.")
     @NotNull(groups = {
             ValidationGroups.SignUp.class
     }, message = "닉네임이 비어있습니다.")
