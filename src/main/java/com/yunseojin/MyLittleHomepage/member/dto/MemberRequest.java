@@ -15,11 +15,11 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberRequest {
-    @Size(min = 6, max = 15, groups = {
+    @Size(min = 6, max = 20, groups = {
             ValidationGroups.SignUp.class,
             ValidationGroups.Update.class,
             ValidationGroups.LogIn.class
-    }, message = "ID는 6~15글자 입니다")
+    }, message = "ID는 6~20글자 입니다")
     @Pattern(regexp = "[a-zA-Z0-9]+", groups = {
             ValidationGroups.SignUp.class,
             ValidationGroups.Update.class,

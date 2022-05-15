@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @SuperBuilder
 @Entity
@@ -37,4 +36,7 @@ public class BoardEntity extends BaseEntity {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostEntity> posts = new ArrayList<>();
 
+    public void setName(String name) {
+        this.name = name;
+    }
 }
