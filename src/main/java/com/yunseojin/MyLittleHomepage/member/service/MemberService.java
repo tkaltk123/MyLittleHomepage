@@ -5,9 +5,13 @@ import com.yunseojin.MyLittleHomepage.member.dto.MemberRequest;
 import java.util.Map;
 
 public interface MemberService {
-    boolean resister(MemberRequest memberRequest);
+    void resister(MemberRequest memberRequest);
 
-    boolean login(MemberRequest memberRequest);
+    void modify(MemberRequest memberRequest);
 
-    String get();
+    void delete(MemberRequest memberRequest);
+
+    void login(MemberRequest memberRequest);
+
+    void logout();
 }

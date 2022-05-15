@@ -1,11 +1,12 @@
 package com.yunseojin.MyLittleHomepage.member.controller;
 
+import com.yunseojin.MyLittleHomepage.etc.annotation.ValidationGroups;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberRequest;
 import com.yunseojin.MyLittleHomepage.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,18 +16,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
     private final MemberService memberService;
 
-    @PostMapping("")
-    public ResponseEntity<Boolean> resister(@RequestBody MemberRequest memberRequest) {
-        return new ResponseEntity<>(memberService.resister(memberRequest), HttpStatus.OK);
+    @PostMapping("/resister")
+    public ResponseEntity<?> resister(
+            @RequestBody @Validated(ValidationGroups.SignUp.class) MemberRequest memberRequest) {
+        memberService.resister(memberRequest);
+        return new ResponseEntity<>("회원가입이 성공했습니다.", HttpStatus.OK);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Boolean> login(@RequestBody MemberRequest memberRequest) {
-        return new ResponseEntity<>(memberService.login(memberRequest), HttpStatus.OK);
-    }
-
-    @GetMapping("/session")
-    public ResponseEntity<String> get() {
-        return new ResponseEntity<>(memberService.get(), HttpStatus.OK);
+    public ResponseEntity<?> login(
+            @RequestBody @Validated(ValidationGroups.LogIn.class) MemberRequest memberRequest) {
+        memberService.login(memberRequest);
+        return new ResponseEntity<>("로그인이 성공했습니다.", HttpStatus.OK);
     }
 }

@@ -5,10 +5,13 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public enum ErrorMessage {
-    UNDEFINED_EXCEPTION(0,"정의되지 않은 에러입니다.", HttpStatus.INTERNAL_SERVER_ERROR),
-    BIND_FAIL_EXCEPTION(1, "주소가 이미 사용중 입니다.", HttpStatus.INTERNAL_SERVER_ERROR),
-    VALIDATION_EXCEPTION(2,"유효하지 않은 값입니다.",HttpStatus.BAD_REQUEST),
-    NULL_POINTER_EXCEPTION(3,"NULL 값이 참조되었습니다.",HttpStatus.BAD_REQUEST)
+    UNDEFINED_EXCEPTION(0,"정의되지 않은 에러입니다.", HttpStatus.INTERNAL_SERVER_ERROR)
+    ,BIND_FAIL_EXCEPTION(1, "주소가 이미 사용중 입니다.", HttpStatus.INTERNAL_SERVER_ERROR)
+    ,VALIDATION_EXCEPTION(2,"유효하지 않은 값입니다.",HttpStatus.BAD_REQUEST)
+    ,NULL_POINTER_EXCEPTION(3,"NULL 값이 참조되었습니다.",HttpStatus.BAD_REQUEST)
+    ,ALREADY_LOGIN_EXCEPTION(4,"이미 로그인되어 있습니다.",HttpStatus.BAD_REQUEST)
+    ,LOGIN_ID_DUPLICATE_EXCEPTION(5,"이미 등록된 ID 입니다.",HttpStatus.BAD_REQUEST)
+    ,NICKNAME_DUPLICATE_EXCEPTION(6,"이미 등록된 닉네임 입니다.",HttpStatus.BAD_REQUEST)
     ;
 
     Integer code;

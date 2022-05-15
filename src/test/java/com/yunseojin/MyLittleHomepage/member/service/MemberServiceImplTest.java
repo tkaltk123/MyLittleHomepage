@@ -29,12 +29,10 @@ class MemberServiceImplTest {
                 .nickname("nickname")
                 .build();
         //when
-        var res1 = memberService.resister(req);
-        var res2 = memberService.resister(req);
+        memberService.resister(req);
+        memberService.resister(req);
         var dbMember = memberRepository.findByLoginId(req.getLoginId());
         // then
-        assertTrue(res1);
-        assertFalse(res2);
         assertEquals(req.getNickname(), dbMember.getNickname());
         assertTrue(PasswordUtil.checkPassword(req.getPassword(), dbMember.getPassword()));
         assertEquals(MemberType.NORMAL, dbMember.getMemberType());
