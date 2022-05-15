@@ -88,6 +88,9 @@ public class MemberServiceImpl implements MemberService {
         if (!PasswordUtil.checkPassword(memberRequest.getPassword(), member.getPassword()))
             throw new BadRequestException(ErrorMessage.INCORRECT_PASSWORD_EXCEPTION);
         memberRepository.delete(member);
+        //세션 제거
+        memberInfo.setId(null);
+        memberInfo.setLoginId(null);
     }
 
     @Override
