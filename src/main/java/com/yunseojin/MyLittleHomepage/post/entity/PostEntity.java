@@ -25,12 +25,13 @@ import java.util.stream.Collectors;
 @SQLDelete(sql = "UPDATE POSTS SET IS_DELETED = 1 WHERE ID=?")
 @Where(clause = "IS_DELETED = 0")
 @Table(name = "POSTS")
+@SecondaryTable(name = "POST_COUNTS", pkJoinColumns = @PrimaryKeyJoinColumn(name = "POST_ID"))
 public class PostEntity extends BaseEntity {
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "BOARD_ID", nullable = false)
     private BoardEntity board;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "WRITER_ID", nullable = false)
     private MemberEntity writer;
 
@@ -43,22 +44,22 @@ public class PostEntity extends BaseEntity {
 
     @Basic
     @Builder.Default
-    @Column(name = "VIEW_COUNT", nullable = false)
+    @Column(name = "VIEW_COUNT", table = "POST_COUNTS", nullable = false)
     private Integer viewCount = 0;
 
     @Basic
     @Builder.Default
-    @Column(name = "COMMENT_COUNT", nullable = false)
+    @Column(name = "COMMENT_COUNT", table = "POST_COUNTS", nullable = false)
     private Integer commentCount = 0;
 
     @Basic
     @Builder.Default
-    @Column(name = "LIKE_COUNT", nullable = false)
+    @Column(name = "LIKE_COUNT", table = "POST_COUNTS", nullable = false)
     private Integer likeCount = 0;
 
     @Basic
     @Builder.Default
-    @Column(name = "DISLIKE_COUNT", nullable = false)
+    @Column(name = "DISLIKE_COUNT", table = "POST_COUNTS", nullable = false)
     private Integer dislikeCount = 0;
 
     @Setter(AccessLevel.NONE)
@@ -83,8 +84,8 @@ public class PostEntity extends BaseEntity {
         return hashtags.stream().map(HashtagEntity::toString).collect(Collectors.toList());
     }
 
-    public void setHashtags(String... hashtags){
-        for(var tag : hashtags){
+    public void setHashtags(String... hashtags) {
+        for (var tag : hashtags) {
             var hashtag = HashtagEntity.builder().post(this).tag(tag).build();
             this.hashtags.add(hashtag);
         }
