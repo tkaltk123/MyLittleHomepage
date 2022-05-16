@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -25,7 +26,7 @@ public class MemberRequest {
             ValidationGroups.Update.class,
             ValidationGroups.LogIn.class
     }, message = "ID는 알파벳과 숫자만 사용할 수 있습니다.")
-    @NotNull(groups = {
+    @NotBlank(groups = {
             ValidationGroups.SignUp.class,
             ValidationGroups.LogIn.class
     }, message = "ID가 비어있습니다.")
@@ -43,7 +44,7 @@ public class MemberRequest {
             ValidationGroups.Delete.class,
             ValidationGroups.LogIn.class
     }, message = "비밀번호는 알파벳과 숫자, 일부 특수기호만 사용할 수 있습니다.")
-    @NotNull(groups = {
+    @NotBlank(groups = {
             ValidationGroups.SignUp.class,
             ValidationGroups.Delete.class,
             ValidationGroups.LogIn.class
@@ -58,7 +59,7 @@ public class MemberRequest {
             ValidationGroups.SignUp.class,
             ValidationGroups.Update.class
     }, message = "닉네임은 알파벳, 한글, 숫자, _만 사용할 수 있습니다.")
-    @NotNull(groups = {
+    @NotBlank(groups = {
             ValidationGroups.SignUp.class
     }, message = "닉네임이 비어있습니다.")
     private String nickname;

@@ -26,4 +26,9 @@ public class HashtagEntity extends BaseEntity {
 
     @Column(name = "TAG", nullable = false)
     private String tag;
+
+    @Override
+    public String toString() {
+        return tag;
+    }
 }
