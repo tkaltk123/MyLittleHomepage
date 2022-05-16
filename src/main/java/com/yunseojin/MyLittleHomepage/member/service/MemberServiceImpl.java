@@ -8,6 +8,7 @@ import com.yunseojin.MyLittleHomepage.member.dto.MemberRequest;
 import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.member.repository.MemberRepository;
 import com.yunseojin.MyLittleHomepage.util.PasswordUtil;
+import com.yunseojin.MyLittleHomepage.util.SessionUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,9 +23,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public void resister(MemberRequest memberRequest) {
-        //이미 로그인 되어있을 경우
-        if (memberInfo.getId() != null)
-            throw new BadRequestException(ErrorMessage.ALREADY_LOGIN_EXCEPTION);
+        SessionUtil.checkLogin(memberInfo, false);
         //엔티티 생성
         var member = MemberEntity.builder()
                 .loginId(memberRequest.getLoginId())
@@ -41,15 +40,12 @@ public class MemberServiceImpl implements MemberService {
         //이상 없으면 저장
         memberRepository.save(member);
         //세션 저장
-        memberInfo.setId(member.getId());
-        memberInfo.setLoginId(member.getLoginId());
+        memberInfo.setMember(member);
     }
 
     @Override
     public void modify(MemberRequest memberRequest) {
-        //로그인이 안되있을 경우
-        if (memberInfo.getId() == null)
-            throw new BadRequestException(ErrorMessage.NOT_LOGIN_EXCEPTION);
+        SessionUtil.checkLogin(memberInfo, true);
         var _member = memberRepository.findById(memberInfo.getId());
         //존재하지 않는 회원일 경우
         if (_member.isEmpty())
@@ -67,7 +63,7 @@ public class MemberServiceImpl implements MemberService {
         //정보 수정
         if (loginId != null) {
             member.setLoginId(loginId);
-            memberInfo.setLoginId(loginId);
+            memberInfo.setMember(member);
         }
         if (nickname != null)
             member.setNickname(nickname);
@@ -77,6 +73,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public void delete(MemberRequest memberRequest) {
+        SessionUtil.checkLogin(memberInfo, true);
         //로그인이 안되있을 경우
         if (memberInfo.getId() == null)
             throw new BadRequestException(ErrorMessage.NOT_LOGIN_EXCEPTION);
@@ -89,15 +86,12 @@ public class MemberServiceImpl implements MemberService {
             throw new BadRequestException(ErrorMessage.INCORRECT_PASSWORD_EXCEPTION);
         memberRepository.delete(member);
         //세션 제거
-        memberInfo.setId(null);
-        memberInfo.setLoginId(null);
+        memberInfo.clear();
     }
 
     @Override
     public void login(MemberRequest memberRequest) {
-        //이미 로그인 되어있을 경우
-        if (memberInfo.getId() != null)
-            throw new BadRequestException(ErrorMessage.ALREADY_LOGIN_EXCEPTION);
+        SessionUtil.checkLogin(memberInfo, false);
         var member = memberRepository.findByLoginId(memberRequest.getLoginId());
         //존재하지 않는 회원일 경우
         if (member == null)
@@ -106,18 +100,13 @@ public class MemberServiceImpl implements MemberService {
         if (!PasswordUtil.checkPassword(memberRequest.getPassword(), member.getPassword()))
             throw new BadRequestException(ErrorMessage.INCORRECT_PASSWORD_EXCEPTION);
         //세션에 저장
-        memberInfo.setId(member.getId());
-        memberInfo.setLoginId(member.getLoginId());
+        memberInfo.setMember(member);
     }
 
     @Override
     public void logout() {
-        //로그인이 안되있을 경우
-        if (memberInfo.getId() == null)
-            throw new BadRequestException(ErrorMessage.NOT_LOGIN_EXCEPTION);
-        //세션 제거
-        memberInfo.setId(null);
-        memberInfo.setLoginId(null);
+        SessionUtil.checkLogin(memberInfo, true);
+        memberInfo.clear();
     }
 
 }
