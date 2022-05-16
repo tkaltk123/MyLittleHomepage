@@ -45,7 +45,7 @@ class MemberServiceImplTest {
         var dbMember = memberRepository.findByLoginId(req.getLoginId());
         // then
         assertEquals(req.getNickname(), dbMember.getNickname());
-        assertTrue(PasswordUtil.checkPassword(req.getPassword(), dbMember.getPassword()));
+        PasswordUtil.checkPassword(req.getPassword(), dbMember.getPassword());
         assertEquals(MemberType.NORMAL, dbMember.getMemberType());
 
         //로그인 x
@@ -102,7 +102,7 @@ class MemberServiceImplTest {
         // then
         assertEquals(modify1.getLoginId(), dbMember.getLoginId());
         assertEquals(modify1.getNickname(), dbMember.getNickname());
-        assertTrue(PasswordUtil.checkPassword(modify1.getPassword(), dbMember.getPassword()));
+        PasswordUtil.checkPassword(modify1.getPassword(), dbMember.getPassword());
         //닉네임 중복
         assertEquals(ErrorMessage.LOGIN_ID_DUPLICATE_EXCEPTION.getCode(),
                 assertThrows(BadRequestException.class,

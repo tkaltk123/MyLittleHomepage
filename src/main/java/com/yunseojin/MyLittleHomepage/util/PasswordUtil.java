@@ -1,5 +1,7 @@
 package com.yunseojin.MyLittleHomepage.util;
 
+import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
+import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 public class PasswordUtil {
@@ -7,7 +9,8 @@ public class PasswordUtil {
         return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
-    public static boolean checkPassword(String password, String dbPassword) {
-        return BCrypt.checkpw(password, dbPassword);
+    public static void checkPassword(String password, String dbPassword) {
+        if (!BCrypt.checkpw(password, dbPassword))
+            throw new BadRequestException(ErrorMessage.INCORRECT_PASSWORD_EXCEPTION);
     }
 }

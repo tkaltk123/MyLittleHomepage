@@ -33,7 +33,7 @@ public class MemberRepositoryTest {
 
         // then
         assertEquals(member.getLoginId(), dbMember.getLoginId());
-        assertTrue(PasswordUtil.checkPassword("1234", dbMember.getPassword()));
+        PasswordUtil.checkPassword("1234", dbMember.getPassword());
         assertEquals(member.getNickname(), dbMember.getNickname());
         assertEquals(member.getMemberType(), dbMember.getMemberType());
     }
@@ -55,7 +55,7 @@ public class MemberRepositoryTest {
 
         // then
         assertEquals(member.getLoginId(), dbMember.getLoginId());
-        assertTrue(PasswordUtil.checkPassword("1234", dbMember.getPassword()));
+        PasswordUtil.checkPassword("1234", dbMember.getPassword());
         assertEquals(member.getNickname(), dbMember.getNickname());
         assertEquals(member.getMemberType(), dbMember.getMemberType());
     }
@@ -81,7 +81,7 @@ public class MemberRepositoryTest {
 
         // then
         assertEquals("login_id2", dbMember.getLoginId());
-        assertTrue(PasswordUtil.checkPassword("5678", dbMember.getPassword()));
+        PasswordUtil.checkPassword("5678", dbMember.getPassword());
         assertEquals("pungun2", dbMember.getNickname());
         assertEquals(MemberType.NORMAL, dbMember.getMemberType());
     }

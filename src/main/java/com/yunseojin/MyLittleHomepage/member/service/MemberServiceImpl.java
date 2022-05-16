@@ -82,8 +82,7 @@ public class MemberServiceImpl implements MemberService {
         if (_member.isEmpty())
             throw new BadRequestException(ErrorMessage.NOT_EXISTS_MEMBER_EXCEPTION);
         var member = _member.get();
-        if (!PasswordUtil.checkPassword(memberRequest.getPassword(), member.getPassword()))
-            throw new BadRequestException(ErrorMessage.INCORRECT_PASSWORD_EXCEPTION);
+        PasswordUtil.checkPassword(memberRequest.getPassword(), member.getPassword());
         memberRepository.delete(member);
         //세션 제거
         memberInfo.clear();
@@ -97,8 +96,7 @@ public class MemberServiceImpl implements MemberService {
         if (member == null)
             throw new BadRequestException(ErrorMessage.NOT_EXISTS_MEMBER_EXCEPTION);
         //비밀번호가 일치하지 않을 경우
-        if (!PasswordUtil.checkPassword(memberRequest.getPassword(), member.getPassword()))
-            throw new BadRequestException(ErrorMessage.INCORRECT_PASSWORD_EXCEPTION);
+        PasswordUtil.checkPassword(memberRequest.getPassword(), member.getPassword());
         //세션에 저장
         memberInfo.setMember(member);
     }
