@@ -14,7 +14,9 @@ public enum ErrorMessage {
     ,NICKNAME_DUPLICATE_EXCEPTION(6,"이미 등록된 닉네임 입니다.",HttpStatus.BAD_REQUEST)
     ,NOT_LOGIN_EXCEPTION(7,"로그인 되지 않았습니다.",HttpStatus.BAD_REQUEST)
     ,NOT_EXISTS_MEMBER_EXCEPTION(8,"존재하지 않는 회원입니다.",HttpStatus.BAD_REQUEST)
-    ,INCORRECT_PASSWORD_EXCEPTION(9,"비밀번호가 일치하지 않습니다.",HttpStatus.BAD_REQUEST)
+    ,NOT_EXISTS_BOARD_EXCEPTION(9,"존재하지 않는 게시판입니다.",HttpStatus.BAD_REQUEST)
+    ,NOT_EXISTS_POST_EXCEPTION(10,"존재하지 않는 게시글입니다.",HttpStatus.BAD_REQUEST)
+    ,INCORRECT_PASSWORD_EXCEPTION(11,"비밀번호가 일치하지 않습니다.",HttpStatus.BAD_REQUEST)
     ;
 
     Integer code;

@@ -21,6 +21,7 @@ import java.util.List;
 @SQLDelete(sql = "UPDATE BOARDS SET IS_DELETED = 1 WHERE ID=?")
 @Where(clause = "IS_DELETED = 0")
 @Table(name = "BOARDS")
+@SecondaryTable(name = "BOARD_COUNTS", pkJoinColumns = @PrimaryKeyJoinColumn(name = "BOARD_ID"))
 public class BoardEntity extends BaseEntity {
     @Basic
     @Column(name = "NAME", nullable = false, length = 50)
@@ -28,7 +29,7 @@ public class BoardEntity extends BaseEntity {
 
     @Basic
     @Builder.Default
-    @Column(name = "POST_COUNT", nullable = false)
+    @Column(name = "POST_COUNT", table = "BOARD_COUNTS", nullable = false)
     private Integer postCount = 0;
 
     @Builder.Default
@@ -38,5 +39,13 @@ public class BoardEntity extends BaseEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void createPost() {
+        postCount += 1;
+    }
+
+    public void deletePost() {
+        postCount -= 1;
     }
 }

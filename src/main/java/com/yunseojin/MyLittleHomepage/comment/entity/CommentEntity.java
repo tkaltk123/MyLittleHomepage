@@ -4,10 +4,7 @@ import com.yunseojin.MyLittleHomepage.etc.entity.BaseEntity;
 import com.yunseojin.MyLittleHomepage.evaluation.entity.CommentEvaluationEntity;
 import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -24,6 +21,7 @@ import java.util.List;
 @SQLDelete(sql = "UPDATE COMMENTS SET IS_DELETED = 1 WHERE ID=?")
 @Where(clause = "IS_DELETED = 0")
 @Table(name = "COMMENTS")
+@SecondaryTable(name = "COMMENT_COUNTS", pkJoinColumns = @PrimaryKeyJoinColumn(name = "COMMENT_ID"))
 public class CommentEntity extends BaseEntity {
     @ManyToOne(optional = false)
     @JoinColumn(name = "POST_ID", nullable = false)
@@ -42,18 +40,20 @@ public class CommentEntity extends BaseEntity {
     private String content;
 
     @Builder.Default
-    @Column(name = "LIKE_COUNT", nullable = false)
+    @Column(name = "LIKE_COUNT", table = "COMMENT_COUNTS", nullable = false)
     private Integer likeCount = 0;
 
     @Builder.Default
-    @Column(name = "DISLIKE_COUNT", nullable = false)
+    @Column(name = "DISLIKE_COUNT", table = "COMMENT_COUNTS", nullable = false)
     private Integer dislikeCount = 0;
 
+    @Setter(AccessLevel.NONE)
     @Builder.Default
     @OrderBy("id asc")
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentEntity> children = new ArrayList<>();
 
+    @Setter(AccessLevel.NONE)
     @Builder.Default
     @OrderBy("id asc")
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -1,5 +1,8 @@
 package com.yunseojin.MyLittleHomepage.post.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yunseojin.MyLittleHomepage.etc.annotation.ValidationGroups;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,18 +10,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostRequest {
-    @NotNull(groups = {
-            ValidationGroups.Create.class
-    }, message = "게시판이 비어있습니다.")
-    private Long boardId;
-
+public class PostRequest implements Serializable {
     @Max(value = 255, groups = {
             ValidationGroups.Create.class,
             ValidationGroups.Update.class,
@@ -31,5 +30,6 @@ public class PostRequest {
 
     private String content;
 
-    private List<String> HashTags;
+    @JsonProperty
+    private String[] HashTags;
 }
