@@ -7,10 +7,7 @@ import com.yunseojin.MyLittleHomepage.evaluation.entity.CommentEvaluationEntity;
 import com.yunseojin.MyLittleHomepage.evaluation.entity.PostEvaluationEntity;
 import com.yunseojin.MyLittleHomepage.hashtag.entity.HashtagEntity;
 import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -39,9 +36,6 @@ public class PostEntity extends BaseEntity {
     @Column(name = "TITLE", nullable = false)
     private String title;
 
-    @Column(name = "TITLE_HEAD")
-    private String titleHead;
-
     @Lob
     @Column(name = "CONTENT")
     private String content;
@@ -66,18 +60,22 @@ public class PostEntity extends BaseEntity {
     @Column(name = "DISLIKE_COUNT", nullable = false)
     private Integer dislikeCount = 0;
 
+    @Setter(AccessLevel.NONE)
     @Builder.Default
     @OrderBy("id asc")
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentEntity> comments = new ArrayList<>();
 
+    @Setter(AccessLevel.NONE)
     @Builder.Default
     @OrderBy("id asc")
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HashtagEntity> hashtags = new ArrayList<>();
 
+    @Setter(AccessLevel.NONE)
     @Builder.Default
     @OrderBy("id asc")
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostEvaluationEntity> evaluations = new ArrayList<>();
+
 }
