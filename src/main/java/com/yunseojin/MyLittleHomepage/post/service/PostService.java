@@ -14,7 +14,8 @@ public interface PostService {
 
     void deletePost(Long postId);
 
-    List<PostResponse> getPostList(Long boardId, Pageable pageable);
-
     PostResponse getPost(Long postId);
+
+    List<PostResponse> getPostList(Long boardId, Integer page);
+
 }

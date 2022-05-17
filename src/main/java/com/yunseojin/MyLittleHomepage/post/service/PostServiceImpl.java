@@ -15,7 +15,9 @@ import com.yunseojin.MyLittleHomepage.post.mapper.SimplePostMapper;
 import com.yunseojin.MyLittleHomepage.post.repository.PostRepository;
 import com.yunseojin.MyLittleHomepage.util.SessionUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -66,18 +68,19 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostResponse> getPostList(Long boardId, Pageable pageable) {
-        var board = getBoardEntity(boardId);
-        var postPage = postRepository.findByBoard(board, pageable);
-        if (postPage.isEmpty())
-            throw new BadRequestException(ErrorMessage.PAGE_OUT_OF_RANGE_EXCEPTION);
-        return SimplePostMapper.INSTANCE.toPostResponseList(postPage.toList());
-    }
-
-    @Override
     public PostResponse getPost(Long postId) {
         var post = getPostEntity(postId);
         return PostMapper.INSTANCE.toPostResponse(post);
+    }
+
+    @Override
+    public List<PostResponse> getPostList(Long boardId, Integer page) {
+        var pageable = PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "id"));
+        var board = getBoardEntity(boardId);
+        var postPage = postRepository.findByBoard(board, pageable);
+        if (page != 0 && postPage.isEmpty())
+            throw new BadRequestException(ErrorMessage.PAGE_OUT_OF_RANGE_EXCEPTION);
+        return SimplePostMapper.INSTANCE.toPostResponseList(postPage.toList());
     }
 
     private BoardEntity getBoardEntity(Long boardId) {
