@@ -27,5 +27,5 @@ public class PostResponse {
     private Integer dislikeCount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private List<String> hashtags = new ArrayList<>();
+    private String[] hashtags;
 }

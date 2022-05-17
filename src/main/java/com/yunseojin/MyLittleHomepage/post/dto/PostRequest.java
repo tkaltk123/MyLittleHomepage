@@ -31,5 +31,5 @@ public class PostRequest implements Serializable {
     private String content;
 
     @JsonProperty
-    private String[] HashTags;
+    private String[] hashTags;
 }

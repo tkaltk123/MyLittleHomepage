@@ -17,6 +17,7 @@ public enum ErrorMessage {
     ,NOT_EXISTS_BOARD_EXCEPTION(9,"존재하지 않는 게시판입니다.",HttpStatus.BAD_REQUEST)
     ,NOT_EXISTS_POST_EXCEPTION(10,"존재하지 않는 게시글입니다.",HttpStatus.BAD_REQUEST)
     ,INCORRECT_PASSWORD_EXCEPTION(11,"비밀번호가 일치하지 않습니다.",HttpStatus.BAD_REQUEST)
+    ,POST_PERMISSION_EXCEPTION(12,"작성한 사용자가 다른 게시글입니다.",HttpStatus.BAD_REQUEST)
     ;
 
     Integer code;

@@ -80,8 +80,8 @@ public class PostEntity extends BaseEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostEvaluationEntity> evaluations = new ArrayList<>();
 
-    public List<String> getStringHashtags() {
-        return hashtags.stream().map(HashtagEntity::toString).collect(Collectors.toList());
+    public String[] getStringHashtags() {
+        return hashtags.stream().map(HashtagEntity::toString).toArray(String[]::new);
     }
 
     public void setHashtags(String... hashtags) {
