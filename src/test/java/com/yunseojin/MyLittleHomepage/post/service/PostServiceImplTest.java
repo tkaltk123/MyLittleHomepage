@@ -36,7 +36,7 @@ class PostServiceImplTest {
         loginReq2 = MemberRequest.builder()
                 .loginId("testuser2")
                 .password("1234")
-                .nickname("testuser")
+                .nickname("testuser2")
                 .build();
     }
 

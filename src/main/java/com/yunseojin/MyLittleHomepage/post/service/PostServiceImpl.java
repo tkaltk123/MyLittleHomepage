@@ -56,7 +56,22 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostResponse updatePost(Long postId, PostRequest postRequest) {
-        return null;
+        SessionUtil.checkLogin(memberInfo, true);
+        var _member = memberRepository.findById(memberInfo.getId());
+        var _post = postRepository.findById(postId);
+
+        if (_member.isEmpty())
+            throw new BadRequestException(ErrorMessage.NOT_EXISTS_MEMBER_EXCEPTION);
+        if (_post.isEmpty())
+            throw new BadRequestException(ErrorMessage.NOT_EXISTS_POST_EXCEPTION);
+
+        var member = _member.get();
+        var post = _post.get();
+
+        if (post.getWriter() != member)
+            throw new BadRequestException(ErrorMessage.POST_PERMISSION_EXCEPTION);
+        post.update(postRequest);
+        return PostMapper.INSTANCE.toPostResponse(post);
     }
 
     @Override
