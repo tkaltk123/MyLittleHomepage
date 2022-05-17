@@ -5,6 +5,7 @@ import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberRequest;
 import com.yunseojin.MyLittleHomepage.member.service.MemberServiceImpl;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
+import com.yunseojin.MyLittleHomepage.post.repository.PostRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ class PostServiceImplTest {
     private MemberServiceImpl memberService;
     @Autowired
     private PostServiceImpl postService;
+    @Autowired
+    private PostRepository postRepository;
 
     private static MemberRequest loginReq;
     private static MemberRequest loginReq2;
@@ -66,7 +69,6 @@ class PostServiceImplTest {
         assertEquals(postRes.getTitle(), req.getTitle());
         assertEquals(postRes.getContent(), req.getContent());
         assertArrayEquals(postRes.getHashtags(), req.getHashTags());
-        memberService.logout();
     }
 
     @Test
@@ -118,6 +120,41 @@ class PostServiceImplTest {
 
     @Test
     void deletePost() {
+        //given
+        var createReq = PostRequest.builder()
+                .title("제목")
+                .content("내용")
+                .hashTags(new String[]{"태그1", "태그2"})
+                .build();
+
+        //로그인 안됨
+        assertEquals(ErrorMessage.NOT_LOGIN_EXCEPTION.getCode(),
+                assertThrows(BadRequestException.class,
+                        () -> postService.deletePost(0L)
+                ).getCode());
+
+        //다른 유저로 게시글 생성
+        memberService.resister(loginReq2);
+        var createRes1 = postService.createPost(testBoardId, createReq);
+        memberService.logout();
+        memberService.resister(loginReq);
+
+        //게시글 없음
+        assertEquals(ErrorMessage.NOT_EXISTS_POST_EXCEPTION.getCode(),
+                assertThrows(BadRequestException.class,
+                        () -> postService.deletePost(0L)
+                ).getCode());
+        //소유권 없음
+        assertEquals(ErrorMessage.POST_PERMISSION_EXCEPTION.getCode(),
+                assertThrows(BadRequestException.class,
+                        () -> postService.deletePost(createRes1.getId())
+                ).getCode());
+
+        var createRes2 = postService.createPost(testBoardId, createReq);
+        postService.deletePost(createRes2.getId());
+        var post = postRepository.findById(createRes2.getId());
+        //then
+        assertTrue(post.isEmpty());
     }
 
     @Test
@@ -126,5 +163,28 @@ class PostServiceImplTest {
 
     @Test
     void getPost() {
+        //given
+        var createReq = PostRequest.builder()
+                .title("제목")
+                .content("내용")
+                .hashTags(new String[]{"태그1", "태그2"})
+                .build();
+
+        //게시글 생성
+        memberService.resister(loginReq);
+        var createRes = postService.createPost(testBoardId, createReq);
+        memberService.logout();
+
+        //게시글 없음
+        assertEquals(ErrorMessage.NOT_EXISTS_POST_EXCEPTION.getCode(),
+                assertThrows(BadRequestException.class,
+                        () -> postService.getPost(0L)
+                ).getCode());
+
+        var postRes = postService.getPost(createRes.getId());
+        //then
+        assertEquals(postRes.getTitle(), createRes.getTitle());
+        assertEquals(postRes.getContent(), createRes.getContent());
+        assertArrayEquals(postRes.getHashtags(), createRes.getHashtags());
     }
 }

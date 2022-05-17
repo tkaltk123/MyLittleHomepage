@@ -28,4 +28,29 @@ class PostMapperTest {
         assertEquals(post.getContent(),res.getContent());
     }
 
+    @Test
+    void toPostResponseEntity(){
+        var member = MemberEntity.builder()
+                .nickname("test")
+                .build();
+        var post = PostEntity.builder()
+                .writer(member)
+                .title("제목")
+                .content("내용")
+                .build();
+        var post2 = PostEntity.builder()
+                .writer(member)
+                .title("제목")
+                .content("내용")
+                .build();
+        var tags = new String[]{"tag1","tag2"};
+        post.setHashtags(tags);
+        post2.setHashtags(tags);
+        var list = new ArrayList<PostEntity>();
+        list.add(post);
+        list.add(post2);
+        var res = SimplePostMapper.INSTANCE.toPostResponseList(list);
+
+    }
+
 }
