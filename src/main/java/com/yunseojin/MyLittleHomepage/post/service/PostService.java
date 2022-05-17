@@ -3,6 +3,7 @@ package com.yunseojin.MyLittleHomepage.post.service;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberRequest;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
 import com.yunseojin.MyLittleHomepage.post.dto.PostResponse;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public interface PostService {
 
     void deletePost(Long postId);
 
-    List<PostResponse> getPostList(Long boardId);
+    List<PostResponse> getPostList(Long boardId, Pageable pageable);
 
     PostResponse getPost(Long postId);
 }

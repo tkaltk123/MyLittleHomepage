@@ -13,6 +13,7 @@ import com.yunseojin.MyLittleHomepage.post.mapper.PostMapper;
 import com.yunseojin.MyLittleHomepage.post.repository.PostRepository;
 import com.yunseojin.MyLittleHomepage.util.SessionUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -80,7 +81,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostResponse> getPostList(Long boardId) {
+    public List<PostResponse> getPostList(Long boardId, Pageable pageable) {
         return null;
     }
 

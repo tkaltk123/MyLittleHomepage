@@ -10,8 +10,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import javax.transaction.Transactional;
+
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -159,6 +163,33 @@ class PostServiceImplTest {
 
     @Test
     void getPostList() {
+        //given
+        var createReq = PostRequest.builder()
+                .title("제목")
+                .content("내용")
+                .hashTags(new String[]{"태그1", "태그2"})
+                .build();
+
+        //게시글 생성
+        memberService.resister(loginReq);
+        IntStream.range(0, 50).forEach(i -> postService.createPost(testBoardId, createReq));
+        memberService.logout();
+        var pageReq1 = PageRequest.of(0, 20, Sort.by(Sort.Direction.DESC, "id"));
+        var pageReq2 = PageRequest.of(3, 20, Sort.by(Sort.Direction.DESC, "id"));
+
+        //게시판 없음
+        assertEquals(ErrorMessage.NOT_EXISTS_BOARD_EXCEPTION.getCode(),
+                assertThrows(BadRequestException.class,
+                        () -> postService.getPostList(0L, pageReq1)
+                ).getCode());
+        //페이지 오류
+        assertEquals(ErrorMessage.PAGE_OUT_OF_RANGE_EXCEPTION.getCode(),
+                assertThrows(BadRequestException.class,
+                        () -> postService.getPostList(testBoardId, pageReq2)
+                ).getCode());
+        var postResList = postService.getPostList(testBoardId, pageReq1);
+        //then
+        assertEquals(20, postResList.size());
     }
 
     @Test
