@@ -6,6 +6,7 @@ import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberInfo;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberRequest;
 import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
+import com.yunseojin.MyLittleHomepage.member.mapper.MemberMapper;
 import com.yunseojin.MyLittleHomepage.member.repository.MemberRepository;
 import com.yunseojin.MyLittleHomepage.util.PasswordUtil;
 import com.yunseojin.MyLittleHomepage.util.SessionUtil;
@@ -24,42 +25,28 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void resister(MemberRequest memberRequest) {
         SessionUtil.checkLogin(memberInfo, false);
-        //엔티티 생성
-        var member = MemberEntity.builder()
-                .loginId(memberRequest.getLoginId())
-                .password(PasswordUtil.getHashedPassword(memberRequest.getPassword()))
-                .nickname(memberRequest.getNickname())
-                .memberType(MemberType.NORMAL)
-                .build();
         //로그인 ID 중복
-        if (memberRepository.existsByLoginId(member.getLoginId()))
+        if (memberRepository.existsByLoginId(memberRequest.getLoginId()))
             throw new BadRequestException(ErrorMessage.LOGIN_ID_DUPLICATE_EXCEPTION);
         //닉네임 중복
-        if (memberRepository.existsByNickname(member.getNickname()))
+        if (memberRepository.existsByNickname(memberRequest.getNickname()))
             throw new BadRequestException(ErrorMessage.NICKNAME_DUPLICATE_EXCEPTION);
-        //이상 없으면 저장
+        //엔티티 생성
+        var member = MemberMapper.INSTANCE.toMemberEntity(memberRequest);
+        member.setMemberType(MemberType.NORMAL);
         memberRepository.save(member);
-        //세션 저장
         memberInfo.setMember(member);
     }
 
     @Override
     public void modify(MemberRequest memberRequest) {
         SessionUtil.checkLogin(memberInfo, true);
-        var _member = memberRepository.findById(memberInfo.getId());
-        //존재하지 않는 회원일 경우
-        if (_member.isEmpty())
-            throw new BadRequestException(ErrorMessage.NOT_EXISTS_MEMBER_EXCEPTION);
-        var member = _member.get();
+        var member = memberRepository.getMember(memberInfo.getId());
         var loginId = memberRequest.getLoginId();
         var nickname = memberRequest.getNickname();
         var password = memberRequest.getPassword();
-        //로그인 ID가 중복될 경우
-        if (loginId != null && !member.getLoginId().equals(loginId) && memberRepository.existsByLoginId(loginId))
-            throw new BadRequestException(ErrorMessage.LOGIN_ID_DUPLICATE_EXCEPTION);
-        //닉네임이 중복될 경우
-        if (nickname != null && !member.getNickname().equals(nickname) && memberRepository.existsByNickname(nickname))
-            throw new BadRequestException(ErrorMessage.NICKNAME_DUPLICATE_EXCEPTION);
+        checkLogInIdDuplicate(member, loginId);
+        checkNicknameDuplicate(member, nickname);
         //정보 수정
         if (loginId != null) {
             member.setLoginId(loginId);
@@ -74,17 +61,9 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void delete(MemberRequest memberRequest) {
         SessionUtil.checkLogin(memberInfo, true);
-        //로그인이 안되있을 경우
-        if (memberInfo.getId() == null)
-            throw new BadRequestException(ErrorMessage.NOT_LOGIN_EXCEPTION);
-        var _member = memberRepository.findById(memberInfo.getId());
-        //존재하지 않는 회원일 경우
-        if (_member.isEmpty())
-            throw new BadRequestException(ErrorMessage.NOT_EXISTS_MEMBER_EXCEPTION);
-        var member = _member.get();
+        var member = memberRepository.getMember(memberInfo.getId());
         PasswordUtil.checkPassword(memberRequest.getPassword(), member.getPassword());
         memberRepository.delete(member);
-        //세션 제거
         memberInfo.clear();
     }
 
@@ -95,7 +74,6 @@ public class MemberServiceImpl implements MemberService {
         //존재하지 않는 회원일 경우
         if (member == null)
             throw new BadRequestException(ErrorMessage.NOT_EXISTS_MEMBER_EXCEPTION);
-        //비밀번호가 일치하지 않을 경우
         PasswordUtil.checkPassword(memberRequest.getPassword(), member.getPassword());
         //세션에 저장
         memberInfo.setMember(member);
@@ -107,4 +85,13 @@ public class MemberServiceImpl implements MemberService {
         memberInfo.clear();
     }
 
+    private void checkLogInIdDuplicate(MemberEntity member, String newLogInId) {
+        if (newLogInId != null && !member.getLoginId().equals(newLogInId) && memberRepository.existsByLoginId(newLogInId))
+            throw new BadRequestException(ErrorMessage.LOGIN_ID_DUPLICATE_EXCEPTION);
+    }
+
+    private void checkNicknameDuplicate(MemberEntity member, String newNickname) {
+        if (newNickname != null && !member.getNickname().equals(newNickname) && memberRepository.existsByNickname(newNickname))
+            throw new BadRequestException(ErrorMessage.NICKNAME_DUPLICATE_EXCEPTION);
+    }
 }
