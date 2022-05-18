@@ -110,7 +110,7 @@ class PostServiceImplTest {
                         () -> postService.updatePost(0L, createReq)
                 ).getCode());
         //소유권 없음
-        assertEquals(ErrorMessage.POST_PERMISSION_EXCEPTION.getCode(),
+        assertEquals(ErrorMessage.NOT_WRITER_EXCEPTION.getCode(),
                 assertThrows(BadRequestException.class,
                         () -> postService.updatePost(createRes1.getId(), updateReq)
                 ).getCode());
@@ -135,7 +135,7 @@ class PostServiceImplTest {
                 .build();
         var board = boardRepository.findById(testBoardId).get();
         var postSize = board.getPostCount();
-        
+
         //로그인 안됨
         assertEquals(ErrorMessage.NOT_LOGIN_EXCEPTION.getCode(),
                 assertThrows(BadRequestException.class,
@@ -154,7 +154,7 @@ class PostServiceImplTest {
                         () -> postService.deletePost(0L)
                 ).getCode());
         //소유권 없음
-        assertEquals(ErrorMessage.POST_PERMISSION_EXCEPTION.getCode(),
+        assertEquals(ErrorMessage.NOT_WRITER_EXCEPTION.getCode(),
                 assertThrows(BadRequestException.class,
                         () -> postService.deletePost(createRes1.getId())
                 ).getCode());

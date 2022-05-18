@@ -1,6 +1,5 @@
 package com.yunseojin.MyLittleHomepage.post.service;
 
-import com.yunseojin.MyLittleHomepage.board.entity.BoardEntity;
 import com.yunseojin.MyLittleHomepage.board.repository.BoardRepository;
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
 import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
@@ -87,6 +86,6 @@ public class PostServiceImpl implements PostService {
     //게시글의 작성자가 입력한 회원이 맞는지 확인
     private void checkPostWriter(PostEntity post, MemberEntity member) {
         if (post.getWriter() != member)
-            throw new BadRequestException(ErrorMessage.POST_PERMISSION_EXCEPTION);
+            throw new BadRequestException(ErrorMessage.NOT_WRITER_EXCEPTION);
     }
 }
