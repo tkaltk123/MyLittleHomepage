@@ -189,7 +189,7 @@ class CommentServiceImplTest {
                 .content("댓글")
                 .build();
         //게시글 없음
-        assertEquals(ErrorMessage.NOT_LOGIN_EXCEPTION.getCode(),
+        assertEquals(ErrorMessage.NOT_EXISTS_POST_EXCEPTION.getCode(),
                 assertThrows(BadRequestException.class,
                         () -> commentService.getCommentList(0L, 0)
                 ).getCode());

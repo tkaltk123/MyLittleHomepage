@@ -3,9 +3,12 @@ package com.yunseojin.MyLittleHomepage.comment.mapper;
 import com.yunseojin.MyLittleHomepage.comment.dto.CommentRequest;
 import com.yunseojin.MyLittleHomepage.comment.dto.CommentResponse;
 import com.yunseojin.MyLittleHomepage.comment.entity.CommentEntity;
+import com.yunseojin.MyLittleHomepage.comment.repository.CommentRepository;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
+
+import java.util.List;
 
 @Mapper(componentModel = "Spring")
 public interface CommentMapper {
@@ -14,6 +17,8 @@ public interface CommentMapper {
     @Mapping(target = "postId", source = "post.id")
     @Mapping(target = "writerName", source = "writer.nickname")
     CommentResponse toPostResponse(CommentEntity comment);
+
+    List<CommentResponse> toCommentResponseList(List<CommentEntity> comments);
 
     CommentEntity toCommentEntity(CommentRequest comment);
 }
