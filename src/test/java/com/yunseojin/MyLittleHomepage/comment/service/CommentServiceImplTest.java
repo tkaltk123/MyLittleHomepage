@@ -129,6 +129,15 @@ class CommentServiceImplTest {
                         () -> commentService.updateComment(0L, updateReq)
                 ).getCode());
         var commentRes = commentService.createComment(postRes.getId(), createReq);
+        memberService.logout();
+        memberService.resister(loginReq2);
+        //작성자가 아님
+        assertEquals(ErrorMessage.NOT_WRITER_EXCEPTION.getCode(),
+                assertThrows(BadRequestException.class,
+                        () -> commentService.updateComment(commentRes.getId(), updateReq)
+                ).getCode());
+        memberService.logout();
+        memberService.login(loginReq);
         var updateRes = commentService.updateComment(commentRes.getId(), updateReq);
         //then
         assertEquals(updateRes.getPostId(), postRes.getId());

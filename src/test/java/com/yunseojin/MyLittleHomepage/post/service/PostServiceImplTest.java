@@ -55,7 +55,7 @@ class PostServiceImplTest {
                 .content("내용")
                 .hashTags(new String[]{"태그1", "태그2"})
                 .build();
-        var board = boardRepository.findById(testBoardId).get();
+        var board = boardRepository.getBoard(testBoardId);
         var postSize = board.getPostCount();
 
         //로그인 안됨
@@ -133,7 +133,7 @@ class PostServiceImplTest {
                 .content("내용")
                 .hashTags(new String[]{"태그1", "태그2"})
                 .build();
-        var board = boardRepository.findById(testBoardId).get();
+        var board = boardRepository.getBoard(testBoardId);
         var postSize = board.getPostCount();
 
         //로그인 안됨
