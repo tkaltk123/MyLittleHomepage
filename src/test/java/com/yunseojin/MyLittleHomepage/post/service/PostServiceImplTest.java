@@ -1,5 +1,6 @@
 package com.yunseojin.MyLittleHomepage.post.service;
 
+import com.yunseojin.MyLittleHomepage.board.repository.BoardRepository;
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
 import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberRequest;
@@ -25,6 +26,8 @@ class PostServiceImplTest {
     private PostServiceImpl postService;
     @Autowired
     private PostRepository postRepository;
+    @Autowired
+    private BoardRepository boardRepository;
 
     private static MemberRequest loginReq;
     private static MemberRequest loginReq2;
@@ -52,6 +55,8 @@ class PostServiceImplTest {
                 .content("내용")
                 .hashTags(new String[]{"태그1", "태그2"})
                 .build();
+        var board = boardRepository.findById(testBoardId).get();
+        var postSize = board.getPostCount();
 
         //로그인 안됨
         assertEquals(ErrorMessage.NOT_LOGIN_EXCEPTION.getCode(),
@@ -66,6 +71,7 @@ class PostServiceImplTest {
                 ).getCode());
         var postRes = postService.createPost(testBoardId, req);
         //then
+        assertEquals(board.getPostCount(), postSize + 1);
         assertEquals(postRes.getBoardId(), testBoardId);
         assertEquals(postRes.getTitle(), req.getTitle());
         assertEquals(postRes.getContent(), req.getContent());
@@ -127,7 +133,9 @@ class PostServiceImplTest {
                 .content("내용")
                 .hashTags(new String[]{"태그1", "태그2"})
                 .build();
-
+        var board = boardRepository.findById(testBoardId).get();
+        var postSize = board.getPostCount();
+        
         //로그인 안됨
         assertEquals(ErrorMessage.NOT_LOGIN_EXCEPTION.getCode(),
                 assertThrows(BadRequestException.class,
@@ -155,6 +163,7 @@ class PostServiceImplTest {
         postService.deletePost(createRes2.getId());
         var post = postRepository.findById(createRes2.getId());
         //then
+        assertEquals(board.getPostCount(), postSize + 1);
         assertTrue(post.isEmpty());
     }
 

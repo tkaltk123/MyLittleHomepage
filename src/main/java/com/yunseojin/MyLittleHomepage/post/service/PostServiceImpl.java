@@ -16,7 +16,6 @@ import com.yunseojin.MyLittleHomepage.post.repository.PostRepository;
 import com.yunseojin.MyLittleHomepage.util.SessionUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -63,8 +62,10 @@ public class PostServiceImpl implements PostService {
         SessionUtil.checkLogin(memberInfo, true);
         var member = getMemberEntity(memberInfo.getId());
         var post = getPostEntity(postId);
+        var board = post.getBoard();
         checkPostWriter(post, member);
         postRepository.delete(post);
+        board.deletePost();
     }
 
     @Override
