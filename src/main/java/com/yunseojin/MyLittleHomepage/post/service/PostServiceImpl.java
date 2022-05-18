@@ -70,6 +70,9 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostResponse getPost(Long postId) {
         var post = postRepository.getPost(postId);
+        //읽은 적 없다면 조회수 상승
+        if (memberInfo.viewPost(postId))
+            post.increaseViewCount();
         return PostMapper.INSTANCE.toPostResponse(post);
     }
 

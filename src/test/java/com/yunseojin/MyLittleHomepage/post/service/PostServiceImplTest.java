@@ -214,11 +214,16 @@ class PostServiceImplTest {
                 assertThrows(BadRequestException.class,
                         () -> postService.getPost(0L)
                 ).getCode());
-
+        var post = postRepository.getPost(createRes.getId());
+        var view = post.getViewCount();
         var postRes = postService.getPost(createRes.getId());
         //then
         assertEquals(postRes.getTitle(), createRes.getTitle());
         assertEquals(postRes.getContent(), createRes.getContent());
         assertArrayEquals(postRes.getHashtags(), createRes.getHashtags());
+        //조회수 확인
+        assertEquals(postRes.getViewCount(), view + 1);
+        postRes = postService.getPost(createRes.getId());
+        assertEquals(postRes.getViewCount(), view + 1);
     }
 }

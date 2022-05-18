@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Component
@@ -19,6 +21,7 @@ public class MemberInfo implements Serializable {
 
     private Long id;
     private String loginId;
+    private Set<Long> viewPosts = new HashSet<>();
 
     public void clear() {
         id = null;
@@ -28,5 +31,12 @@ public class MemberInfo implements Serializable {
     public void setMember(MemberEntity member) {
         id = member.getId();
         loginId = member.getLoginId();
+    }
+
+    public boolean viewPost(Long postId) {
+        if (viewPosts.contains(postId))
+            return false;
+        viewPosts.add(postId);
+        return true;
     }
 }
