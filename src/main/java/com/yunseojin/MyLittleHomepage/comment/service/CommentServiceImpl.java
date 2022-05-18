@@ -4,7 +4,9 @@ import com.yunseojin.MyLittleHomepage.board.entity.BoardEntity;
 import com.yunseojin.MyLittleHomepage.board.repository.BoardRepository;
 import com.yunseojin.MyLittleHomepage.comment.dto.CommentRequest;
 import com.yunseojin.MyLittleHomepage.comment.dto.CommentResponse;
+import com.yunseojin.MyLittleHomepage.comment.entity.CommentEntity;
 import com.yunseojin.MyLittleHomepage.comment.mapper.CommentMapper;
+import com.yunseojin.MyLittleHomepage.comment.repository.CommentRepository;
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
 import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberInfo;
@@ -29,11 +31,29 @@ public class CommentServiceImpl implements CommentService {
 
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
-    private final BoardRepository boardRepository;
+    private final CommentRepository commentRepository;
 
     @Override
-    public CommentResponse createComment(Long postId, CommentRequest postRequest) {
-        return null;
+    public CommentResponse createComment(Long postId, CommentRequest commentRequest) {
+        SessionUtil.checkLogin(memberInfo, true);
+        var member = memberRepository.getMember(memberInfo.getId());
+        var post = postRepository.getPost(postId);
+        CommentEntity parent = null;
+        if (commentRequest.getParentId() != null) {
+            parent = commentRepository.getComment(commentRequest.getParentId());
+            if (parent.getParent() != null)
+                throw new BadRequestException(ErrorMessage.COMMENT_PARENT_EXCEPTION);
+        }
+        var comment = CommentMapper.INSTANCE.toCommentEntity(commentRequest);
+        comment.setWriter(member);
+        comment.setPost(post);
+        if (parent != null) {
+            comment.setParent(parent);
+            parent.getChildren().add(comment);
+        }
+        commentRepository.save(comment);
+        post.increaseCommentCount();
+        return CommentMapper.INSTANCE.toPostResponse(comment);
     }
 
     @Override

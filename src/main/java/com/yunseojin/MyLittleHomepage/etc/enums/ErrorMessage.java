@@ -20,6 +20,7 @@ public enum ErrorMessage {
     ,INCORRECT_PASSWORD_EXCEPTION(12,"비밀번호가 일치하지 않습니다.",HttpStatus.BAD_REQUEST)
     , NOT_WRITER_EXCEPTION(13,"작성한 사용자가 다른 게시글입니다.",HttpStatus.BAD_REQUEST)
     ,PAGE_OUT_OF_RANGE_EXCEPTION(14,"페이지 범위를 벗어났습니다.",HttpStatus.BAD_REQUEST)
+    ,COMMENT_PARENT_EXCEPTION(15,"대댓글에 대댓글을 작성할 수 없습니다.",HttpStatus.BAD_REQUEST)
     ;
 
     Integer code;

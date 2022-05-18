@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @SuperBuilder
 @Entity
@@ -37,9 +36,11 @@ public class PostEntity extends BaseEntity {
     @JoinColumn(name = "WRITER_ID", nullable = false)
     private MemberEntity writer;
 
+    @Setter
     @Column(name = "TITLE", nullable = false)
     private String title;
 
+    @Setter
     @Lob
     @Column(name = "CONTENT")
     private String content;
@@ -64,23 +65,70 @@ public class PostEntity extends BaseEntity {
     @Column(name = "DISLIKE_COUNT", table = "POST_COUNTS", nullable = false)
     private Integer dislikeCount = 0;
 
-    @Setter(AccessLevel.NONE)
     @Builder.Default
     @OrderBy("id asc")
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentEntity> comments = new ArrayList<>();
 
-    @Setter(AccessLevel.NONE)
     @Builder.Default
     @OrderBy("id asc")
     @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HashtagEntity> hashtags = new ArrayList<>();
 
-    @Setter(AccessLevel.NONE)
     @Builder.Default
     @OrderBy("id asc")
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostEvaluationEntity> evaluations = new ArrayList<>();
+
+    public void setBoard(BoardEntity board) {
+        if (this.board != null)
+            this.board.getPosts().remove(this);
+        this.board = board;
+        if (board != null) {
+            board.getPosts().add(this);
+        }
+    }
+
+    public void setWriter(MemberEntity writer) {
+        if (this.writer != null)
+            this.writer.getPosts().remove(this);
+        this.writer = writer;
+        if (writer != null) {
+            writer.getPosts().add(this);
+        }
+    }
+
+    public void increaseCommentCount() {
+        ++this.commentCount;
+    }
+
+    public void decreaseCommentCount() {
+        --this.commentCount;
+    }
+
+    public void increaseLikeCount() {
+        ++this.likeCount;
+    }
+
+    public void decreaseLikeCount() {
+        --this.likeCount;
+    }
+
+    public void increaseDislikeCount() {
+        ++this.dislikeCount;
+    }
+
+    public void decreaseDislikeCount() {
+        --this.dislikeCount;
+    }
+
+    public void increaseViewCount() {
+        ++this.viewCount;
+    }
+
+    public void decreaseViewCount() {
+        --this.viewCount;
+    }
 
     public String[] getStringHashtags() {
         return hashtags.stream().map(HashtagEntity::toString).toArray(String[]::new);

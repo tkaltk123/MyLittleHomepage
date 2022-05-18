@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @SuperBuilder
 @Entity
@@ -35,6 +34,7 @@ public class CommentEntity extends BaseEntity {
     @JoinColumn(name = "PARENT_ID")
     private CommentEntity parent;
 
+    @Setter
     @Lob
     @Column(name = "CONTENT")
     private String content;
@@ -47,15 +47,40 @@ public class CommentEntity extends BaseEntity {
     @Column(name = "DISLIKE_COUNT", table = "COMMENT_COUNTS", nullable = false)
     private Integer dislikeCount = 0;
 
-    @Setter(AccessLevel.NONE)
     @Builder.Default
     @OrderBy("id asc")
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentEntity> children = new ArrayList<>();
 
-    @Setter(AccessLevel.NONE)
     @Builder.Default
     @OrderBy("id asc")
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentEvaluationEntity> evaluations = new ArrayList<>();
+
+    public void setPost(PostEntity post) {
+        if (this.post != null)
+            this.post.getComments().remove(this);
+        this.post = post;
+        if (post != null) {
+            post.getComments().add(this);
+        }
+    }
+
+    public void setWriter(MemberEntity writer) {
+        if (this.writer != null)
+            this.writer.getComments().remove(this);
+        this.writer = writer;
+        if (writer != null) {
+            writer.getComments().add(this);
+        }
+    }
+
+    public void setParent(CommentEntity parent) {
+        if (this.parent != null)
+            this.parent.getChildren().remove(this);
+        this.parent = parent;
+        if (parent != null) {
+            parent.getChildren().add(this);
+        }
+    }
 }

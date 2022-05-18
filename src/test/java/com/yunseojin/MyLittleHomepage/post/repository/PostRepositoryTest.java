@@ -32,7 +32,7 @@ class PostRepositoryTest {
         postRepository.save(post);
         var dbPost = postRepository.findById(post.getId()).get();
         postRepository.flush();
-        post.setLikeCount(post.getLikeCount() + 1);
+        post.increaseLikeCount();
         post.setTitle("1234");
         postRepository.save(post);
     }

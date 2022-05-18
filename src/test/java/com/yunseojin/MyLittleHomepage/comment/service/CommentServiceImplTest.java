@@ -175,5 +175,25 @@ class CommentServiceImplTest {
 
     @Test
     void getCommentList() {
+        //given
+        var createReq = CommentRequest.builder()
+                .content("댓글")
+                .build();
+        //게시글 없음
+        assertEquals(ErrorMessage.NOT_LOGIN_EXCEPTION.getCode(),
+                assertThrows(BadRequestException.class,
+                        () -> commentService.getCommentList(0L, 0)
+                ).getCode());
+        memberService.resister(loginReq);
+        var postRes = postService.createPost(testBoardId, postReq);
+        var commentRes1 = commentService.createComment(postRes.getId(), createReq);
+        var createReq2 = CommentRequest.builder()
+                .parentId(commentRes1.getId())
+                .content("댓글")
+                .build();
+        commentService.createComment(postRes.getId(), createReq2);
+        var comments = commentService.getCommentList(postRes.getId(), 0);
+        assertEquals(comments.size(), 1);
+        assertEquals(comments.get(0).getChildren().length, 1);
     }
 }
