@@ -2,6 +2,7 @@ package com.yunseojin.MyLittleHomepage.comment.entity;
 
 import com.yunseojin.MyLittleHomepage.etc.entity.BaseEntity;
 import com.yunseojin.MyLittleHomepage.evaluation.entity.CommentEvaluationEntity;
+import com.yunseojin.MyLittleHomepage.evaluation.entity.Evaluable;
 import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
 import lombok.*;
@@ -23,7 +24,7 @@ import java.util.List;
 @Where(clause = "IS_DELETED = 0")
 @Table(name = "COMMENTS")
 @SecondaryTable(name = "COMMENT_COUNTS", pkJoinColumns = @PrimaryKeyJoinColumn(name = "COMMENT_ID"))
-public class CommentEntity extends BaseEntity {
+public class CommentEntity extends BaseEntity implements Evaluable {
     @ManyToOne(optional = false)
     @JoinColumn(name = "POST_ID", nullable = false)
     private PostEntity post;
@@ -85,5 +86,25 @@ public class CommentEntity extends BaseEntity {
         if (parent != null) {
             parent.getChildren().add(this);
         }
+    }
+
+    @Override
+    public void increaseLikeCount() {
+        ++this.likeCount;
+    }
+
+    @Override
+    public void decreaseLikeCount() {
+        --this.likeCount;
+    }
+
+    @Override
+    public void increaseDislikeCount() {
+        ++this.dislikeCount;
+    }
+
+    @Override
+    public void decreaseDislikeCount() {
+        --this.dislikeCount;
     }
 }

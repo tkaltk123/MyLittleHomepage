@@ -3,7 +3,7 @@ package com.yunseojin.MyLittleHomepage.post.entity;
 import com.yunseojin.MyLittleHomepage.board.entity.BoardEntity;
 import com.yunseojin.MyLittleHomepage.comment.entity.CommentEntity;
 import com.yunseojin.MyLittleHomepage.etc.entity.BaseEntity;
-import com.yunseojin.MyLittleHomepage.evaluation.entity.CommentEvaluationEntity;
+import com.yunseojin.MyLittleHomepage.evaluation.entity.Evaluable;
 import com.yunseojin.MyLittleHomepage.evaluation.entity.PostEvaluationEntity;
 import com.yunseojin.MyLittleHomepage.hashtag.entity.HashtagEntity;
 import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @Where(clause = "IS_DELETED = 0")
 @Table(name = "POSTS")
 @SecondaryTable(name = "POST_COUNTS", pkJoinColumns = @PrimaryKeyJoinColumn(name = "POST_ID"))
-public class PostEntity extends BaseEntity {
+public class PostEntity extends BaseEntity implements Evaluable {
     @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "BOARD_ID", nullable = false)
     private BoardEntity board;
@@ -101,37 +101,6 @@ public class PostEntity extends BaseEntity {
         }
     }
 
-    public void increaseCommentCount() {
-        ++this.commentCount;
-    }
-
-    public void decreaseCommentCount() {
-        --this.commentCount;
-    }
-
-    public void increaseLikeCount() {
-        ++this.likeCount;
-    }
-
-    public void decreaseLikeCount() {
-        --this.likeCount;
-    }
-
-    public void increaseDislikeCount() {
-        ++this.dislikeCount;
-    }
-
-    public void decreaseDislikeCount() {
-        --this.dislikeCount;
-    }
-
-    public void increaseViewCount() {
-        ++this.viewCount;
-    }
-
-    public void decreaseViewCount() {
-        --this.viewCount;
-    }
 
     public String[] getStringHashtags() {
         return hashtags.stream().map(HashtagEntity::toString).toArray(String[]::new);
@@ -165,5 +134,41 @@ public class PostEntity extends BaseEntity {
         for (var tag : newTags) {
             hashtags.add(toHashTag(tag));
         }
+    }
+
+    public void increaseCommentCount() {
+        ++this.commentCount;
+    }
+
+    public void decreaseCommentCount() {
+        --this.commentCount;
+    }
+
+    public void increaseViewCount() {
+        ++this.viewCount;
+    }
+
+    public void decreaseViewCount() {
+        --this.viewCount;
+    }
+
+    @Override
+    public void increaseLikeCount() {
+        ++this.likeCount;
+    }
+
+    @Override
+    public void decreaseLikeCount() {
+        --this.likeCount;
+    }
+
+    @Override
+    public void increaseDislikeCount() {
+        ++this.dislikeCount;
+    }
+
+    @Override
+    public void decreaseDislikeCount() {
+        --this.dislikeCount;
     }
 }
