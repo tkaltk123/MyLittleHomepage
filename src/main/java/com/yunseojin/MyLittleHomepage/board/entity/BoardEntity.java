@@ -1,18 +1,14 @@
 package com.yunseojin.MyLittleHomepage.board.entity;
 
 import com.yunseojin.MyLittleHomepage.etc.entity.BaseEntity;
-import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -31,11 +27,6 @@ public class BoardEntity extends BaseEntity {
     @Builder.Default
     @Column(name = "POST_COUNT", table = "BOARD_COUNTS", nullable = false)
     private Integer postCount = 0;
-
-    @Builder.Default
-    @OrderBy("id desc")
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PostEntity> posts = new ArrayList<>();
 
     public void setName(String name) {
         this.name = name;

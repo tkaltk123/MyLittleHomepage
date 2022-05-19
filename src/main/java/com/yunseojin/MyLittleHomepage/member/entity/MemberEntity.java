@@ -1,23 +1,18 @@
 package com.yunseojin.MyLittleHomepage.member.entity;
 
-import com.yunseojin.MyLittleHomepage.comment.entity.CommentEntity;
 import com.yunseojin.MyLittleHomepage.etc.entity.BaseEntity;
-import com.yunseojin.MyLittleHomepage.evaluation.entity.CommentEvaluationEntity;
-import com.yunseojin.MyLittleHomepage.evaluation.entity.PostEvaluationEntity;
-import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
 import com.yunseojin.MyLittleHomepage.etc.enums.MemberType;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @SuperBuilder
 @Entity
@@ -40,40 +35,4 @@ public class MemberEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "MEMBER_TYPE", nullable = false)
     private MemberType memberType;
-
-    @Builder.Default
-    @OrderBy("id desc")
-    @OneToMany(mappedBy = "writer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PostEntity> posts = new ArrayList<>();
-
-    @Builder.Default
-    @OrderBy("id desc")
-    @OneToMany(mappedBy = "writer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CommentEntity> comments = new ArrayList<>();
-
-    @Builder.Default
-    @OrderBy("id asc")
-    @OneToMany(mappedBy = "writer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PostEvaluationEntity> postEvaluations = new ArrayList<>();
-
-    @Builder.Default
-    @OrderBy("id asc")
-    @OneToMany(mappedBy = "writer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CommentEvaluationEntity> commentEvaluations = new ArrayList<>();
-
-    public void setLoginId(String loginId) {
-        this.loginId = loginId;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public void setMemberType(MemberType memberType) {
-        this.memberType = memberType;
-    }
 }

@@ -25,10 +25,12 @@ import java.util.List;
 @Table(name = "COMMENTS")
 @SecondaryTable(name = "COMMENT_COUNTS", pkJoinColumns = @PrimaryKeyJoinColumn(name = "COMMENT_ID"))
 public class CommentEntity extends BaseEntity implements Evaluable {
+    @Setter
     @ManyToOne(optional = false)
     @JoinColumn(name = "POST_ID", nullable = false)
     private PostEntity post;
 
+    @Setter
     @ManyToOne(optional = false)
     @JoinColumn(name = "WRITER_ID", nullable = false)
     private MemberEntity writer;
@@ -55,29 +57,6 @@ public class CommentEntity extends BaseEntity implements Evaluable {
     @Fetch(FetchMode.SUBSELECT)
     @OneToMany(mappedBy = "parent", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentEntity> children = new ArrayList<>();
-
-    @Builder.Default
-    @OrderBy("id asc")
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CommentEvaluationEntity> evaluations = new ArrayList<>();
-
-    public void setPost(PostEntity post) {
-        if (this.post != null)
-            this.post.getComments().remove(this);
-        this.post = post;
-        if (post != null) {
-            post.getComments().add(this);
-        }
-    }
-
-    public void setWriter(MemberEntity writer) {
-        if (this.writer != null)
-            this.writer.getComments().remove(this);
-        this.writer = writer;
-        if (writer != null) {
-            writer.getComments().add(this);
-        }
-    }
 
     public void setParent(CommentEntity parent) {
         if (this.parent != null)

@@ -1,14 +1,15 @@
 package com.yunseojin.MyLittleHomepage.post.entity;
 
 import com.yunseojin.MyLittleHomepage.board.entity.BoardEntity;
-import com.yunseojin.MyLittleHomepage.comment.entity.CommentEntity;
 import com.yunseojin.MyLittleHomepage.etc.entity.BaseEntity;
 import com.yunseojin.MyLittleHomepage.evaluation.entity.Evaluable;
-import com.yunseojin.MyLittleHomepage.evaluation.entity.PostEvaluationEntity;
 import com.yunseojin.MyLittleHomepage.hashtag.entity.HashtagEntity;
 import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -30,10 +31,12 @@ import java.util.stream.Collectors;
 @Table(name = "POSTS")
 @SecondaryTable(name = "POST_COUNTS", pkJoinColumns = @PrimaryKeyJoinColumn(name = "POST_ID"))
 public class PostEntity extends BaseEntity implements Evaluable {
+    @Setter
     @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "BOARD_ID", nullable = false)
     private BoardEntity board;
 
+    @Setter
     @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "WRITER_ID", nullable = false)
     private MemberEntity writer;
@@ -67,40 +70,11 @@ public class PostEntity extends BaseEntity implements Evaluable {
     @Column(name = "DISLIKE_COUNT", table = "POST_COUNTS", nullable = false)
     private Integer dislikeCount = 0;
 
-    @Builder.Default
-    @OrderBy("id asc")
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CommentEntity> comments = new ArrayList<>();
-
     @Fetch(FetchMode.SUBSELECT)
     @Builder.Default
     @OrderBy("id asc")
     @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HashtagEntity> hashtags = new ArrayList<>();
-
-    @Builder.Default
-    @OrderBy("id asc")
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PostEvaluationEntity> evaluations = new ArrayList<>();
-
-    public void setBoard(BoardEntity board) {
-        if (this.board != null)
-            this.board.getPosts().remove(this);
-        this.board = board;
-        if (board != null) {
-            board.getPosts().add(this);
-        }
-    }
-
-    public void setWriter(MemberEntity writer) {
-        if (this.writer != null)
-            this.writer.getPosts().remove(this);
-        this.writer = writer;
-        if (writer != null) {
-            writer.getPosts().add(this);
-        }
-    }
-
 
     public String[] getStringHashtags() {
         return hashtags.stream().map(HashtagEntity::toString).toArray(String[]::new);
@@ -146,10 +120,6 @@ public class PostEntity extends BaseEntity implements Evaluable {
 
     public void increaseViewCount() {
         ++this.viewCount;
-    }
-
-    public void decreaseViewCount() {
-        --this.viewCount;
     }
 
     @Override
