@@ -1,10 +1,8 @@
 package com.yunseojin.MyLittleHomepage.evaluation.entity;
 
 import com.yunseojin.MyLittleHomepage.comment.entity.CommentEntity;
-import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLDelete;
 
@@ -14,7 +12,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @SuperBuilder
 @Entity
@@ -25,7 +22,11 @@ public class CommentEvaluationEntity extends EvaluationEntity {
     @JoinColumn(name = "COMMENT_ID", nullable = false)
     private CommentEntity comment;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "WRITER_ID", nullable = false)
-    private MemberEntity writer;
+    public void setComment(CommentEntity comment) {
+        if (this.comment != null)
+            this.comment.getEvaluations().remove(this);
+        this.comment = comment;
+        if (comment != null)
+            comment.getEvaluations().add(this);
+    }
 }

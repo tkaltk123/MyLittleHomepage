@@ -3,15 +3,11 @@ package com.yunseojin.MyLittleHomepage.post.controller;
 import com.yunseojin.MyLittleHomepage.etc.annotation.ValidationGroups;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
 import com.yunseojin.MyLittleHomepage.post.service.PostService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @RequestMapping("/posts")

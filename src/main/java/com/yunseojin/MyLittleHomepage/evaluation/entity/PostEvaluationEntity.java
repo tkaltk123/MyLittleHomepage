@@ -1,17 +1,17 @@
 package com.yunseojin.MyLittleHomepage.evaluation.entity;
 
-import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLDelete;
 
-import javax.persistence.*;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @SuperBuilder
 @Entity
@@ -22,7 +22,11 @@ public class PostEvaluationEntity extends EvaluationEntity {
     @JoinColumn(name = "POST_ID", nullable = false)
     private PostEntity post;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "WRITER_ID", nullable = false)
-    private MemberEntity writer;
+    public void setPost(PostEntity post) {
+        if (this.post != null)
+            this.post.getEvaluations().remove(this);
+        this.post = post;
+        if (post != null)
+            post.getEvaluations().add(this);
+    }
 }

@@ -2,6 +2,7 @@ package com.yunseojin.MyLittleHomepage.evaluation.entity;
 
 import com.yunseojin.MyLittleHomepage.etc.entity.BaseEntity;
 import com.yunseojin.MyLittleHomepage.etc.enums.EvaluationType;
+import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,4 +23,8 @@ public abstract class EvaluationEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "EVALUATION_TYPE", nullable = false)
     protected EvaluationType evaluationType;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "WRITER_ID", nullable = false)
+    private MemberEntity writer;
 }
