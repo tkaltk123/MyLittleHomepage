@@ -41,11 +41,11 @@ public class BoardEntity extends BaseEntity {
         this.name = name;
     }
 
-    public void createPost() {
+    public void increasePostCount() {
         postCount += 1;
     }
 
-    public void deletePost() {
+    public void decreasePostCount() {
         postCount -= 1;
     }
 }

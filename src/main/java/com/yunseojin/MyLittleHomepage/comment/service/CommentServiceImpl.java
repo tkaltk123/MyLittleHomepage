@@ -46,6 +46,7 @@ public class CommentServiceImpl implements CommentService {
         comment.setPost(post);
         if (parent != null)
             comment.setParent(parent);
+        memberInfo.createComment();
         commentRepository.save(comment);
         post.increaseCommentCount();
         return CommentMapper.INSTANCE.toPostResponse(comment);

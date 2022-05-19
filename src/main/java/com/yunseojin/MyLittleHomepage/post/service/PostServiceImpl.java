@@ -41,8 +41,9 @@ public class PostServiceImpl implements PostService {
         post.setWriter(member);
         if (postRequest.getHashTags() != null)
             post.setHashtags(postRequest.getHashTags());
-        board.createPost();
+        memberInfo.createPost();
         postRepository.save(post);
+        board.increasePostCount();
         return PostMapper.INSTANCE.toPostResponse(post);
     }
 
@@ -64,7 +65,7 @@ public class PostServiceImpl implements PostService {
         var board = post.getBoard();
         checkPostWriter(post, member);
         postRepository.delete(post);
-        board.deletePost();
+        board.decreasePostCount();
     }
 
     @Override

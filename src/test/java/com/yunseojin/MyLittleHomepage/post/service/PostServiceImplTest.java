@@ -3,6 +3,7 @@ package com.yunseojin.MyLittleHomepage.post.service;
 import com.yunseojin.MyLittleHomepage.board.repository.BoardRepository;
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
 import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
+import com.yunseojin.MyLittleHomepage.etc.exception.CreateRepeatException;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberRequest;
 import com.yunseojin.MyLittleHomepage.member.service.MemberServiceImpl;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
@@ -70,6 +71,11 @@ class PostServiceImplTest {
                         () -> postService.createPost(0L, req)
                 ).getCode());
         var postRes = postService.createPost(testBoardId, req);
+        //연속 작성
+        assertEquals(ErrorMessage.POST_REPEAT_EXCEPTION.getCode(),
+                assertThrows(CreateRepeatException.class,
+                        () -> postService.createPost(testBoardId, req)
+                ).getCode());
         //then
         assertEquals(board.getPostCount(), postSize + 1);
         assertEquals(postRes.getBoardId(), testBoardId);
@@ -178,7 +184,11 @@ class PostServiceImplTest {
 
         //게시글 생성
         memberService.resister(loginReq);
-        IntStream.range(0, 50).forEach(i -> postService.createPost(testBoardId, createReq));
+        for (int i = 0; i < 50; i++) {
+            memberService.logout();
+            memberService.login(loginReq);
+            postService.createPost(testBoardId, createReq);
+        }
         memberService.logout();
         //게시판 없음
         assertEquals(ErrorMessage.NOT_EXISTS_BOARD_EXCEPTION.getCode(),

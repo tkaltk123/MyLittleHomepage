@@ -4,6 +4,7 @@ import com.yunseojin.MyLittleHomepage.comment.dto.CommentRequest;
 import com.yunseojin.MyLittleHomepage.comment.repository.CommentRepository;
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
 import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
+import com.yunseojin.MyLittleHomepage.etc.exception.CreateRepeatException;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberRequest;
 import com.yunseojin.MyLittleHomepage.member.service.MemberServiceImpl;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
@@ -88,11 +89,18 @@ class CommentServiceImplTest {
                 ).getCode());
         //댓글 생성
         var commentRes = commentService.createComment(postRes.getId(), req1);
+        //댓글 연속 생성
+        assertEquals(ErrorMessage.COMMENT_REPEAT_EXCEPTION.getCode(),
+                assertThrows(CreateRepeatException.class,
+                        () -> commentService.createComment(postRes.getId(), req1)
+                ).getCode());
         //then
         assertEquals(commentRes.getPostId(), postRes.getId());
         assertEquals(commentRes.getWriterName(), loginReq.getNickname());
         assertEquals(commentRes.getContent(), req1.getContent());
         //대댓글
+        memberService.logout();
+        memberService.login(loginReq);
         var req3 = CommentRequest.builder()
                 .content("댓글")
                 .parentId(commentRes.getId())
@@ -200,6 +208,8 @@ class CommentServiceImplTest {
                 .parentId(commentRes1.getId())
                 .content("댓글")
                 .build();
+        memberService.logout();
+        memberService.login(loginReq);
         commentService.createComment(postRes.getId(), createReq2);
         var comments = commentService.getCommentList(postRes.getId(), 0);
         assertEquals(comments.size(), 1);
