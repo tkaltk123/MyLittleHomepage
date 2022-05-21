@@ -1,24 +1,28 @@
 package com.yunseojin.MyLittleHomepage.comment.service;
 
+import com.yunseojin.MyLittleHomepage.board.entity.BoardEntity;
+import com.yunseojin.MyLittleHomepage.board.repository.BoardRepository;
 import com.yunseojin.MyLittleHomepage.comment.dto.CommentRequest;
 import com.yunseojin.MyLittleHomepage.comment.repository.CommentRepository;
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
-import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
-import com.yunseojin.MyLittleHomepage.etc.exception.CreateRepeatException;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberRequest;
+import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
+import com.yunseojin.MyLittleHomepage.member.repository.MemberRepository;
 import com.yunseojin.MyLittleHomepage.member.service.MemberServiceImpl;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
+import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
 import com.yunseojin.MyLittleHomepage.post.repository.PostRepository;
 import com.yunseojin.MyLittleHomepage.post.service.PostServiceImpl;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
 
+import static com.yunseojin.MyLittleHomepage.TestUtil.assertError;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional
@@ -30,6 +34,10 @@ class CommentServiceImplTest {
     @Autowired
     private CommentServiceImpl commentService;
     @Autowired
+    private MemberRepository memberRepository;
+    @Autowired
+    private BoardRepository boardRepository;
+    @Autowired
     private PostRepository postRepository;
     @Autowired
     private CommentRepository commentRepository;
@@ -37,7 +45,11 @@ class CommentServiceImplTest {
     private static MemberRequest loginReq;
     private static MemberRequest loginReq2;
     private static PostRequest postReq;
+    private static CommentRequest commentReq;
     private static final Long testBoardId = 1L;
+    private MemberEntity member;
+    private BoardEntity board;
+    private PostEntity post;
 
     @BeforeAll
     public static void setUp() {
@@ -56,48 +68,60 @@ class CommentServiceImplTest {
                 .content("내용")
                 .hashTags(new String[]{"태그1", "태그2"})
                 .build();
+        commentReq = CommentRequest.builder()
+                .content("댓글")
+                .build();
+    }
+
+    @BeforeEach
+    public void init() {
+        memberService.resister(loginReq);
+        var postRes = postService.createPost(testBoardId, postReq);
+        post = postRepository.getPost(postRes.getId());
+        memberService.logout();
+        member = memberRepository.findByLoginId(loginReq.getLoginId());
+
+        memberService.resister(loginReq2);
+        memberService.logout();
+
+        board = boardRepository.getBoard(testBoardId);
+
+
     }
 
     @Test
     void createComment() {
         //given
-        var req1 = CommentRequest.builder()
-                .content("댓글")
-                .build();
-        var req2 = CommentRequest.builder()
+        var commentReq2 = CommentRequest.builder()
                 .content("댓글")
                 .parentId(0L)
                 .build();
         //로그인 안됨
-        assertEquals(ErrorMessage.NOT_LOGIN_EXCEPTION.getCode(),
-                assertThrows(BadRequestException.class,
-                        () -> commentService.createComment(0L, req1)
-                ).getCode());
-        //회원가입&로그인
-        memberService.resister(loginReq);
+        assertError(ErrorMessage.NOT_LOGIN_EXCEPTION, () ->
+                commentService.createComment(0L, commentReq)
+        );
+        //로그인
+        memberService.login(loginReq);
         //게시글 없음
-        assertEquals(ErrorMessage.NOT_EXISTS_POST_EXCEPTION.getCode(),
-                assertThrows(BadRequestException.class,
-                        () -> commentService.createComment(0L, req1)
-                ).getCode());
-        //게시글 생성
-        var postRes = postService.createPost(testBoardId, postReq);
+        assertError(ErrorMessage.NOT_EXISTS_POST_EXCEPTION, () ->
+                commentService.createComment(0L, commentReq)
+        );
         //댓글 없음
-        assertEquals(ErrorMessage.NOT_EXISTS_COMMENT_EXCEPTION.getCode(),
-                assertThrows(BadRequestException.class,
-                        () -> commentService.createComment(postRes.getId(), req2)
-                ).getCode());
+        assertError(ErrorMessage.NOT_EXISTS_COMMENT_EXCEPTION, () ->
+                commentService.createComment(post.getId(), commentReq2)
+        );
         //댓글 생성
-        var commentRes = commentService.createComment(postRes.getId(), req1);
+        var commentCount = post.getCommentCount();
+        var commentRes = commentService.createComment(post.getId(), commentReq);
         //댓글 연속 생성
-        assertEquals(ErrorMessage.COMMENT_REPEAT_EXCEPTION.getCode(),
-                assertThrows(CreateRepeatException.class,
-                        () -> commentService.createComment(postRes.getId(), req1)
-                ).getCode());
+        assertError(ErrorMessage.COMMENT_REPEAT_EXCEPTION, () ->
+                commentService.createComment(post.getId(), commentReq)
+        );
         //then
-        assertEquals(commentRes.getPostId(), postRes.getId());
+        assertEquals(commentRes.getPostId(), post.getId());
         assertEquals(commentRes.getWriterName(), loginReq.getNickname());
-        assertEquals(commentRes.getContent(), req1.getContent());
+        assertEquals(commentRes.getContent(), commentReq.getContent());
+        assertEquals(post.getCommentCount(), commentCount + 1);
         //대댓글
         memberService.logout();
         memberService.login(loginReq);
@@ -105,114 +129,107 @@ class CommentServiceImplTest {
                 .content("댓글")
                 .parentId(commentRes.getId())
                 .build();
-        var childRes = commentService.createComment(postRes.getId(), req3);
+        var childRes = commentService.createComment(post.getId(), req3);
         var comment = commentRepository.getComment(commentRes.getId());
         var child = comment.getChildren().get(0);
         assertEquals(child.getId(), childRes.getId());
         assertEquals(child.getParent().getId(), commentRes.getId());
-        //게시글의 댓글수 검증
-        var post = postRepository.getPost(postRes.getId());
-        assertEquals(post.getCommentCount(), postRes.getCommentCount() + 2);
     }
 
     @Test
     void updateComment() {
         //given
-        var createReq = CommentRequest.builder()
-                .content("댓글")
-                .build();
         var updateReq = CommentRequest.builder()
                 .content("댓글2")
                 .build();
         //로그인 안됨
-        assertEquals(ErrorMessage.NOT_LOGIN_EXCEPTION.getCode(),
-                assertThrows(BadRequestException.class,
-                        () -> commentService.updateComment(0L, updateReq)
-                ).getCode());
-        memberService.resister(loginReq);
-        var postRes = postService.createPost(testBoardId, postReq);
+        assertError(ErrorMessage.NOT_LOGIN_EXCEPTION, () ->
+                commentService.updateComment(0L, updateReq)
+        );
+        //멤버1로 로그인
+        memberService.login(loginReq);
         //댓글 없음
-        assertEquals(ErrorMessage.NOT_EXISTS_COMMENT_EXCEPTION.getCode(),
-                assertThrows(BadRequestException.class,
-                        () -> commentService.updateComment(0L, updateReq)
-                ).getCode());
-        var commentRes = commentService.createComment(postRes.getId(), createReq);
+        assertError(ErrorMessage.NOT_EXISTS_COMMENT_EXCEPTION, () ->
+                commentService.updateComment(0L, updateReq)
+        );
+        //댓글 생성
+        var commentRes = commentService.createComment(post.getId(), commentReq);
+        //멤버2로 로그인
         memberService.logout();
-        memberService.resister(loginReq2);
+        memberService.login(loginReq2);
         //작성자가 아님
-        assertEquals(ErrorMessage.NOT_WRITER_EXCEPTION.getCode(),
-                assertThrows(BadRequestException.class,
-                        () -> commentService.updateComment(commentRes.getId(), updateReq)
-                ).getCode());
+        assertError(ErrorMessage.NOT_WRITER_EXCEPTION, () ->
+                commentService.updateComment(commentRes.getId(), updateReq)
+        );
+        //멤버1로 로그인
         memberService.logout();
         memberService.login(loginReq);
+        //댓글 수정
         var updateRes = commentService.updateComment(commentRes.getId(), updateReq);
-        //then
-        assertEquals(updateRes.getPostId(), postRes.getId());
+        //검증
+        assertEquals(updateRes.getPostId(), post.getId());
         assertEquals(updateRes.getWriterName(), loginReq.getNickname());
         assertEquals(updateRes.getContent(), updateReq.getContent());
     }
 
     @Test
     void deleteComment() {
-        //given
-        var createReq = CommentRequest.builder()
-                .content("댓글")
-                .build();
         //로그인 안됨
-        assertEquals(ErrorMessage.NOT_LOGIN_EXCEPTION.getCode(),
-                assertThrows(BadRequestException.class,
-                        () -> commentService.deleteComment(0L)
-                ).getCode());
-        memberService.resister(loginReq);
-        var postRes = postService.createPost(testBoardId, postReq);
+        assertError(ErrorMessage.NOT_LOGIN_EXCEPTION, () ->
+                commentService.deleteComment(0L)
+        );
+        //멤버1로 로그인
+        memberService.login(loginReq);
         //댓글 없음
-        assertEquals(ErrorMessage.NOT_EXISTS_COMMENT_EXCEPTION.getCode(),
-                assertThrows(BadRequestException.class,
-                        () -> commentService.deleteComment(0L)
-                ).getCode());
-        var commentRes1 = commentService.createComment(postRes.getId(), createReq);
+        assertError(ErrorMessage.NOT_EXISTS_COMMENT_EXCEPTION, () ->
+                commentService.deleteComment(0L)
+        );
+        //댓글 생성
+        var commentRes = commentService.createComment(post.getId(), commentReq);
+        var commentCount = post.getCommentCount();
+        //멤버2로 로그인
         memberService.logout();
-        memberService.resister(loginReq2);
+        memberService.login(loginReq2);
         //작성자가 아님
-        assertEquals(ErrorMessage.NOT_WRITER_EXCEPTION.getCode(),
-                assertThrows(BadRequestException.class,
-                        () -> commentService.deleteComment(commentRes1.getId())
-                ).getCode());
-        var commentRes2 = commentService.createComment(postRes.getId(), createReq);
-        commentService.deleteComment(commentRes2.getId());
+        assertError(ErrorMessage.NOT_WRITER_EXCEPTION, () ->
+                commentService.deleteComment(commentRes.getId())
+        );
+        //멤버1로 로그인
+        memberService.logout();
+        memberService.login(loginReq);
+        //댓글 삭제
+        commentService.deleteComment(commentRes.getId());
         //댓글 없음
-        assertEquals(ErrorMessage.NOT_EXISTS_COMMENT_EXCEPTION.getCode(),
-                assertThrows(BadRequestException.class,
-                        () -> commentRepository.getComment(commentRes2.getId())
-                ).getCode());
-        var post = postRepository.getPost(postRes.getId());
-        assertEquals(post.getCommentCount(), postRes.getCommentCount() + 1);
+        assertError(ErrorMessage.NOT_EXISTS_COMMENT_EXCEPTION, () ->
+                commentRepository.getComment(commentRes.getId())
+        );
+        assertEquals(post.getCommentCount(), commentCount - 1);
     }
 
     @Test
     void getCommentList() {
-        //given
-        var createReq = CommentRequest.builder()
-                .content("댓글")
-                .build();
         //게시글 없음
-        assertEquals(ErrorMessage.NOT_EXISTS_POST_EXCEPTION.getCode(),
-                assertThrows(BadRequestException.class,
-                        () -> commentService.getCommentList(0L, 0)
-                ).getCode());
-        memberService.resister(loginReq);
-        var postRes = postService.createPost(testBoardId, postReq);
-        var commentRes1 = commentService.createComment(postRes.getId(), createReq);
-        var createReq2 = CommentRequest.builder()
-                .parentId(commentRes1.getId())
-                .content("댓글")
-                .build();
+        assertError(ErrorMessage.NOT_EXISTS_POST_EXCEPTION, () ->
+                commentService.getCommentList(0L, 0)
+        );
+        //멤버1로 로그인
+        memberService.login(loginReq);
+        //댓글 작성
+        var commentRes = commentService.createComment(post.getId(), commentReq);
+        //멤버2로 로그인
         memberService.logout();
         memberService.login(loginReq);
-        commentService.createComment(postRes.getId(), createReq2);
-        var comments = commentService.getCommentList(postRes.getId(), 0);
+        //대댓글 작성
+        var createReq2 = CommentRequest.builder()
+                .parentId(commentRes.getId())
+                .content("대댓글")
+                .build();
+        commentService.createComment(post.getId(), createReq2);
+        //검증
+        var comments = commentService.getCommentList(post.getId(), 0);
+        var child = comments.get(0).getChildren()[0];
         assertEquals(comments.size(), 1);
         assertEquals(comments.get(0).getChildren().length, 1);
+        assertEquals(child.getContent(), createReq2.getContent());
     }
 }
