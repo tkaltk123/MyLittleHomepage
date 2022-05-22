@@ -1,13 +1,9 @@
 package com.yunseojin.MyLittleHomepage.comment.service;
 
-import com.yunseojin.MyLittleHomepage.board.entity.BoardEntity;
-import com.yunseojin.MyLittleHomepage.board.repository.BoardRepository;
 import com.yunseojin.MyLittleHomepage.comment.dto.CommentRequest;
 import com.yunseojin.MyLittleHomepage.comment.repository.CommentRepository;
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberRequest;
-import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
-import com.yunseojin.MyLittleHomepage.member.repository.MemberRepository;
 import com.yunseojin.MyLittleHomepage.member.service.MemberServiceImpl;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
 import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
@@ -34,10 +30,6 @@ class CommentServiceImplTest {
     @Autowired
     private CommentServiceImpl commentService;
     @Autowired
-    private MemberRepository memberRepository;
-    @Autowired
-    private BoardRepository boardRepository;
-    @Autowired
     private PostRepository postRepository;
     @Autowired
     private CommentRepository commentRepository;
@@ -47,8 +39,6 @@ class CommentServiceImplTest {
     private static PostRequest postReq;
     private static CommentRequest commentReq;
     private static final Long testBoardId = 1L;
-    private MemberEntity member;
-    private BoardEntity board;
     private PostEntity post;
 
     @BeforeAll
@@ -79,14 +69,9 @@ class CommentServiceImplTest {
         var postRes = postService.createPost(testBoardId, postReq);
         post = postRepository.getPost(postRes.getId());
         memberService.logout();
-        member = memberRepository.findByLoginId(loginReq.getLoginId());
 
         memberService.resister(loginReq2);
         memberService.logout();
-
-        board = boardRepository.getBoard(testBoardId);
-
-
     }
 
     @Test

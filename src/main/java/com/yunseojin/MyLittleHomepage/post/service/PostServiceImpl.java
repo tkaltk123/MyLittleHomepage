@@ -17,12 +17,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class PostServiceImpl implements PostService {
     @Resource
     private MemberInfo memberInfo;
@@ -78,6 +80,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<PostResponse> getPostList(Long boardId, Integer page) {
         var pageable = PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "id"));
         var board = boardRepository.getBoard(boardId);

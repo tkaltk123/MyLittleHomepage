@@ -17,11 +17,13 @@ import com.yunseojin.MyLittleHomepage.post.repository.PostRepository;
 import com.yunseojin.MyLittleHomepage.util.SessionUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class EvaluationServiceImpl implements EvaluationService {
     @Resource
     private MemberInfo memberInfo;

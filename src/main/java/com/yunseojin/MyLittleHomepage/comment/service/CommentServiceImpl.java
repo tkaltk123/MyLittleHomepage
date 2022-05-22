@@ -16,12 +16,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class CommentServiceImpl implements CommentService {
     @Resource
     private MemberInfo memberInfo;
@@ -69,12 +71,12 @@ public class CommentServiceImpl implements CommentService {
         var comment = commentRepository.getComment(commentId);
         var post = comment.getPost();
         checkCommentWriter(comment, member);
-        comment.getChildren().clear();
         commentRepository.delete(comment);
         post.decreaseCommentCount();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CommentResponse> getCommentList(Long postId, Integer page) {
         var post = postRepository.getPost(postId);
         var pageable = PageRequest.of(page, 20, Sort.by(Sort.Direction.ASC, "id"));
