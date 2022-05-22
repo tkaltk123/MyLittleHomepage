@@ -58,11 +58,6 @@ public class CommentEntity extends BaseEntity implements Evaluable {
     @OneToMany(mappedBy = "parent", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentEntity> children = new ArrayList<>();
 
-    @Builder.Default
-    @OrderBy("id asc")
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CommentEvaluationEntity> evaluations = new ArrayList<>();
-
     public void setParent(CommentEntity parent) {
         if (this.parent != null)
             this.parent.getChildren().remove(this);

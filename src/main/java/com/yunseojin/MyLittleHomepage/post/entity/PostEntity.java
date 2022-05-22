@@ -1,11 +1,8 @@
 package com.yunseojin.MyLittleHomepage.post.entity;
 
 import com.yunseojin.MyLittleHomepage.board.entity.BoardEntity;
-import com.yunseojin.MyLittleHomepage.comment.entity.CommentEntity;
 import com.yunseojin.MyLittleHomepage.etc.entity.BaseEntity;
-import com.yunseojin.MyLittleHomepage.evaluation.entity.CommentEvaluationEntity;
 import com.yunseojin.MyLittleHomepage.evaluation.entity.Evaluable;
-import com.yunseojin.MyLittleHomepage.evaluation.entity.PostEvaluationEntity;
 import com.yunseojin.MyLittleHomepage.hashtag.entity.HashtagEntity;
 import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
@@ -14,13 +11,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -79,16 +75,6 @@ public class PostEntity extends BaseEntity implements Evaluable {
     @OrderBy("id asc")
     @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HashtagEntity> hashtags = new ArrayList<>();
-
-    @Builder.Default
-    @OrderBy("id asc")
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CommentEntity> comments = new ArrayList<>();
-
-    @Builder.Default
-    @OrderBy("id asc")
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PostEvaluationEntity> evaluations = new ArrayList<>();
 
     public String[] getStringHashtags() {
         return hashtags.stream().map(HashtagEntity::toString).toArray(String[]::new);

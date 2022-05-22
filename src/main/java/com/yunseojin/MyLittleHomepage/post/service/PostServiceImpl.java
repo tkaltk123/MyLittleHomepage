@@ -1,8 +1,11 @@
 package com.yunseojin.MyLittleHomepage.post.service;
 
 import com.yunseojin.MyLittleHomepage.board.repository.BoardRepository;
+import com.yunseojin.MyLittleHomepage.comment.repository.CommentRepository;
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
 import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
+import com.yunseojin.MyLittleHomepage.evaluation.repository.CommentEvaluationRepository;
+import com.yunseojin.MyLittleHomepage.evaluation.repository.PostEvaluationRepository;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberInfo;
 import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.member.repository.MemberRepository;
@@ -32,6 +35,9 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
+    private final CommentRepository commentRepository;
+    private final PostEvaluationRepository postEvaluationRepository;
+    private final CommentEvaluationRepository commentEvaluationRepository;
 
     @Override
     public PostResponse createPost(Long boardId, PostRequest postRequest) {
@@ -66,6 +72,9 @@ public class PostServiceImpl implements PostService {
         var post = postRepository.getPost(postId);
         var board = post.getBoard();
         checkPostWriter(post, member);
+        commentEvaluationRepository.deleteAllByPost(post);
+        postEvaluationRepository.deleteAllByPost(post);
+        commentRepository.deleteAllByPost(post);
         postRepository.delete(post);
         board.decreasePostCount();
     }

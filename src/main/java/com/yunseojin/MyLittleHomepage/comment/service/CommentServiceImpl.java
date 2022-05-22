@@ -7,6 +7,7 @@ import com.yunseojin.MyLittleHomepage.comment.mapper.CommentMapper;
 import com.yunseojin.MyLittleHomepage.comment.repository.CommentRepository;
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
 import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
+import com.yunseojin.MyLittleHomepage.evaluation.repository.CommentEvaluationRepository;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberInfo;
 import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.member.repository.MemberRepository;
@@ -31,6 +32,7 @@ public class CommentServiceImpl implements CommentService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
     private final CommentRepository commentRepository;
+    private final CommentEvaluationRepository commentEvaluationRepository;
 
     @Override
     public CommentResponse createComment(Long postId, CommentRequest commentRequest) {
@@ -72,6 +74,9 @@ public class CommentServiceImpl implements CommentService {
         var post = comment.getPost();
         checkCommentWriter(comment, member);
         commentRepository.delete(comment);
+        commentRepository.deleteAllByParent(comment);
+        commentEvaluationRepository.deleteAllByComment(comment);
+        commentEvaluationRepository.deleteAllByParent(comment);
         post.decreaseCommentCount();
     }
 
