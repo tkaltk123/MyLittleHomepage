@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.io.Serializable;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
@@ -50,17 +51,17 @@ public class MemberInfo implements Serializable {
 
     public void createPost() {
         var now = LocalDateTime.now();
-        int diff = 0;
-        if (lastCreatedPostAt != null && (diff = lastCreatedPostAt.compareTo(now)) < 10)
-            throw new CreateRepeatException(10 - diff, ErrorMessage.POST_REPEAT_EXCEPTION);
+        long diff = 0;
+        if (lastCreatedPostAt != null && (diff = Duration.between(lastCreatedPostAt, now).getSeconds()) < 10L)
+            throw new CreateRepeatException(10 - (int) diff, ErrorMessage.POST_REPEAT_EXCEPTION);
         lastCreatedPostAt = now;
     }
 
     public void createComment() {
         var now = LocalDateTime.now();
-        int diff = 0;
-        if (lastCreatedCommentAt != null && (diff = lastCreatedCommentAt.compareTo(now)) < 10)
-            throw new CreateRepeatException(10 - diff, ErrorMessage.COMMENT_REPEAT_EXCEPTION);
+        long diff = 0;
+        if (lastCreatedCommentAt != null && (diff = Duration.between(lastCreatedCommentAt, now).getSeconds()) < 10L)
+            throw new CreateRepeatException(10 - (int) diff, ErrorMessage.COMMENT_REPEAT_EXCEPTION);
         lastCreatedCommentAt = now;
     }
 }
