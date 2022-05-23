@@ -72,9 +72,6 @@ public class PostServiceImpl implements PostService {
         var post = postRepository.getPost(postId);
         var board = post.getBoard();
         checkPostWriter(post, member);
-        commentEvaluationRepository.deleteAllByPost(post);
-        postEvaluationRepository.deleteAllByPost(post);
-        commentRepository.deleteAllByPost(post);
         postRepository.delete(post);
         board.decreasePostCount();
     }

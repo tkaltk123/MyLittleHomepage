@@ -1,11 +1,13 @@
 package com.yunseojin.MyLittleHomepage.comment.entity;
 
 import com.yunseojin.MyLittleHomepage.etc.entity.BaseEntity;
-import com.yunseojin.MyLittleHomepage.evaluation.entity.CommentEvaluationEntity;
 import com.yunseojin.MyLittleHomepage.evaluation.entity.Evaluable;
 import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -55,7 +57,7 @@ public class CommentEntity extends BaseEntity implements Evaluable {
     @Builder.Default
     @OrderBy("id asc")
     @Fetch(FetchMode.SUBSELECT)
-    @OneToMany(mappedBy = "parent", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "parent", fetch = FetchType.EAGER)
     private List<CommentEntity> children = new ArrayList<>();
 
     public void setParent(CommentEntity parent) {

@@ -17,26 +17,6 @@ import org.springframework.stereotype.Repository;
 public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
     Page<CommentEntity> findByPostAndParentIdIsNull(PostEntity post, Pageable pageable);
 
-    @Modifying
-    @Query("update CommentEntity c " +
-            "set c.isDeleted = 1" +
-            "where c.post in " +
-            "(select p from PostEntity p " +
-            "where p.board = :board)")
-    void deleteAllByBoard(@Param("board") BoardEntity board);
-
-    @Modifying
-    @Query("update CommentEntity c " +
-            "set c.isDeleted = 1" +
-            "where c.post = :post")
-    void deleteAllByPost(@Param("post") PostEntity post);
-
-    @Modifying
-    @Query("update CommentEntity c " +
-            "set c.isDeleted = 1" +
-            "where c.parent = :parent")
-    void deleteAllByParent(@Param("parent") CommentEntity parent);
-
     default CommentEntity getComment(Long commentId) {
         var _comment = findById(commentId);
         if (_comment.isEmpty())

@@ -74,9 +74,6 @@ public class CommentServiceImpl implements CommentService {
         var post = comment.getPost();
         checkCommentWriter(comment, member);
         commentRepository.delete(comment);
-        commentRepository.deleteAllByParent(comment);
-        commentEvaluationRepository.deleteAllByComment(comment);
-        commentEvaluationRepository.deleteAllByParent(comment);
         post.decreaseCommentCount();
     }
 
