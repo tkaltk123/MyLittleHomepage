@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
 
+import static com.yunseojin.MyLittleHomepage.TestUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -49,18 +50,18 @@ class MemberServiceImplTest {
         assertEquals(MemberType.NORMAL, dbMember.getMemberType());
 
         //로그인 x
-        assertEquals(ErrorMessage.ALREADY_LOGIN_EXCEPTION.getCode(),
-                assertThrows(BadRequestException.class,
-                        () -> memberService.resister(req3)).getCode());
+        assertError(ErrorMessage.ALREADY_LOGIN_EXCEPTION, () ->
+                memberService.resister(req3)
+        );
         memberService.logout();
         //id 중복
-        assertEquals(ErrorMessage.LOGIN_ID_DUPLICATE_EXCEPTION.getCode(),
-                assertThrows(BadRequestException.class,
-                        () -> memberService.resister(req)).getCode());
+        assertError(ErrorMessage.LOGIN_ID_DUPLICATE_EXCEPTION, () ->
+                memberService.resister(req)
+        );
         //닉네임 중복
-        assertEquals(ErrorMessage.NICKNAME_DUPLICATE_EXCEPTION.getCode(),
-                assertThrows(BadRequestException.class,
-                        () -> memberService.resister(req2)).getCode());
+        assertError(ErrorMessage.NICKNAME_DUPLICATE_EXCEPTION, () ->
+                memberService.resister(req2)
+        );
     }
 
     @Test
@@ -104,18 +105,18 @@ class MemberServiceImplTest {
         assertEquals(modify1.getNickname(), dbMember.getNickname());
         PasswordUtil.checkPassword(modify1.getPassword(), dbMember.getPassword());
         //닉네임 중복
-        assertEquals(ErrorMessage.LOGIN_ID_DUPLICATE_EXCEPTION.getCode(),
-                assertThrows(BadRequestException.class,
-                        () -> memberService.modify(modify2)).getCode());
+        assertError(ErrorMessage.LOGIN_ID_DUPLICATE_EXCEPTION, () ->
+                memberService.modify(modify2)
+        );
         //id 중복
-        assertEquals(ErrorMessage.NICKNAME_DUPLICATE_EXCEPTION.getCode(),
-                assertThrows(BadRequestException.class,
-                        () -> memberService.modify(modify3)).getCode());
+        assertError(ErrorMessage.NICKNAME_DUPLICATE_EXCEPTION, () ->
+                memberService.modify(modify3)
+        );
         memberService.logout();
         //로그인 x
-        assertEquals(ErrorMessage.NOT_LOGIN_EXCEPTION.getCode(),
-                assertThrows(BadRequestException.class,
-                        () -> memberService.modify(resist1)).getCode());
+        assertError(ErrorMessage.NOT_LOGIN_EXCEPTION, () ->
+                memberService.modify(resist1)
+        );
     }
 
     @Test
@@ -136,14 +137,14 @@ class MemberServiceImplTest {
         // then
         memberService.logout();
         //로그인 x
-        assertEquals(ErrorMessage.NOT_LOGIN_EXCEPTION.getCode(),
-                assertThrows(BadRequestException.class,
-                        () -> memberService.delete(resist)).getCode());
+        assertError(ErrorMessage.NOT_LOGIN_EXCEPTION, () ->
+                memberService.delete(resist)
+        );
         memberService.login(resist);
         //pw 오류
-        assertEquals(ErrorMessage.INCORRECT_PASSWORD_EXCEPTION.getCode(),
-                assertThrows(BadRequestException.class,
-                        () -> memberService.delete(delete2)).getCode());
+        assertError(ErrorMessage.INCORRECT_PASSWORD_EXCEPTION, () ->
+                memberService.delete(delete2)
+        );
         memberService.delete(resist);
         assertNull(memberRepository.findByLoginId(resist.getLoginId()));
     }
@@ -171,18 +172,18 @@ class MemberServiceImplTest {
         memberService.logout();
         //then
         //id 오류
-        assertEquals(ErrorMessage.NOT_EXISTS_MEMBER_EXCEPTION.getCode(),
-                assertThrows(BadRequestException.class,
-                        () -> memberService.login(req2)).getCode());
+        assertError(ErrorMessage.NOT_EXISTS_MEMBER_EXCEPTION, () ->
+                memberService.login(req2)
+        );
         //pw 오류
-        assertEquals(ErrorMessage.INCORRECT_PASSWORD_EXCEPTION.getCode(),
-                assertThrows(BadRequestException.class,
-                        () -> memberService.login(req3)).getCode());
+        assertError(ErrorMessage.INCORRECT_PASSWORD_EXCEPTION, () ->
+                memberService.login(req3)
+        );
         memberService.login(req);
         //중복 로그인
-        assertEquals(ErrorMessage.ALREADY_LOGIN_EXCEPTION.getCode(),
-                assertThrows(BadRequestException.class,
-                        () -> memberService.login(req)).getCode());
+        assertError(ErrorMessage.ALREADY_LOGIN_EXCEPTION, () ->
+                memberService.login(req)
+        );
     }
 
     @Test
@@ -198,8 +199,8 @@ class MemberServiceImplTest {
         memberService.logout();
         //then
         //중복 로그아웃
-        assertEquals(ErrorMessage.NOT_LOGIN_EXCEPTION.getCode(),
-                assertThrows(BadRequestException.class,
-                        () -> memberService.logout()).getCode());
+        assertError(ErrorMessage.NOT_LOGIN_EXCEPTION, () ->
+                memberService.logout()
+        );
     }
 }
