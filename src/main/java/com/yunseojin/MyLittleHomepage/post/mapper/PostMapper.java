@@ -1,7 +1,5 @@
 package com.yunseojin.MyLittleHomepage.post.mapper;
 
-import com.yunseojin.MyLittleHomepage.member.dto.MemberInfo;
-import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
 import com.yunseojin.MyLittleHomepage.post.dto.PostResponse;
 import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
@@ -14,7 +12,6 @@ public interface PostMapper {
     PostMapper INSTANCE = Mappers.getMapper(PostMapper.class);
 
     @Mapping(target = "boardId", source = "board.id")
-    @Mapping(target = "writerName", source = "writer.nickname")
     @Mapping(target = "hashtags", expression = "java(post.getStringHashtags())")
     PostResponse toPostResponse(PostEntity post);
 

@@ -28,16 +28,16 @@ import java.util.List;
 @SecondaryTable(name = "COMMENT_COUNTS", pkJoinColumns = @PrimaryKeyJoinColumn(name = "COMMENT_ID"))
 public class CommentEntity extends BaseEntity implements Evaluable {
     @Setter
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "POST_ID", nullable = false)
     private PostEntity post;
 
     @Setter
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "WRITER_ID", nullable = false)
     private MemberEntity writer;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PARENT_ID")
     private CommentEntity parent;
 
@@ -57,7 +57,7 @@ public class CommentEntity extends BaseEntity implements Evaluable {
     @Builder.Default
     @OrderBy("id asc")
     @Fetch(FetchMode.SUBSELECT)
-    @OneToMany(mappedBy = "parent", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "parent")
     private List<CommentEntity> children = new ArrayList<>();
 
     public void setParent(CommentEntity parent) {

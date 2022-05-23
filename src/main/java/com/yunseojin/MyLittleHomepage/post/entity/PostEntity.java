@@ -32,14 +32,18 @@ import java.util.stream.Collectors;
 @SecondaryTable(name = "POST_COUNTS", pkJoinColumns = @PrimaryKeyJoinColumn(name = "POST_ID"))
 public class PostEntity extends BaseEntity implements Evaluable {
     @Setter
-    @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "BOARD_ID", nullable = false)
     private BoardEntity board;
 
     @Setter
-    @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "WRITER_ID", nullable = false)
     private MemberEntity writer;
+
+    @Setter
+    @Column(name = "WRITER_NAME", nullable = false)
+    private String writerName;
 
     @Setter
     @Column(name = "TITLE", nullable = false)
@@ -73,7 +77,7 @@ public class PostEntity extends BaseEntity implements Evaluable {
     @Fetch(FetchMode.SUBSELECT)
     @Builder.Default
     @OrderBy("id asc")
-    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HashtagEntity> hashtags = new ArrayList<>();
 
     public String[] getStringHashtags() {

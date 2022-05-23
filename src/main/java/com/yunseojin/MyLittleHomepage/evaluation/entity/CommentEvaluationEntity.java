@@ -7,10 +7,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLDelete;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor
@@ -20,7 +17,7 @@ import javax.persistence.ManyToOne;
 @DiscriminatorValue("COMMENT")
 public class CommentEvaluationEntity extends EvaluationEntity {
     @Setter
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "COMMENT_ID", nullable = false)
     private CommentEntity comment;
 }

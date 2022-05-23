@@ -24,7 +24,7 @@ public abstract class EvaluationEntity extends BaseEntity {
     @Column(name = "EVALUATION_TYPE", nullable = false)
     protected EvaluationType evaluationType;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "WRITER_ID", nullable = false)
     private MemberEntity writer;
 }

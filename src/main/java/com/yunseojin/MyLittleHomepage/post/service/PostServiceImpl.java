@@ -47,6 +47,7 @@ public class PostServiceImpl implements PostService {
         var post = PostMapper.INSTANCE.toPostEntity(postRequest);
         post.setBoard(board);
         post.setWriter(member);
+        post.setWriterName(member.getNickname());
         if (postRequest.getHashTags() != null)
             post.setHashtags(postRequest.getHashTags());
         memberInfo.createPost();
