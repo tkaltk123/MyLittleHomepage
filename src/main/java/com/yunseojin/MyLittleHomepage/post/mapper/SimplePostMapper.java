@@ -13,7 +13,6 @@ public interface SimplePostMapper {
     SimplePostMapper INSTANCE = Mappers.getMapper(SimplePostMapper.class);
 
     @Mapping(target = "boardId", source = "board.id")
-    @Mapping(target = "writerName", source = "writer.nickname")
     @Mapping(target = "hashtags", ignore = true)
     @Mapping(target = "content", ignore = true)
     PostResponse toPostResponse(PostEntity post);

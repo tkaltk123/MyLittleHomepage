@@ -60,7 +60,7 @@ public class PostEntity extends BaseEntity implements Evaluable {
     @Fetch(FetchMode.SUBSELECT)
     @Builder.Default
     @OrderBy("id asc")
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HashtagEntity> hashtags = new ArrayList<>();
 
     public void setPostCount(PostCount postCount) {
