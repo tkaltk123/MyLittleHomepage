@@ -2,6 +2,7 @@ package com.yunseojin.MyLittleHomepage.comment.service;
 
 import com.yunseojin.MyLittleHomepage.comment.dto.CommentRequest;
 import com.yunseojin.MyLittleHomepage.comment.dto.CommentResponse;
+import com.yunseojin.MyLittleHomepage.comment.entity.CommentCount;
 import com.yunseojin.MyLittleHomepage.comment.entity.CommentEntity;
 import com.yunseojin.MyLittleHomepage.comment.mapper.CommentMapper;
 import com.yunseojin.MyLittleHomepage.comment.repository.CommentRepository;
@@ -47,7 +48,9 @@ public class CommentServiceImpl implements CommentService {
         }
         var comment = CommentMapper.INSTANCE.toCommentEntity(commentRequest);
         comment.setWriter(member);
+        comment.setWriterName(member.getNickname());
         comment.setPost(post);
+        comment.setCommentCount(new CommentCount());
         if (parent != null)
             comment.setParent(parent);
         memberInfo.createComment();

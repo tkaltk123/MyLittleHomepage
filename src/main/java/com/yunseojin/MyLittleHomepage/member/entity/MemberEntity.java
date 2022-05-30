@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 
@@ -16,6 +17,7 @@ import javax.persistence.*;
 @SuperBuilder
 @Entity
 @SQLDelete(sql = "UPDATE MEMBERS SET IS_DELETED = 1 WHERE ID=?")
+@Where(clause = "IS_DELETED = 0")
 @Table(name = "MEMBERS")
 public class MemberEntity extends BaseEntity {
     @Basic

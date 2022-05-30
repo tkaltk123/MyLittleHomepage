@@ -8,6 +8,7 @@ import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.member.repository.MemberRepository;
 import com.yunseojin.MyLittleHomepage.member.service.MemberServiceImpl;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
+import com.yunseojin.MyLittleHomepage.post.entity.PostCount;
 import com.yunseojin.MyLittleHomepage.post.mapper.PostMapper;
 import com.yunseojin.MyLittleHomepage.post.repository.PostRepository;
 import org.junit.jupiter.api.BeforeAll;
@@ -75,7 +76,7 @@ class PostServiceImplTest {
 
     @Test
     void createPost() {
-        var postSize = board.getPostCount();
+        var postSize = board.getBoardCount().getPostCount();
 
         //로그인 안됨
         assertError(ErrorMessage.NOT_LOGIN_EXCEPTION, () ->
@@ -92,7 +93,7 @@ class PostServiceImplTest {
                 postService.createPost(testBoardId, createReq)
         );
         //then
-        assertEquals(board.getPostCount(), postSize + 1);
+        assertEquals(board.getBoardCount().getPostCount(), postSize + 1);
         assertEquals(postRes.getBoardId(), testBoardId);
         assertEquals(postRes.getTitle(), createReq.getTitle());
         assertEquals(postRes.getContent(), createReq.getContent());
@@ -147,7 +148,7 @@ class PostServiceImplTest {
         //게시글 생성
         memberService.login(loginReq);
         var createRes = postService.createPost(testBoardId, createReq);
-        var postSize = board.getPostCount();
+        var postSize = board.getBoardCount().getPostCount();
         //멤버2로 로그인
         memberService.logout();
         memberService.login(loginReq2);
@@ -169,7 +170,7 @@ class PostServiceImplTest {
                 postRepository.getPost(createRes.getId())
         );
         //then
-        assertEquals(board.getPostCount(), postSize - 1);
+        assertEquals(board.getBoardCount().getPostCount(), postSize - 1);
     }
 
     @Test
@@ -178,8 +179,10 @@ class PostServiceImplTest {
         for (int i = 0; i < 50; i++) {
             var post = PostMapper.INSTANCE.toPostEntity(createReq);
             post.setWriter(member1);
+            post.setWriterName(member1.getNickname());
             post.setBoard(board);
             post.setHashtags(createReq.getHashTags());
+            post.setPostCount(new PostCount());
             postRepository.save(post);
         }
         //게시판 없음
@@ -208,7 +211,7 @@ class PostServiceImplTest {
                 postService.getPost(0L)
         );
         var post = postRepository.getPost(createRes.getId());
-        var view = post.getViewCount();
+        var view = post.getPostCount().getViewCount();
         //게시글 조회
         var postRes = postService.getPost(createRes.getId());
         //검증

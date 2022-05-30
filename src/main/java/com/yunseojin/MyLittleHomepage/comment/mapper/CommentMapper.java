@@ -15,7 +15,6 @@ public interface CommentMapper {
     CommentMapper INSTANCE = Mappers.getMapper(CommentMapper.class);
 
     @Mapping(target = "postId", source = "post.id")
-    @Mapping(target = "writerName", source = "writer.nickname")
     CommentResponse toPostResponse(CommentEntity comment);
 
     List<CommentResponse> toCommentResponseList(List<CommentEntity> comments);

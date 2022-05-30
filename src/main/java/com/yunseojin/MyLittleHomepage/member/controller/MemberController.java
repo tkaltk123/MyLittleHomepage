@@ -11,7 +11,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
-@RestController("/member")
+@RestController
+@RequestMapping("/member")
 public class MemberController {
     private final MemberService memberService;
 

@@ -3,6 +3,7 @@ package com.yunseojin.MyLittleHomepage.comment.entity;
 import com.yunseojin.MyLittleHomepage.etc.entity.BaseEntity;
 import com.yunseojin.MyLittleHomepage.evaluation.entity.Evaluable;
 import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
+import com.yunseojin.MyLittleHomepage.post.entity.PostCount;
 import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,7 +26,6 @@ import java.util.List;
 @SQLDelete(sql = "UPDATE COMMENTS SET IS_DELETED = 1 WHERE ID=?")
 @Where(clause = "IS_DELETED = 0")
 @Table(name = "COMMENTS")
-@SecondaryTable(name = "COMMENT_COUNTS", pkJoinColumns = @PrimaryKeyJoinColumn(name = "COMMENT_ID"))
 public class CommentEntity extends BaseEntity implements Evaluable {
     @Setter
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -37,6 +37,10 @@ public class CommentEntity extends BaseEntity implements Evaluable {
     @JoinColumn(name = "WRITER_ID", nullable = false)
     private MemberEntity writer;
 
+    @Setter
+    @Column(name = "WRITER_NAME", nullable = false)
+    private String writerName;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PARENT_ID")
     private CommentEntity parent;
@@ -47,18 +51,20 @@ public class CommentEntity extends BaseEntity implements Evaluable {
     private String content;
 
     @Builder.Default
-    @Column(name = "LIKE_COUNT", table = "COMMENT_COUNTS", nullable = false)
-    private Integer likeCount = 0;
-
-    @Builder.Default
-    @Column(name = "DISLIKE_COUNT", table = "COMMENT_COUNTS", nullable = false)
-    private Integer dislikeCount = 0;
+    @OneToOne(mappedBy = "comment", fetch = FetchType.EAGER, optional = false, cascade = CascadeType.PERSIST)
+    private CommentCount commentCount = new CommentCount();
 
     @Builder.Default
     @OrderBy("id asc")
     @Fetch(FetchMode.SUBSELECT)
     @OneToMany(mappedBy = "parent")
     private List<CommentEntity> children = new ArrayList<>();
+
+    public void setCommentCount(CommentCount commentCount) {
+        if (commentCount != null)
+            commentCount.setComment(this);
+        this.commentCount = commentCount;
+    }
 
     public void setParent(CommentEntity parent) {
         if (this.parent != null)
@@ -69,23 +75,31 @@ public class CommentEntity extends BaseEntity implements Evaluable {
         }
     }
 
+    public Integer getLikeCount() {
+        return commentCount.getLikeCount();
+    }
+
     @Override
     public void increaseLikeCount() {
-        ++this.likeCount;
+        commentCount.increaseLikeCount();
     }
 
     @Override
     public void decreaseLikeCount() {
-        --this.likeCount;
+        commentCount.decreaseLikeCount();
+    }
+
+    public Integer getDislikeCount() {
+        return commentCount.getDislikeCount();
     }
 
     @Override
     public void increaseDislikeCount() {
-        ++this.dislikeCount;
+        commentCount.increaseDislikeCount();
     }
 
     @Override
     public void decreaseDislikeCount() {
-        --this.dislikeCount;
+        commentCount.decreaseDislikeCount();
     }
 }

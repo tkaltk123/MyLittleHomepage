@@ -11,6 +11,7 @@ import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.member.repository.MemberRepository;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
 import com.yunseojin.MyLittleHomepage.post.dto.PostResponse;
+import com.yunseojin.MyLittleHomepage.post.entity.PostCount;
 import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
 import com.yunseojin.MyLittleHomepage.post.mapper.PostMapper;
 import com.yunseojin.MyLittleHomepage.post.mapper.SimplePostMapper;
@@ -48,6 +49,7 @@ public class PostServiceImpl implements PostService {
         post.setBoard(board);
         post.setWriter(member);
         post.setWriterName(member.getNickname());
+        post.setPostCount(new PostCount());
         if (postRequest.getHashTags() != null)
             post.setHashtags(postRequest.getHashTags());
         memberInfo.createPost();

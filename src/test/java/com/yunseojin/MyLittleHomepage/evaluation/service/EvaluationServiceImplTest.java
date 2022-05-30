@@ -86,25 +86,25 @@ class EvaluationServiceImplTest {
                 assertThrows(BadRequestException.class,
                         () -> evaluationService.likePost(0L)
                 ).getCode());
-        var likeCount = post.getLikeCount();
-        var dislikeCount = post.getDislikeCount();
+        var likeCount = post.getPostCount().getLikeCount();
+        var dislikeCount = post.getPostCount().getDislikeCount();
         assertEquals("좋아요 성공", evaluationService.likePost(postId));
-        assertEquals(post.getLikeCount(), likeCount + 1);
+        assertEquals(post.getPostCount().getLikeCount(), likeCount + 1);
         assertEquals("좋아요 취소", evaluationService.likePost(postId));
-        assertEquals(post.getLikeCount(), likeCount);
+        assertEquals(post.getPostCount().getLikeCount(), likeCount);
         assertEquals("싫어요 성공", evaluationService.dislikePost(postId));
-        assertEquals(post.getDislikeCount(), dislikeCount + 1);
+        assertEquals(post.getPostCount().getDislikeCount(), dislikeCount + 1);
         assertEquals("싫어요 취소", evaluationService.dislikePost(postId));
-        assertEquals(post.getDislikeCount(), dislikeCount);
+        assertEquals(post.getPostCount().getDislikeCount(), dislikeCount);
         //싫어요 후 좋아요
         evaluationService.dislikePost(postId);
         evaluationService.likePost(postId);
-        assertEquals(post.getLikeCount(), likeCount + 1);
-        assertEquals(post.getDislikeCount(), dislikeCount);
+        assertEquals(post.getPostCount().getLikeCount(), likeCount + 1);
+        assertEquals(post.getPostCount().getDislikeCount(), dislikeCount);
         //좋아요 후 싫어요
         evaluationService.dislikePost(postId);
-        assertEquals(post.getLikeCount(), likeCount);
-        assertEquals(post.getDislikeCount(), dislikeCount + 1);
+        assertEquals(post.getPostCount().getLikeCount(), likeCount);
+        assertEquals(post.getPostCount().getDislikeCount(), dislikeCount + 1);
     }
 
     @Test
@@ -121,24 +121,24 @@ class EvaluationServiceImplTest {
                 assertThrows(BadRequestException.class,
                         () -> evaluationService.likeComment(0L)
                 ).getCode());
-        var likeCount = comment.getLikeCount();
-        var dislikeCount = comment.getDislikeCount();
+        var likeCount = comment.getCommentCount().getLikeCount();
+        var dislikeCount = comment.getCommentCount().getDislikeCount();
         assertEquals("좋아요 성공", evaluationService.likeComment(commentId));
-        assertEquals(comment.getLikeCount(), likeCount + 1);
+        assertEquals(comment.getCommentCount().getLikeCount(), likeCount + 1);
         assertEquals("좋아요 취소", evaluationService.likeComment(commentId));
-        assertEquals(comment.getLikeCount(), likeCount);
+        assertEquals(comment.getCommentCount().getLikeCount(), likeCount);
         assertEquals("싫어요 성공", evaluationService.dislikeComment(commentId));
-        assertEquals(comment.getDislikeCount(), dislikeCount + 1);
+        assertEquals(comment.getCommentCount().getDislikeCount(), dislikeCount + 1);
         assertEquals("싫어요 취소", evaluationService.dislikeComment(commentId));
-        assertEquals(comment.getDislikeCount(), dislikeCount);
+        assertEquals(comment.getCommentCount().getDislikeCount(), dislikeCount);
         //싫어요 후 좋아요
         evaluationService.dislikeComment(commentId);
         evaluationService.likeComment(commentId);
-        assertEquals(comment.getLikeCount(), likeCount + 1);
-        assertEquals(comment.getDislikeCount(), dislikeCount);
+        assertEquals(comment.getCommentCount().getLikeCount(), likeCount + 1);
+        assertEquals(comment.getCommentCount().getDislikeCount(), dislikeCount);
         //좋아요 후 싫어요
         evaluationService.dislikeComment(commentId);
-        assertEquals(comment.getLikeCount(), likeCount);
-        assertEquals(comment.getDislikeCount(), dislikeCount + 1);
+        assertEquals(comment.getCommentCount().getLikeCount(), likeCount);
+        assertEquals(comment.getCommentCount().getDislikeCount(), dislikeCount + 1);
     }
 }

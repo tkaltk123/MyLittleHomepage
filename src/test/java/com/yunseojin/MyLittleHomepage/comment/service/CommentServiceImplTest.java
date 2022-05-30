@@ -96,7 +96,7 @@ class CommentServiceImplTest {
                 commentService.createComment(post.getId(), commentReq2)
         );
         //댓글 생성
-        var commentCount = post.getCommentCount();
+        var commentCount = post.getPostCount().getCommentCount();
         var commentRes = commentService.createComment(post.getId(), commentReq);
         //댓글 연속 생성
         assertError(ErrorMessage.COMMENT_REPEAT_EXCEPTION, () ->
@@ -106,7 +106,7 @@ class CommentServiceImplTest {
         assertEquals(commentRes.getPostId(), post.getId());
         assertEquals(commentRes.getWriterName(), loginReq.getNickname());
         assertEquals(commentRes.getContent(), commentReq.getContent());
-        assertEquals(post.getCommentCount(), commentCount + 1);
+        assertEquals(post.getPostCount().getCommentCount(), commentCount + 1);
         //대댓글
         memberService.logout();
         memberService.login(loginReq);
@@ -171,7 +171,7 @@ class CommentServiceImplTest {
         );
         //댓글 생성
         var commentRes = commentService.createComment(post.getId(), commentReq);
-        var commentCount = post.getCommentCount();
+        var commentCount = post.getPostCount().getCommentCount();
         //멤버2로 로그인
         memberService.logout();
         memberService.login(loginReq2);
@@ -188,7 +188,7 @@ class CommentServiceImplTest {
         assertError(ErrorMessage.NOT_EXISTS_COMMENT_EXCEPTION, () ->
                 commentRepository.getComment(commentRes.getId())
         );
-        assertEquals(post.getCommentCount(), commentCount - 1);
+        assertEquals(post.getPostCount().getCommentCount(), commentCount - 1);
     }
 
     @Test
