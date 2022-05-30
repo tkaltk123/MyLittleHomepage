@@ -76,6 +76,7 @@ public class PostServiceImpl implements PostService {
         var board = post.getBoard();
         checkPostWriter(post, member);
         postRepository.delete(post);
+        post.setIsDeleted(1);
         board.decreasePostCount();
     }
 

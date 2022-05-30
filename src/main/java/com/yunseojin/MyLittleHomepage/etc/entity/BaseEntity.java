@@ -3,6 +3,7 @@ package com.yunseojin.MyLittleHomepage.etc.entity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -30,6 +31,7 @@ public abstract class BaseEntity {
     @LastModifiedDate
     protected Date updatedAt;
 
+    @Setter
     @Basic(optional = false)
     @Builder.Default
     @Column(name = "IS_DELETED")

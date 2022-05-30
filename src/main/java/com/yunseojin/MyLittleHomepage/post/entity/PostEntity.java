@@ -12,12 +12,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -54,13 +55,13 @@ public class PostEntity extends BaseEntity implements Evaluable {
     @Column(name = "CONTENT")
     private String content;
 
-    @OneToOne(mappedBy = "post", fetch = FetchType.EAGER, optional = false, cascade = CascadeType.PERSIST)
+    @OneToOne(mappedBy = "post", fetch = FetchType.LAZY, optional = false, cascade = CascadeType.PERSIST)
     private PostCount postCount;
 
     @Fetch(FetchMode.SUBSELECT)
     @Builder.Default
     @OrderBy("id asc")
-    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HashtagEntity> hashtags = new ArrayList<>();
 
     public void setPostCount(PostCount postCount) {

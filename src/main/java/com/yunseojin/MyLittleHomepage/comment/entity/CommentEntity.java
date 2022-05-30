@@ -51,7 +51,7 @@ public class CommentEntity extends BaseEntity implements Evaluable {
     private String content;
 
     @Builder.Default
-    @OneToOne(mappedBy = "comment", fetch = FetchType.EAGER, optional = false, cascade = CascadeType.PERSIST)
+    @OneToOne(mappedBy = "comment", fetch = FetchType.LAZY, optional = false, cascade = CascadeType.PERSIST)
     private CommentCount commentCount = new CommentCount();
 
     @Builder.Default

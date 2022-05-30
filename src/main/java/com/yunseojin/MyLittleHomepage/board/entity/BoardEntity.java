@@ -25,7 +25,7 @@ public class BoardEntity extends BaseEntity {
     private String name;
 
     @Builder.Default
-    @OneToOne(mappedBy = "board", fetch = FetchType.EAGER, optional = false, cascade = CascadeType.PERSIST)
+    @OneToOne(mappedBy = "board", fetch = FetchType.LAZY, optional = false, cascade = CascadeType.PERSIST)
     private BoardCount boardCount = new BoardCount();
 
     public Integer getPostCount() {
