@@ -20,6 +20,7 @@ public class DslCommentRepositoryImpl extends QuerydslRepositorySupport implemen
     public DslCommentRepositoryImpl() {
         super(CommentEntity.class);
     }
+
     @Override
     public Page<CommentEntity> getRootComments(PostEntity post, Pageable pageable) {
         var c = QCommentEntity.commentEntity;
@@ -29,6 +30,7 @@ public class DslCommentRepositoryImpl extends QuerydslRepositorySupport implemen
                 .join(c.commentCount)
                 .fetchJoin()
                 .where(c.post.eq(post), c.parent.isNull())
+                .orderBy(c.id.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

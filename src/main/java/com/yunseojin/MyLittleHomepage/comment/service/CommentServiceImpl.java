@@ -8,7 +8,6 @@ import com.yunseojin.MyLittleHomepage.comment.mapper.CommentMapper;
 import com.yunseojin.MyLittleHomepage.comment.repository.CommentRepository;
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
 import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
-import com.yunseojin.MyLittleHomepage.evaluation.repository.CommentEvaluationRepository;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberInfo;
 import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.member.repository.MemberRepository;
@@ -16,7 +15,6 @@ import com.yunseojin.MyLittleHomepage.post.repository.PostRepository;
 import com.yunseojin.MyLittleHomepage.util.SessionUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +31,6 @@ public class CommentServiceImpl implements CommentService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
     private final CommentRepository commentRepository;
-    private final CommentEvaluationRepository commentEvaluationRepository;
 
     @Override
     public CommentResponse createComment(Long postId, CommentRequest commentRequest) {
@@ -85,7 +82,7 @@ public class CommentServiceImpl implements CommentService {
     @Transactional(readOnly = true)
     public List<CommentResponse> getCommentList(Long postId, Integer page) {
         var post = postRepository.getPost(postId);
-        var pageable = PageRequest.of(page, 20, Sort.by(Sort.Direction.ASC, "id"));
+        var pageable = PageRequest.of(page, 20);
         var commentPage = commentRepository.getRootComments(post, pageable);
         if (page != 0 && commentPage.isEmpty())
             throw new BadRequestException(ErrorMessage.PAGE_OUT_OF_RANGE_EXCEPTION);

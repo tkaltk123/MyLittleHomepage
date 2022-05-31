@@ -17,13 +17,13 @@ public class DslPostRepositoryImpl extends QuerydslRepositorySupport implements 
 
     @Override
     public Page<PostEntity> getPosts(BoardEntity board, Pageable pageable) {
-
         var p = QPostEntity.postEntity;
         //content 쿼리
         var content = from(p)
                 .select(p)
                 .join(p.postCount).fetchJoin()
                 .where(p.board.eq(board))
+                .orderBy(p.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

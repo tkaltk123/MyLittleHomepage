@@ -1,11 +1,8 @@
 package com.yunseojin.MyLittleHomepage.post.service;
 
 import com.yunseojin.MyLittleHomepage.board.repository.BoardRepository;
-import com.yunseojin.MyLittleHomepage.comment.repository.CommentRepository;
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
 import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
-import com.yunseojin.MyLittleHomepage.evaluation.repository.CommentEvaluationRepository;
-import com.yunseojin.MyLittleHomepage.evaluation.repository.PostEvaluationRepository;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberInfo;
 import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.member.repository.MemberRepository;
@@ -19,7 +16,6 @@ import com.yunseojin.MyLittleHomepage.post.repository.PostRepository;
 import com.yunseojin.MyLittleHomepage.util.SessionUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,9 +32,6 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
-    private final CommentRepository commentRepository;
-    private final PostEvaluationRepository postEvaluationRepository;
-    private final CommentEvaluationRepository commentEvaluationRepository;
 
     @Override
     public PostResponse createPost(Long boardId, PostRequest postRequest) {
@@ -92,7 +85,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public List<PostResponse> getPostList(Long boardId, Integer page) {
-        var pageable = PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "id"));
+        var pageable = PageRequest.of(page, 20);
         var board = boardRepository.getBoard(boardId);
         var postPage = postRepository.getPosts(board, pageable);
         if (page != 0 && postPage.isEmpty())
