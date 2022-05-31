@@ -59,7 +59,6 @@ public class PostEntity extends BaseEntity implements Evaluable {
     @OneToOne(mappedBy = "post", optional = false, cascade = CascadeType.PERSIST)
     private PostCount postCount;
 
-    @Fetch(FetchMode.SUBSELECT)
     @Builder.Default
     @OrderBy("id asc")
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)

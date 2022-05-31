@@ -94,7 +94,7 @@ public class PostServiceImpl implements PostService {
     public List<PostResponse> getPostList(Long boardId, Integer page) {
         var pageable = PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "id"));
         var board = boardRepository.getBoard(boardId);
-        var postPage = postRepository.findByBoard(board, pageable);
+        var postPage = postRepository.getPosts(board, pageable);
         if (page != 0 && postPage.isEmpty())
             throw new BadRequestException(ErrorMessage.PAGE_OUT_OF_RANGE_EXCEPTION);
         return SimplePostMapper.INSTANCE.toPostResponseList(postPage.toList());

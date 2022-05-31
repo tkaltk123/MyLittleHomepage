@@ -11,8 +11,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class PostRepositoryTest {
@@ -57,7 +55,7 @@ class PostRepositoryTest {
         postRepository.save(post2);
         PageRequest req;
         req = PageRequest.of(1, 1, Sort.by(Sort.Direction.DESC, "id"));
-        var lists = postRepository.findByBoard(board, req);
+        var lists = postRepository.getPosts(board, req);
 
     }
 
