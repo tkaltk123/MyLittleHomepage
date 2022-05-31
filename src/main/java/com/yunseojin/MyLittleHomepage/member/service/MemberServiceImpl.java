@@ -66,6 +66,7 @@ public class MemberServiceImpl implements MemberService {
         var member = memberRepository.getMember(memberInfo.getId());
         PasswordUtil.checkPassword(memberRequest.getPassword(), member.getPassword());
         memberRepository.delete(member);
+        member.setIsDeleted(1);
         memberInfo.clear();
     }
 
