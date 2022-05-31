@@ -15,7 +15,7 @@ public class BoardCount {
     private Long id;
 
     @MapsId
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(optional = false)
     private BoardEntity board;
 
     @Basic

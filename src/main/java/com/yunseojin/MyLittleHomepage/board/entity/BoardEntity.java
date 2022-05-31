@@ -24,8 +24,9 @@ public class BoardEntity extends BaseEntity {
     @Column(name = "NAME", nullable = false, length = 50)
     private String name;
 
+    //즉시 로딩
     @Builder.Default
-    @OneToOne(mappedBy = "board", fetch = FetchType.LAZY, optional = false, cascade = CascadeType.PERSIST)
+    @OneToOne(mappedBy = "board", optional = false, cascade = CascadeType.PERSIST)
     private BoardCount boardCount = new BoardCount();
 
     public Integer getPostCount() {

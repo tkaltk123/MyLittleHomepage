@@ -55,7 +55,8 @@ public class PostEntity extends BaseEntity implements Evaluable {
     @Column(name = "CONTENT")
     private String content;
 
-    @OneToOne(mappedBy = "post", fetch = FetchType.LAZY, optional = false, cascade = CascadeType.PERSIST)
+    //즉시 로딩
+    @OneToOne(mappedBy = "post", optional = false, cascade = CascadeType.PERSIST)
     private PostCount postCount;
 
     @Fetch(FetchMode.SUBSELECT)
