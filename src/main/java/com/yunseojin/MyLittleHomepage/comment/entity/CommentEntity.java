@@ -10,12 +10,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,13 +51,14 @@ public class CommentEntity extends BaseEntity implements Evaluable {
     @Column(name = "CONTENT")
     private String content;
 
-    @Builder.Default
-    @OneToOne(mappedBy = "comment", fetch = FetchType.LAZY, optional = false, cascade = CascadeType.PERSIST)
-    private CommentCount commentCount = new CommentCount();
+    //즉시 로딩
+    @OneToOne(mappedBy = "comment", optional = false, cascade = CascadeType.PERSIST)
+    private CommentCount commentCount;
 
+    //글로벌 적용했는데 BatchSize 안붙이니 동작 안함
+    @BatchSize(size = 100)
     @Builder.Default
     @OrderBy("id asc")
-    @Fetch(FetchMode.SUBSELECT)
     @OneToMany(mappedBy = "parent")
     private List<CommentEntity> children = new ArrayList<>();
 

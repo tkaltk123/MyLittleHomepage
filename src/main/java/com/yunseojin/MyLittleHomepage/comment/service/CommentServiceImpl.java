@@ -85,7 +85,7 @@ public class CommentServiceImpl implements CommentService {
     public List<CommentResponse> getCommentList(Long postId, Integer page) {
         var post = postRepository.getPost(postId);
         var pageable = PageRequest.of(page, 20, Sort.by(Sort.Direction.ASC, "id"));
-        var commentPage = commentRepository.findByPostAndParentIdIsNull(post, pageable);
+        var commentPage = commentRepository.getRootComments(post, pageable);
         if (page != 0 && commentPage.isEmpty())
             throw new BadRequestException(ErrorMessage.PAGE_OUT_OF_RANGE_EXCEPTION);
         return CommentMapper.INSTANCE.toCommentResponseList(commentPage.toList());

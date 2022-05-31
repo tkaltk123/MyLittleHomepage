@@ -1,6 +1,5 @@
 package com.yunseojin.MyLittleHomepage.comment.entity;
 
-import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,7 +16,7 @@ public class CommentCount {
 
     @MapsId
     @Setter
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(optional = false)
     private CommentEntity comment;
 
     @Basic
