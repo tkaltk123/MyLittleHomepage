@@ -18,22 +18,22 @@ import java.util.Date;
 public abstract class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
+    @Column(name = "id")
     protected Long id;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "CREATED_AT", nullable = false, updatable = false, insertable = false)
+    @Column(name = "created_at", nullable = false, updatable = false, insertable = false)
     @CreatedDate
     protected Date createdAt;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "UPDATED_AT", nullable = false, updatable = false, insertable = false)
+    @Column(name = "updated_at", nullable = false, updatable = false, insertable = false)
     @LastModifiedDate
     protected Date updatedAt;
 
     @Setter
     @Basic(optional = false)
     @Builder.Default
-    @Column(name = "IS_DELETED")
+    @Column(name = "is_deleted")
     protected int isDeleted = 0;
 }

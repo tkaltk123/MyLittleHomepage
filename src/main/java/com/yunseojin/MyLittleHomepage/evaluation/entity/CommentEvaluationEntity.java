@@ -13,11 +13,11 @@ import javax.persistence.*;
 @NoArgsConstructor
 @SuperBuilder
 @Entity
-@SQLDelete(sql = "UPDATE EVALUATIONS SET IS_DELETED = 1 WHERE ID=?")
-@DiscriminatorValue("COMMENT")
+@SQLDelete(sql = "UPDATE evaluations SET is_deleted = 1 WHERE id=?")
+@DiscriminatorValue("comment")
 public class CommentEvaluationEntity extends EvaluationEntity {
     @Setter
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "COMMENT_ID", nullable = false)
+    @JoinColumn(name = "comment_id", nullable = false)
     private CommentEntity comment;
 }

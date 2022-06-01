@@ -16,15 +16,15 @@ import javax.persistence.*;
 @NoArgsConstructor
 @SuperBuilder
 @Entity
-@Where(clause = "IS_DELETED = 0")
-@Table(name = "EVALUATIONS")
-@DiscriminatorColumn(name = "DTYPE")
+@Where(clause = "is_deleted = 0")
+@Table(name = "evaluations")
+@DiscriminatorColumn(name = "dtype")
 public abstract class EvaluationEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
-    @Column(name = "EVALUATION_TYPE", nullable = false)
+    @Column(name = "evaluation_type", nullable = false)
     protected EvaluationType evaluationType;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "WRITER_ID", nullable = false)
+    @JoinColumn(name = "writer_id", nullable = false)
     private MemberEntity writer;
 }

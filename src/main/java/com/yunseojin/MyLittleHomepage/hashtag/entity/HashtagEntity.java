@@ -16,15 +16,15 @@ import javax.persistence.*;
 @NoArgsConstructor
 @SuperBuilder
 @Entity
-@SQLDelete(sql = "UPDATE HASHTAGS SET IS_DELETED = 1 WHERE ID=?")
-@Where(clause = "IS_DELETED = 0")
-@Table(name = "HASHTAGS")
+@SQLDelete(sql = "UPDATE hashtags SET is_deleted = 1 WHERE id=?")
+@Where(clause = "is_deleted = 0")
+@Table(name = "hashtags")
 public class HashtagEntity extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "POST_ID", nullable = false)
+    @JoinColumn(name = "post_id", nullable = false)
     private PostEntity post;
 
-    @Column(name = "TAG", nullable = false)
+    @Column(name = "tag", nullable = false)
     private String tag;
 
     @Override

@@ -16,23 +16,23 @@ import javax.persistence.*;
 @NoArgsConstructor
 @SuperBuilder
 @Entity
-@SQLDelete(sql = "UPDATE MEMBERS SET IS_DELETED = 1 WHERE ID=?")
-@Where(clause = "IS_DELETED = 0")
-@Table(name = "MEMBERS")
+@SQLDelete(sql = "UPDATE members SET is_deleted = 1 WHERE id=?")
+@Where(clause = "is_deleted = 0")
+@Table(name = "members")
 public class MemberEntity extends BaseEntity {
     @Basic
-    @Column(name = "LOGIN_ID", nullable = false, length = 20)
+    @Column(name = "login_id", nullable = false, length = 20)
     private String loginId;
 
     @Basic
-    @Column(name = "PASSWORD", nullable = false)
+    @Column(name = "password", nullable = false)
     private String password;
 
     @Basic
-    @Column(name = "NICKNAME", nullable = false, length = 20)
+    @Column(name = "nickname", nullable = false, length = 20)
     private String nickname;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "MEMBER_TYPE", nullable = false)
+    @Column(name = "member_type", nullable = false)
     private MemberType memberType;
 }

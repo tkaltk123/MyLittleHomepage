@@ -24,31 +24,31 @@ import java.util.List;
 @NoArgsConstructor
 @SuperBuilder
 @Entity
-@SQLDelete(sql = "UPDATE COMMENTS SET IS_DELETED = 1 WHERE ID=?")
-@Where(clause = "IS_DELETED = 0")
-@Table(name = "COMMENTS")
+@SQLDelete(sql = "UPDATE comments SET is_deleted = 1 WHERE id=?")
+@Where(clause = "is_deleted = 0")
+@Table(name = "comments")
 public class CommentEntity extends BaseEntity implements Evaluable {
     @Setter
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "POST_ID", nullable = false)
+    @JoinColumn(name = "post_id", nullable = false)
     private PostEntity post;
 
     @Setter
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "WRITER_ID", nullable = false)
+    @JoinColumn(name = "writer_id", nullable = false)
     private MemberEntity writer;
 
     @Setter
-    @Column(name = "WRITER_NAME", nullable = false)
+    @Column(name = "writer_name", nullable = false)
     private String writerName;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PARENT_ID")
+    @JoinColumn(name = "parent_id")
     private CommentEntity parent;
 
     @Setter
     @Lob
-    @Column(name = "CONTENT")
+    @Column(name = "content")
     private String content;
 
     //즉시 로딩

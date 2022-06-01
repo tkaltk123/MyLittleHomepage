@@ -28,31 +28,31 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @SuperBuilder
 @Entity
-@SQLDelete(sql = "UPDATE POSTS SET IS_DELETED = 1 WHERE ID=?")
-@Where(clause = "IS_DELETED = 0")
-@Table(name = "POSTS")
+@SQLDelete(sql = "UPDATE posts SET is_deleted = 1 WHERE id=?")
+@Where(clause = "is_deleted = 0")
+@Table(name = "posts")
 public class PostEntity extends BaseEntity implements Evaluable {
     @Setter
     @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "BOARD_ID", nullable = false)
+        @JoinColumn(name = "board_id", nullable = false)
     private BoardEntity board;
 
     @Setter
     @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "WRITER_ID", nullable = false)
+    @JoinColumn(name = "writer_id", nullable = false)
     private MemberEntity writer;
 
     @Setter
-    @Column(name = "WRITER_NAME", nullable = false)
+    @Column(name = "writer_name", nullable = false)
     private String writerName;
 
     @Setter
-    @Column(name = "TITLE", nullable = false)
+    @Column(name = "title", nullable = false)
     private String title;
 
     @Setter
     @Lob
-    @Column(name = "CONTENT")
+    @Column(name = "content")
     private String content;
 
     //즉시 로딩

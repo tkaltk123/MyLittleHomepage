@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "POST_COUNTS")
+@Table(name = "post_counts")
 public class PostCount {
     @Id
     private Long id;
@@ -20,19 +20,19 @@ public class PostCount {
     private PostEntity post;
 
     @Basic
-    @Column(name = "VIEW_COUNT", nullable = false)
+    @Column(name = "view_count", nullable = false)
     private Integer viewCount = 0;
 
     @Basic
-    @Column(name = "COMMENT_COUNT", nullable = false)
+    @Column(name = "comment_count", nullable = false)
     private Integer commentCount = 0;
 
     @Basic
-    @Column(name = "LIKE_COUNT", nullable = false)
+    @Column(name = "like_count", nullable = false)
     private Integer likeCount = 0;
 
     @Basic
-    @Column(name = "DISLIKE_COUNT", nullable = false)
+    @Column(name = "dislike_count", nullable = false)
     private Integer dislikeCount = 0;
 
     public void increaseCommentCount() {
