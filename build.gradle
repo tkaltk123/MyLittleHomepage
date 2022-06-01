@@ -15,6 +15,11 @@ configurations {
         extendsFrom annotationProcessor
     }
 }
+bootWar{
+    archivesBaseName = 'MyLittleHomepage'
+    archiveFileName = 'ROOT.war'
+    archiveVersion = "0.0.1"
+}
 
 repositories {
     mavenCentral()
