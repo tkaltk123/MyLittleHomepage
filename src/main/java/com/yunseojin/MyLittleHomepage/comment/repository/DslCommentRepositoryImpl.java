@@ -17,14 +17,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.support.PageableExecutionUtils;
 
 public class DslCommentRepositoryImpl extends QuerydslRepositorySupport implements DslCommentRepository {
+    private static final QCommentEntity c = QCommentEntity.commentEntity;
+
     public DslCommentRepositoryImpl() {
         super(CommentEntity.class);
     }
 
     @Override
     public Page<CommentEntity> getRootComments(PostEntity post, Pageable pageable) {
-        var c = QCommentEntity.commentEntity;
-        //content 쿼리
         var content = from(c)
                 .select(c)
                 .join(c.commentCount)
@@ -34,7 +34,7 @@ public class DslCommentRepositoryImpl extends QuerydslRepositorySupport implemen
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-        //count 쿼리
+
         var count = from(c)
                 .select(c)
                 .where(c.post.eq(post), c.parent.isNull());
@@ -43,16 +43,20 @@ public class DslCommentRepositoryImpl extends QuerydslRepositorySupport implemen
     }
 
     @Override
-    public CommentEntity getComment(Long commentId) {
-        var c = QCommentEntity.commentEntity;
+    public CommentEntity getComment(Long commentId) throws BadRequestException {
+        if (commentId == null)
+            return null;
+
         var comment = from(c)
                 .select(c)
                 .join(c.commentCount)
                 .fetchJoin()
                 .where(c.id.eq(commentId))
                 .fetchOne();
+
         if (comment == null)
             throw new BadRequestException(ErrorMessage.NOT_EXISTS_COMMENT_EXCEPTION);
+
         return comment;
     }
 }

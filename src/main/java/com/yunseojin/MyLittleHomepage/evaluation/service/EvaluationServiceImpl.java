@@ -34,20 +34,20 @@ public class EvaluationServiceImpl implements EvaluationService {
     private final PostEvaluationRepository postEvaluationRepository;
     private final CommentEvaluationRepository commentEvaluationRepository;
 
-
     @Login
     @Override
     public String likePost(Long postId) {
         var member = memberRepository.getMember(memberInfo.getId());
         var post = postRepository.getPost(postId);
         var postEvaluation = postEvaluationRepository.findByPostAndWriter(post, member);
-        if (postEvaluation == null) {
-            postEvaluation = getPostEvaluation(member, post, EvaluationType.LIKE);
-            postEvaluationRepository.save(postEvaluation);
-            post.increaseLikeCount();
-            return "좋아요 성공";
-        }
-        return applyLike(post, postEvaluation);
+
+        if (postEvaluation != null)
+            return applyLike(post, postEvaluation);
+
+        postEvaluation = getPostEvaluation(member, post, EvaluationType.LIKE);
+        postEvaluationRepository.save(postEvaluation);
+        post.increaseLikeCount();
+        return "좋아요 성공";
     }
 
 
@@ -57,13 +57,14 @@ public class EvaluationServiceImpl implements EvaluationService {
         var member = memberRepository.getMember(memberInfo.getId());
         var comment = commentRepository.getComment(commentId);
         var commentEvaluation = commentEvaluationRepository.findByCommentAndWriter(comment, member);
-        if (commentEvaluation == null) {
-            commentEvaluation = getCommentEvaluation(member, comment, EvaluationType.LIKE);
-            commentEvaluationRepository.save(commentEvaluation);
-            comment.increaseLikeCount();
-            return "좋아요 성공";
-        }
-        return applyLike(comment, commentEvaluation);
+
+        if (commentEvaluation != null)
+            return applyLike(comment, commentEvaluation);
+
+        commentEvaluation = getCommentEvaluation(member, comment, EvaluationType.LIKE);
+        commentEvaluationRepository.save(commentEvaluation);
+        comment.increaseLikeCount();
+        return "좋아요 성공";
     }
 
     @Login
@@ -72,13 +73,15 @@ public class EvaluationServiceImpl implements EvaluationService {
         var member = memberRepository.getMember(memberInfo.getId());
         var post = postRepository.getPost(postId);
         var postEvaluation = postEvaluationRepository.findByPostAndWriter(post, member);
-        if (postEvaluation == null) {
-            postEvaluation = getPostEvaluation(member, post, EvaluationType.DISLIKE);
-            postEvaluationRepository.save(postEvaluation);
-            post.increaseDislikeCount();
-            return "싫어요 성공";
-        }
-        return applyDislike(post, postEvaluation);
+
+        if (postEvaluation != null)
+            return applyDislike(post, postEvaluation);
+
+        postEvaluation = getPostEvaluation(member, post, EvaluationType.DISLIKE);
+        postEvaluationRepository.save(postEvaluation);
+        post.increaseDislikeCount();
+        return "싫어요 성공";
+
     }
 
     @Login
@@ -87,13 +90,14 @@ public class EvaluationServiceImpl implements EvaluationService {
         var member = memberRepository.getMember(memberInfo.getId());
         var comment = commentRepository.getComment(commentId);
         var commentEvaluation = commentEvaluationRepository.findByCommentAndWriter(comment, member);
-        if (commentEvaluation == null) {
-            commentEvaluation = getCommentEvaluation(member, comment, EvaluationType.DISLIKE);
-            commentEvaluationRepository.save(commentEvaluation);
-            comment.increaseDislikeCount();
-            return "싫어요 성공";
-        }
-        return applyDislike(comment, commentEvaluation);
+
+        if (commentEvaluation != null)
+            return applyDislike(comment, commentEvaluation);
+
+        commentEvaluation = getCommentEvaluation(member, comment, EvaluationType.DISLIKE);
+        commentEvaluationRepository.save(commentEvaluation);
+        comment.increaseDislikeCount();
+        return "싫어요 성공";
     }
 
     private PostEvaluationEntity getPostEvaluation(MemberEntity member, PostEntity post, EvaluationType evaluationType) {
@@ -116,14 +120,17 @@ public class EvaluationServiceImpl implements EvaluationService {
         switch (evaluation.getEvaluationType()) {
             case DISLIKE:
                 evaluable.decreaseDislikeCount();
+
             case NONE:
                 evaluable.increaseLikeCount();
                 evaluation.setEvaluationType(EvaluationType.LIKE);
                 return "좋아요 성공";
+
             case LIKE:
                 evaluation.setEvaluationType(EvaluationType.NONE);
                 evaluable.decreaseLikeCount();
                 return "좋아요 취소";
+
             default:
                 return "";
         }
@@ -133,14 +140,17 @@ public class EvaluationServiceImpl implements EvaluationService {
         switch (evaluation.getEvaluationType()) {
             case LIKE:
                 evaluable.decreaseLikeCount();
+
             case NONE:
                 evaluable.increaseDislikeCount();
                 evaluation.setEvaluationType(EvaluationType.DISLIKE);
                 return "싫어요 성공";
+
             case DISLIKE:
                 evaluation.setEvaluationType(EvaluationType.NONE);
                 evaluable.decreaseDislikeCount();
                 return "싫어요 취소";
+
             default:
                 return "";
         }

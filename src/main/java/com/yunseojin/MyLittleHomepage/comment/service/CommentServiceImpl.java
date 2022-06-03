@@ -32,50 +32,52 @@ public class CommentServiceImpl implements CommentService {
     private final MemberRepository memberRepository;
     private final CommentRepository commentRepository;
 
-    @Override
     @Login
+    @Override
     public CommentResponse createComment(Long postId, CommentRequest commentRequest) {
         var member = memberRepository.getMember(memberInfo.getId());
         var post = postRepository.getPost(postId);
-        CommentEntity parent = null;
-        if (commentRequest.getParentId() != null) {
-            parent = commentRepository.getComment(commentRequest.getParentId());
-            if (parent.getParent() != null)
-                throw new BadRequestException(ErrorMessage.COMMENT_PARENT_EXCEPTION);
-        }
         var comment = CommentMapper.INSTANCE.toCommentEntity(commentRequest);
+        var parent = commentRepository.getComment(commentRequest.getParentId());
+        if (parent != null && parent.getParent() != null)
+            throw new BadRequestException(ErrorMessage.COMMENT_PARENT_EXCEPTION);
+
         comment.setWriter(member);
         comment.setWriterName(member.getNickname());
         comment.setPost(post);
         comment.setCommentCount(new CommentCount());
-        if (parent != null)
-            comment.setParent(parent);
+        comment.setParent(parent);
+
         memberInfo.createComment();
-        commentRepository.save(comment);
         post.increaseCommentCount();
+        commentRepository.save(comment);
+
         return CommentMapper.INSTANCE.toPostResponse(comment);
     }
 
-    @Override
     @Login
+    @Override
     public CommentResponse updateComment(Long commentId, CommentRequest postRequest) {
         var member = memberRepository.getMember(memberInfo.getId());
         var comment = commentRepository.getComment(commentId);
+
         checkCommentWriter(comment, member);
         comment.setContent(postRequest.getContent());
+
         return CommentMapper.INSTANCE.toPostResponse(comment);
     }
 
-    @Override
     @Login
+    @Override
     public void deleteComment(Long commentId) {
         var member = memberRepository.getMember(memberInfo.getId());
         var comment = commentRepository.getComment(commentId);
         var post = comment.getPost();
+
         checkCommentWriter(comment, member);
+        post.decreaseCommentCount();
         commentRepository.delete(comment);
         comment.setIsDeleted(1);
-        post.decreaseCommentCount();
     }
 
     @Override
@@ -84,8 +86,10 @@ public class CommentServiceImpl implements CommentService {
         var post = postRepository.getPost(postId);
         var pageable = PageRequest.of(page, 20);
         var commentPage = commentRepository.getRootComments(post, pageable);
+
         if (page != 0 && commentPage.isEmpty())
             throw new BadRequestException(ErrorMessage.PAGE_OUT_OF_RANGE_EXCEPTION);
+
         return CommentMapper.INSTANCE.toCommentResponseList(commentPage.toList());
     }
 

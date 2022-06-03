@@ -65,13 +65,16 @@ public class CommentEntity extends BaseEntity implements Evaluable {
     public void setCommentCount(CommentCount commentCount) {
         if (commentCount != null)
             commentCount.setComment(this);
+
         this.commentCount = commentCount;
     }
 
     public void setParent(CommentEntity parent) {
         if (this.parent != null)
             this.parent.getChildren().remove(this);
+
         this.parent = parent;
+
         if (parent != null) {
             parent.getChildren().add(this);
         }

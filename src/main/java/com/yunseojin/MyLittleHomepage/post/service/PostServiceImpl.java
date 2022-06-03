@@ -39,15 +39,18 @@ public class PostServiceImpl implements PostService {
         var member = memberRepository.getMember(memberInfo.getId());
         var board = boardRepository.getBoard(boardId);
         var post = PostMapper.INSTANCE.toPostEntity(postRequest);
+
         post.setBoard(board);
         post.setWriter(member);
         post.setWriterName(member.getNickname());
         post.setPostCount(new PostCount());
         if (postRequest.getHashTags() != null)
             post.setHashtags(postRequest.getHashTags());
+
         memberInfo.createPost();
         postRepository.save(post);
         board.increasePostCount();
+
         return PostMapper.INSTANCE.toPostResponse(post);
     }
 
@@ -56,8 +59,10 @@ public class PostServiceImpl implements PostService {
     public PostResponse updatePost(Long postId, PostRequest postRequest) {
         var member = memberRepository.getMember(memberInfo.getId());
         var post = postRepository.getPost(postId);
+
         checkPostWriter(post, member);
         post.update(postRequest);
+
         return PostMapper.INSTANCE.toPostResponse(post);
     }
 
@@ -67,18 +72,20 @@ public class PostServiceImpl implements PostService {
         var member = memberRepository.getMember(memberInfo.getId());
         var post = postRepository.getPost(postId);
         var board = post.getBoard();
+
         checkPostWriter(post, member);
+        board.decreasePostCount();
         postRepository.delete(post);
         post.setIsDeleted(1);
-        board.decreasePostCount();
     }
 
     @Override
     public PostResponse getPost(Long postId) {
         var post = postRepository.getPost(postId);
-        //읽은 적 없다면 조회수 상승
+
         if (memberInfo.viewPost(postId))
             post.increaseViewCount();
+
         return PostMapper.INSTANCE.toPostResponse(post);
     }
 
@@ -88,8 +95,10 @@ public class PostServiceImpl implements PostService {
         var pageable = PageRequest.of(page, 20);
         var board = boardRepository.getBoard(boardId);
         var postPage = postRepository.getPosts(board, pageable);
+
         if (page != 0 && postPage.isEmpty())
             throw new BadRequestException(ErrorMessage.PAGE_OUT_OF_RANGE_EXCEPTION);
+
         return SimplePostMapper.INSTANCE.toPostResponseList(postPage.toList());
     }
 
