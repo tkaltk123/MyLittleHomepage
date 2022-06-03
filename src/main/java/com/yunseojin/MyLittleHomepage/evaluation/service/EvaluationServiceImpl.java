@@ -2,6 +2,7 @@ package com.yunseojin.MyLittleHomepage.evaluation.service;
 
 import com.yunseojin.MyLittleHomepage.comment.entity.CommentEntity;
 import com.yunseojin.MyLittleHomepage.comment.repository.CommentRepository;
+import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
 import com.yunseojin.MyLittleHomepage.etc.enums.EvaluationType;
 import com.yunseojin.MyLittleHomepage.evaluation.entity.CommentEvaluationEntity;
 import com.yunseojin.MyLittleHomepage.evaluation.entity.Evaluable;
@@ -14,7 +15,6 @@ import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.member.repository.MemberRepository;
 import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
 import com.yunseojin.MyLittleHomepage.post.repository.PostRepository;
-import com.yunseojin.MyLittleHomepage.util.SessionUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,9 +35,9 @@ public class EvaluationServiceImpl implements EvaluationService {
     private final CommentEvaluationRepository commentEvaluationRepository;
 
 
+    @Login
     @Override
     public String likePost(Long postId) {
-        SessionUtil.checkLogin(memberInfo, true);
         var member = memberRepository.getMember(memberInfo.getId());
         var post = postRepository.getPost(postId);
         var postEvaluation = postEvaluationRepository.findByPostAndWriter(post, member);
@@ -51,9 +51,9 @@ public class EvaluationServiceImpl implements EvaluationService {
     }
 
 
+    @Login
     @Override
     public String likeComment(Long commentId) {
-        SessionUtil.checkLogin(memberInfo, true);
         var member = memberRepository.getMember(memberInfo.getId());
         var comment = commentRepository.getComment(commentId);
         var commentEvaluation = commentEvaluationRepository.findByCommentAndWriter(comment, member);
@@ -66,9 +66,9 @@ public class EvaluationServiceImpl implements EvaluationService {
         return applyLike(comment, commentEvaluation);
     }
 
+    @Login
     @Override
     public String dislikePost(Long postId) {
-        SessionUtil.checkLogin(memberInfo, true);
         var member = memberRepository.getMember(memberInfo.getId());
         var post = postRepository.getPost(postId);
         var postEvaluation = postEvaluationRepository.findByPostAndWriter(post, member);
@@ -81,9 +81,9 @@ public class EvaluationServiceImpl implements EvaluationService {
         return applyDislike(post, postEvaluation);
     }
 
+    @Login
     @Override
     public String dislikeComment(Long commentId) {
-        SessionUtil.checkLogin(memberInfo, true);
         var member = memberRepository.getMember(memberInfo.getId());
         var comment = commentRepository.getComment(commentId);
         var commentEvaluation = commentEvaluationRepository.findByCommentAndWriter(comment, member);

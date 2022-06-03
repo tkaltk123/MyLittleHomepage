@@ -1,5 +1,6 @@
 package com.yunseojin.MyLittleHomepage.member.service;
 
+import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
 import com.yunseojin.MyLittleHomepage.etc.enums.MemberType;
 import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
@@ -9,7 +10,6 @@ import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.member.mapper.MemberMapper;
 import com.yunseojin.MyLittleHomepage.member.repository.MemberRepository;
 import com.yunseojin.MyLittleHomepage.util.PasswordUtil;
-import com.yunseojin.MyLittleHomepage.util.SessionUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,8 +25,8 @@ public class MemberServiceImpl implements MemberService {
     private MemberInfo memberInfo;
 
     @Override
+    @Login(required = false)
     public void resister(MemberRequest memberRequest) {
-        SessionUtil.checkLogin(memberInfo, false);
         //로그인 ID 중복
         if (memberRepository.existsByLoginId(memberRequest.getLoginId()))
             throw new BadRequestException(ErrorMessage.LOGIN_ID_DUPLICATE_EXCEPTION);
@@ -41,8 +41,8 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Login
     public void modify(MemberRequest memberRequest) {
-        SessionUtil.checkLogin(memberInfo, true);
         var member = memberRepository.getMember(memberInfo.getId());
         var loginId = memberRequest.getLoginId();
         var nickname = memberRequest.getNickname();
@@ -60,9 +60,9 @@ public class MemberServiceImpl implements MemberService {
             member.setPassword(PasswordUtil.getHashedPassword(password));
     }
 
+    @Login
     @Override
     public void delete(MemberRequest memberRequest) {
-        SessionUtil.checkLogin(memberInfo, true);
         var member = memberRepository.getMember(memberInfo.getId());
         PasswordUtil.checkPassword(memberRequest.getPassword(), member.getPassword());
         memberRepository.delete(member);
@@ -70,9 +70,9 @@ public class MemberServiceImpl implements MemberService {
         memberInfo.clear();
     }
 
+    @Login(required = false)
     @Override
     public void login(MemberRequest memberRequest) {
-        SessionUtil.checkLogin(memberInfo, false);
         var member = memberRepository.findByLoginId(memberRequest.getLoginId());
         //존재하지 않는 회원일 경우
         if (member == null)
@@ -82,9 +82,9 @@ public class MemberServiceImpl implements MemberService {
         memberInfo.setMember(member);
     }
 
+    @Login
     @Override
     public void logout() {
-        SessionUtil.checkLogin(memberInfo, true);
         memberInfo.clear();
     }
 

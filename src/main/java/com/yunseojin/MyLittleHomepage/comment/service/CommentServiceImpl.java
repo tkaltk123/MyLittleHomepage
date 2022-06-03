@@ -6,13 +6,13 @@ import com.yunseojin.MyLittleHomepage.comment.entity.CommentCount;
 import com.yunseojin.MyLittleHomepage.comment.entity.CommentEntity;
 import com.yunseojin.MyLittleHomepage.comment.mapper.CommentMapper;
 import com.yunseojin.MyLittleHomepage.comment.repository.CommentRepository;
+import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
 import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberInfo;
 import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.member.repository.MemberRepository;
 import com.yunseojin.MyLittleHomepage.post.repository.PostRepository;
-import com.yunseojin.MyLittleHomepage.util.SessionUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -33,8 +33,8 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
 
     @Override
+    @Login
     public CommentResponse createComment(Long postId, CommentRequest commentRequest) {
-        SessionUtil.checkLogin(memberInfo, true);
         var member = memberRepository.getMember(memberInfo.getId());
         var post = postRepository.getPost(postId);
         CommentEntity parent = null;
@@ -57,8 +57,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Login
     public CommentResponse updateComment(Long commentId, CommentRequest postRequest) {
-        SessionUtil.checkLogin(memberInfo, true);
         var member = memberRepository.getMember(memberInfo.getId());
         var comment = commentRepository.getComment(commentId);
         checkCommentWriter(comment, member);
@@ -67,8 +67,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Login
     public void deleteComment(Long commentId) {
-        SessionUtil.checkLogin(memberInfo, true);
         var member = memberRepository.getMember(memberInfo.getId());
         var comment = commentRepository.getComment(commentId);
         var post = comment.getPost();

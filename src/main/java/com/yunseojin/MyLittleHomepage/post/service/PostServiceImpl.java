@@ -1,6 +1,7 @@
 package com.yunseojin.MyLittleHomepage.post.service;
 
 import com.yunseojin.MyLittleHomepage.board.repository.BoardRepository;
+import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
 import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberInfo;
@@ -13,7 +14,6 @@ import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
 import com.yunseojin.MyLittleHomepage.post.mapper.PostMapper;
 import com.yunseojin.MyLittleHomepage.post.mapper.SimplePostMapper;
 import com.yunseojin.MyLittleHomepage.post.repository.PostRepository;
-import com.yunseojin.MyLittleHomepage.util.SessionUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -33,9 +33,9 @@ public class PostServiceImpl implements PostService {
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
 
+    @Login
     @Override
     public PostResponse createPost(Long boardId, PostRequest postRequest) {
-        SessionUtil.checkLogin(memberInfo, true);
         var member = memberRepository.getMember(memberInfo.getId());
         var board = boardRepository.getBoard(boardId);
         var post = PostMapper.INSTANCE.toPostEntity(postRequest);
@@ -51,9 +51,9 @@ public class PostServiceImpl implements PostService {
         return PostMapper.INSTANCE.toPostResponse(post);
     }
 
+    @Login
     @Override
     public PostResponse updatePost(Long postId, PostRequest postRequest) {
-        SessionUtil.checkLogin(memberInfo, true);
         var member = memberRepository.getMember(memberInfo.getId());
         var post = postRepository.getPost(postId);
         checkPostWriter(post, member);
@@ -61,9 +61,9 @@ public class PostServiceImpl implements PostService {
         return PostMapper.INSTANCE.toPostResponse(post);
     }
 
+    @Login
     @Override
     public void deletePost(Long postId) {
-        SessionUtil.checkLogin(memberInfo, true);
         var member = memberRepository.getMember(memberInfo.getId());
         var post = postRepository.getPost(postId);
         var board = post.getBoard();
