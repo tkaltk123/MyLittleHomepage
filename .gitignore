@@ -37,3 +37,4 @@ out/
 .vscode/
 src/main/resources/application.yml
 src/main/generated
+src/main/resources/static/bootstrap
