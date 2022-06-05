@@ -1,6 +1,7 @@
 package com.yunseojin.MyLittleHomepage.member.mapper;
 
 import com.yunseojin.MyLittleHomepage.member.dto.MemberRequest;
+import com.yunseojin.MyLittleHomepage.member.dto.MemberResponse;
 import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.util.PasswordUtil;
 import org.mapstruct.Mapper;
@@ -13,4 +14,6 @@ public interface MemberMapper {
 
     @Mapping(target = "password", expression = "java(PasswordUtil.getHashedPassword(memberRequest.getPassword()))")
     MemberEntity toMemberEntity(MemberRequest memberRequest);
+
+    MemberResponse toMemberResponse(MemberEntity memberEntity);
 }

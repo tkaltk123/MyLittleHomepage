@@ -6,6 +6,7 @@ import com.yunseojin.MyLittleHomepage.etc.enums.MemberType;
 import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberInfo;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberRequest;
+import com.yunseojin.MyLittleHomepage.member.dto.MemberResponse;
 import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.member.mapper.MemberMapper;
 import com.yunseojin.MyLittleHomepage.member.repository.MemberRepository;
@@ -26,7 +27,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Login(required = false)
-    public void resister(MemberRequest memberRequest) {
+    public MemberResponse resister(MemberRequest memberRequest) {
         checkLogInIdDuplicate(memberRequest.getLoginId());
         checkNicknameDuplicate(memberRequest.getNickname());
 
@@ -35,11 +36,13 @@ public class MemberServiceImpl implements MemberService {
 
         memberRepository.save(member);
         memberInfo.setMember(member);
+
+        return MemberMapper.INSTANCE.toMemberResponse(member);
     }
 
     @Override
     @Login
-    public void modify(MemberRequest memberRequest) {
+    public MemberResponse modify(MemberRequest memberRequest) {
         var member = memberRepository.getMember(memberInfo.getId());
         var loginId = memberRequest.getLoginId();
         var nickname = memberRequest.getNickname();
@@ -58,6 +61,8 @@ public class MemberServiceImpl implements MemberService {
 
         if (password != null)
             member.setPassword(PasswordUtil.getHashedPassword(password));
+
+        return MemberMapper.INSTANCE.toMemberResponse(member);
     }
 
     @Login
@@ -73,10 +78,11 @@ public class MemberServiceImpl implements MemberService {
 
     @Login(required = false)
     @Override
-    public void login(MemberRequest memberRequest) {
+    public MemberResponse login(MemberRequest memberRequest) {
         var member = memberRepository.getMember(memberRequest.getLoginId());
         PasswordUtil.checkPassword(memberRequest.getPassword(), member.getPassword());
         memberInfo.setMember(member);
+        return MemberMapper.INSTANCE.toMemberResponse(member);
     }
 
     @Login
