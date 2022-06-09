@@ -65,12 +65,12 @@ class CommentServiceImplTest {
 
     @BeforeEach
     public void init() {
-        memberService.resister(loginReq);
+        memberService.register(loginReq);
         var postRes = postService.createPost(testBoardId, postReq);
         post = postRepository.getPost(postRes.getId());
         memberService.logout();
 
-        memberService.resister(loginReq2);
+        memberService.register(loginReq2);
         memberService.logout();
     }
 

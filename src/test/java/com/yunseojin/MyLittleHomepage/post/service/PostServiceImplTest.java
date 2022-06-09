@@ -66,9 +66,9 @@ class PostServiceImplTest {
 
     @BeforeEach
     public void init() {
-        memberService.resister(loginReq);
+        memberService.register(loginReq);
         memberService.logout();
-        memberService.resister(loginReq2);
+        memberService.register(loginReq2);
         memberService.logout();
         board = boardRepository.getBoard(testBoardId);
         member1 = memberRepository.findByLoginId(loginReq.getLoginId());

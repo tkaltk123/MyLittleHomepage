@@ -40,16 +40,29 @@ public class ViewController {
     }
 
     @GetMapping("/login")
-    public String login(Model model) {
+    public String loginFrom(Model model) {
         model.addAttribute("memberRequest", new MemberRequest());
         return "layout/login";
     }
 
     @PostMapping(value = "/login")
-    @ApiOperation(value = "로그인", notes = "세션을 사용해 로그인합니다.")
     public String login(MemberRequest memberRequest) {
         memberService.login(memberRequest);
         return "redirect:/";
     }
+    
+    @GetMapping("/register")
+    public String registerForm(Model model) {
+        model.addAttribute("memberRequest", new MemberRequest());
+        return "layout/register";
+    }
+
+    @PostMapping(value = "/register")
+    public String register( MemberRequest memberRequest) {
+        memberService.register(memberRequest);
+        return "redirect:/";
+    }
+    
+    
 
 }

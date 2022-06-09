@@ -64,7 +64,7 @@ class EvaluationServiceImplTest {
         var commentReq = CommentRequest.builder()
                 .content("댓글")
                 .build();
-        memberService.resister(loginReq);
+        memberService.register(loginReq);
         var postRes = postService.createPost(testBoardId, postReq);
         post = postRepository.getPost(postRes.getId());
         var commentRes = commentService.createComment(postRes.getId(), commentReq);

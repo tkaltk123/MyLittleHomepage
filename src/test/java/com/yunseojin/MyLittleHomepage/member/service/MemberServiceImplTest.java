@@ -24,7 +24,7 @@ class MemberServiceImplTest {
     private MemberServiceImpl memberService;
 
     @Test
-    void resister() {
+    void register() {
         //given
         var req = MemberRequest.builder()
                 .loginId("login_id")
@@ -42,7 +42,7 @@ class MemberServiceImplTest {
                 .nickname("nickname2")
                 .build();
         //when
-        memberService.resister(req);
+        memberService.register(req);
         var dbMember = memberRepository.findByLoginId(req.getLoginId());
         // then
         assertEquals(req.getNickname(), dbMember.getNickname());
@@ -51,16 +51,16 @@ class MemberServiceImplTest {
 
         //로그인 x
         assertError(ErrorMessage.ALREADY_LOGIN_EXCEPTION, () ->
-                memberService.resister(req3)
+                memberService.register(req3)
         );
         memberService.logout();
         //id 중복
         assertError(ErrorMessage.LOGIN_ID_DUPLICATE_EXCEPTION, () ->
-                memberService.resister(req)
+                memberService.register(req)
         );
         //닉네임 중복
         assertError(ErrorMessage.NICKNAME_DUPLICATE_EXCEPTION, () ->
-                memberService.resister(req2)
+                memberService.register(req2)
         );
     }
 
@@ -93,9 +93,9 @@ class MemberServiceImplTest {
                 .nickname("nickname2")
                 .build();
         //when
-        memberService.resister(resist1);
+        memberService.register(resist1);
         memberService.logout();
-        memberService.resister(resist2);
+        memberService.register(resist2);
         memberService.logout();
         memberService.login(resist1);
         memberService.modify(modify1);
@@ -133,7 +133,7 @@ class MemberServiceImplTest {
                 .nickname("nickname")
                 .build();
         //when
-        memberService.resister(resist);
+        memberService.register(resist);
         // then
         memberService.logout();
         //로그인 x
@@ -168,7 +168,7 @@ class MemberServiceImplTest {
                 .nickname("nickname")
                 .build();
         //when
-        memberService.resister(req);
+        memberService.register(req);
         memberService.logout();
         //then
         //id 오류
@@ -195,7 +195,7 @@ class MemberServiceImplTest {
                 .nickname("nickname")
                 .build();
         //when
-        memberService.resister(req);
+        memberService.register(req);
         memberService.logout();
         //then
         //중복 로그아웃

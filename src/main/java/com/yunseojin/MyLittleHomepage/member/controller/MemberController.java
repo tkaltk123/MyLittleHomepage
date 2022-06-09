@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
     private final MemberService memberService;
 
-    @PostMapping("/resister")
+    @PostMapping("/register")
     @ApiOperation(value = "회원가입", notes = "회원 정보를 생성합니다.")
-    public ResponseEntity<?> resister(
+    public ResponseEntity<?> register(
             @RequestBody @Validated(ValidationGroups.SignUp.class) MemberRequest memberRequest) {
-        return new ResponseEntity<>(memberService.resister(memberRequest), HttpStatus.OK);
+        return new ResponseEntity<>(memberService.register(memberRequest), HttpStatus.OK);
     }
 
     @PatchMapping("/modify")

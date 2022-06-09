@@ -27,7 +27,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Login(required = false)
-    public MemberResponse resister(MemberRequest memberRequest) {
+    public MemberResponse register(MemberRequest memberRequest) {
         checkLogInIdDuplicate(memberRequest.getLoginId());
         checkNicknameDuplicate(memberRequest.getNickname());
 
