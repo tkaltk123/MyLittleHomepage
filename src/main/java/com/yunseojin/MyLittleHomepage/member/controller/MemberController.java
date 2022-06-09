@@ -19,7 +19,7 @@ public class MemberController {
     @PostMapping("/register")
     @ApiOperation(value = "회원가입", notes = "회원 정보를 생성합니다.")
     public ResponseEntity<?> register(
-            @RequestBody @Validated(ValidationGroups.SignUp.class) MemberRequest memberRequest) {
+            @RequestBody @Validated(ValidationGroups.Register.class) MemberRequest memberRequest) {
         return new ResponseEntity<>(memberService.register(memberRequest), HttpStatus.OK);
     }
 
