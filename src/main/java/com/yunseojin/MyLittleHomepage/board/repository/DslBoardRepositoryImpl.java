@@ -17,8 +17,7 @@ public class DslBoardRepositoryImpl extends QuerydslRepositorySupport implements
     private BoardEntity findBy(BooleanExpression predicate) throws BadRequestException {
         var board = from(b)
                 .select(b)
-                .join(b.boardCount)
-                .fetchJoin()
+                .join(b.boardCount).fetchJoin()
                 .where(predicate)
                 .fetchOne();
 

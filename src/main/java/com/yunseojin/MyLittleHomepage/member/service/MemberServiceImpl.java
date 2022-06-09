@@ -79,8 +79,13 @@ public class MemberServiceImpl implements MemberService {
     @Login(required = false)
     @Override
     public MemberResponse login(MemberRequest memberRequest) {
-        var member = memberRepository.getMember(memberRequest.getLoginId());
-        PasswordUtil.checkPassword(memberRequest.getPassword(), member.getPassword());
+        MemberEntity member = null;
+        try {
+            member = memberRepository.getMember(memberRequest.getLoginId());
+            PasswordUtil.checkPassword(memberRequest.getPassword(), member.getPassword());
+        } catch (Exception e) {
+            throw new BadRequestException(ErrorMessage.LOGIN_FAILED_EXCEPTION);
+        }
         memberInfo.setMember(member);
         return MemberMapper.INSTANCE.toMemberResponse(member);
     }

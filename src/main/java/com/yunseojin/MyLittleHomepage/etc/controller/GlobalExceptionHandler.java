@@ -1,25 +1,20 @@
 package com.yunseojin.MyLittleHomepage.etc.controller;
 
-import com.fasterxml.jackson.databind.ser.Serializers;
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
 import com.yunseojin.MyLittleHomepage.etc.exception.BaseException;
-import org.apache.catalina.connector.ClientAbortException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.IOException;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-@RestControllerAdvice
+@ControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(Throwable.class)
-    public ResponseEntity<?> errorHandler(Throwable e) {
+    public String errorHandler(Throwable e, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         BaseException baseException;
         //정의된 예외
         if (e instanceof BaseException) {
@@ -27,16 +22,9 @@ public class GlobalExceptionHandler {
             ((BaseException) e).setErrorTrace(e.getStackTrace()[0].toString());
         }
         // validation 실패
-        else if (e instanceof MethodArgumentNotValidException) {
-            baseException = new BaseException(e.getClass().getSimpleName(), ErrorMessage.VALIDATION_EXCEPTION);
-            List<ObjectError> messageList = ((MethodArgumentNotValidException) e).getBindingResult().getAllErrors();
-            baseException.setErrorMessage(extractErrorMessage(messageList));
-            baseException.setErrorTrace(e.getStackTrace()[0].toString());
-        }
-        //서버 시작 실패
         else if (e instanceof BindException) {
-            baseException = new BaseException(e.getClass().getSimpleName(), ErrorMessage.BIND_FAIL_EXCEPTION);
-            List<ObjectError> messageList = ((BindException) e).getAllErrors();
+            baseException = new BaseException(e.getClass().getSimpleName(), ErrorMessage.VALIDATION_EXCEPTION);
+            List<ObjectError> messageList = ((BindException) e).getBindingResult().getAllErrors();
             baseException.setErrorMessage(extractErrorMessage(messageList));
             baseException.setErrorTrace(e.getStackTrace()[0].toString());
         }
@@ -46,15 +34,15 @@ public class GlobalExceptionHandler {
             baseException.setErrorMessage(e.getMessage());
             baseException.setErrorTrace(e.getStackTrace()[0].toString());
         }
-
-        return new ResponseEntity<>(baseException, baseException.getHttpStatus());
+        redirectAttributes.addFlashAttribute("errorMessage", baseException.getErrorMessage());
+        return "redirect:" + request.getHeader("Referer");
     }
 
     private String extractErrorMessage(List<ObjectError> messageList) {
         StringBuilder message = new StringBuilder();
         for (ObjectError objectError : messageList) {
             String validationMessage = objectError.getDefaultMessage();
-            message.append("[").append(validationMessage).append("]");
+            message.append(validationMessage).append("\n");
         }
         return message.toString();
     }

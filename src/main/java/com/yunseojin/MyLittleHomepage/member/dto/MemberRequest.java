@@ -1,10 +1,7 @@
 package com.yunseojin.MyLittleHomepage.member.dto;
 
 import com.yunseojin.MyLittleHomepage.etc.annotation.ValidationGroups;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -12,42 +9,34 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberRequest {
     @Size(min = 6, max = 20, groups = {
             ValidationGroups.SignUp.class,
-            ValidationGroups.Update.class,
-            ValidationGroups.LogIn.class
-    }, message = "ID는 6~20글자 입니다")
+            ValidationGroups.Update.class
+    }, message = "ID는 6~20글자 입니다.")
     @Pattern(regexp = "[a-zA-Z0-9]+", groups = {
             ValidationGroups.SignUp.class,
-            ValidationGroups.Update.class,
-            ValidationGroups.LogIn.class
+            ValidationGroups.Update.class
     }, message = "ID는 알파벳과 숫자만 사용할 수 있습니다.")
     @NotBlank(groups = {
-            ValidationGroups.SignUp.class,
-            ValidationGroups.LogIn.class
+            ValidationGroups.SignUp.class
     }, message = "ID가 비어있습니다.")
     private String loginId;
 
     @Size(min = 8, max = 20, groups = {
             ValidationGroups.SignUp.class,
             ValidationGroups.Update.class,
-            ValidationGroups.Delete.class,
-            ValidationGroups.LogIn.class
-    }, message = "비밀번호는 8~20글자 입니다")
+    }, message = "비밀번호는 8~20글자 입니다.")
     @Pattern(regexp = "[a-zA-Z0-9~!@#$%^&*()]+", groups = {
             ValidationGroups.SignUp.class,
-            ValidationGroups.Update.class,
-            ValidationGroups.Delete.class,
-            ValidationGroups.LogIn.class
+            ValidationGroups.Update.class
     }, message = "비밀번호는 알파벳과 숫자, 일부 특수기호만 사용할 수 있습니다.")
     @NotBlank(groups = {
-            ValidationGroups.SignUp.class,
-            ValidationGroups.Delete.class,
-            ValidationGroups.LogIn.class
+            ValidationGroups.SignUp.class
     }, message = "비밀번호가 비어있습니다.")
     private String password;
 

@@ -26,6 +26,7 @@ public class MemberInfo implements Serializable {
 
     private Long id;
     private String loginId;
+    private String nickname;
     private final Set<Long> viewPosts = new HashSet<>();
     private LocalDateTime lastCreatedPostAt;
     private LocalDateTime lastCreatedCommentAt;
@@ -33,6 +34,7 @@ public class MemberInfo implements Serializable {
     public void clear() {
         id = null;
         loginId = null;
+        nickname = null;
         lastCreatedPostAt = null;
         lastCreatedCommentAt = null;
     }
@@ -40,6 +42,7 @@ public class MemberInfo implements Serializable {
     public void setMember(MemberEntity member) {
         id = member.getId();
         loginId = member.getLoginId();
+        nickname = member.getNickname();
     }
 
     public boolean viewPost(Long postId) {
