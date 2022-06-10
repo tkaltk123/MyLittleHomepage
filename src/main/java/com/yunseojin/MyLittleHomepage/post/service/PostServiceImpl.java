@@ -15,6 +15,7 @@ import com.yunseojin.MyLittleHomepage.post.mapper.PostMapper;
 import com.yunseojin.MyLittleHomepage.post.mapper.SimplePostMapper;
 import com.yunseojin.MyLittleHomepage.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +37,7 @@ public class PostServiceImpl implements PostService {
     @Login
     @Override
     public PostResponse createPost(Long boardId, PostRequest postRequest) {
+
         var member = memberRepository.getMember(memberInfo.getId());
         var board = boardRepository.getBoard(boardId);
         var post = PostMapper.INSTANCE.toPostEntity(postRequest);
@@ -57,6 +59,7 @@ public class PostServiceImpl implements PostService {
     @Login
     @Override
     public PostResponse updatePost(Long postId, PostRequest postRequest) {
+
         var member = memberRepository.getMember(memberInfo.getId());
         var post = postRepository.getPost(postId);
 
@@ -69,6 +72,7 @@ public class PostServiceImpl implements PostService {
     @Login
     @Override
     public void deletePost(Long postId) {
+
         var member = memberRepository.getMember(memberInfo.getId());
         var post = postRepository.getPost(postId);
         var board = post.getBoard();
@@ -81,6 +85,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostResponse getPost(Long postId) {
+
         var post = postRepository.getPost(postId);
 
         if (memberInfo.viewPost(postId))
@@ -91,19 +96,17 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<PostResponse> getPostList(Long boardId, Integer page) {
+    public Page<PostResponse> getPostList(Long boardId, Integer page) {
+
         var pageable = PageRequest.of(page, 20);
         var board = boardRepository.getBoard(boardId);
         var postPage = postRepository.getPosts(board, pageable);
-
-        if (page != 0 && postPage.isEmpty())
-            throw new BadRequestException(ErrorMessage.PAGE_OUT_OF_RANGE_EXCEPTION);
-
-        return SimplePostMapper.INSTANCE.toPostResponseList(postPage.toList());
+        return postPage.map(SimplePostMapper.INSTANCE::toPostResponse);
     }
 
     //게시글의 작성자가 입력한 회원이 맞는지 확인
     private void checkPostWriter(PostEntity post, MemberEntity member) {
+
         if (post.getWriter() != member)
             throw new BadRequestException(ErrorMessage.NOT_WRITER_EXCEPTION);
     }

@@ -16,6 +16,4 @@ public interface SimplePostMapper {
     @Mapping(target = "hashtags", ignore = true)
     @Mapping(target = "content", ignore = true)
     PostResponse toPostResponse(PostEntity post);
-
-    List<PostResponse> toPostResponseList(List<PostEntity> postList);
 }
