@@ -1,6 +1,7 @@
 package com.yunseojin.MyLittleHomepage.board.entity;
 
 import com.yunseojin.MyLittleHomepage.etc.entity.BaseEntity;
+import com.yunseojin.MyLittleHomepage.post.entity.PostCount;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,6 +29,12 @@ public class BoardEntity extends BaseEntity {
     @Builder.Default
     @OneToOne(mappedBy = "board", optional = false, cascade = CascadeType.PERSIST)
     private BoardCount boardCount = new BoardCount();
+
+    public void setBoardCount(BoardCount boardCount) {
+        if (boardCount != null)
+            boardCount.setBoard(this);
+        this.boardCount = boardCount;
+    }
 
     public Integer getPostCount() {
         return boardCount.getPostCount();

@@ -9,6 +9,7 @@ import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.member.repository.MemberRepository;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
 import com.yunseojin.MyLittleHomepage.post.dto.PostResponse;
+import com.yunseojin.MyLittleHomepage.post.dto.PostSearch;
 import com.yunseojin.MyLittleHomepage.post.entity.PostCount;
 import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
 import com.yunseojin.MyLittleHomepage.post.mapper.PostMapper;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -96,11 +96,11 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<PostResponse> getPostList(Long boardId, Integer page) {
+    public Page<PostResponse> getPostList(Long boardId, PostSearch postSearch) {
 
-        var pageable = PageRequest.of(page, 20);
+        var pageable = PageRequest.of(postSearch.getPage(), 20);
         var board = boardRepository.getBoard(boardId);
-        var postPage = postRepository.getPosts(board, pageable);
+        var postPage = postRepository.getPosts(board, pageable, postSearch);
         return postPage.map(SimplePostMapper.INSTANCE::toPostResponse);
     }
 

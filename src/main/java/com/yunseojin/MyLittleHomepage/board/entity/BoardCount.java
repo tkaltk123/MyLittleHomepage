@@ -14,6 +14,7 @@ public class BoardCount {
     @Id
     private Long id;
 
+    @Setter
     @MapsId
     @OneToOne(optional = false)
     private BoardEntity board;
