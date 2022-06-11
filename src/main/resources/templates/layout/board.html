@@ -17,27 +17,27 @@
             <!-- Topbar -->
             <nav th:replace="fragments/bodyHeader :: bodyHeader"></nav>
             <div class="container">
-                <table class="table table-striped">
+                <table class="table table-striped text-center">
                     <thead>
                     <tr>
                         <th>번호</th>
-                        <th>제목</th>
-                        <th>작성자</th>
-                        <th>작성일자</th>
+                        <th class="w-50">제목</th>
+                        <th class="w-10">작성자</th>
                         <th>조회수</th>
                         <th>좋아요</th>
                         <th>싫어요</th>
+                        <th>작성일자</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each="post : ${posts}" th:href="@{/posts/{postId}(postId=${post.id})}">
                         <td th:text="${post.id}"></td>
-                        <td><a th:href="@{/posts/{postId}(postId=${post.id})}" th:text="${post.title}"></a></td>
+                        <td><a th:href="@{/posts/{postId}(postId=${post.id})}" th:text="${post.title + '(' + post.commentCount + ')'}"></a></td>
                         <td th:text="${post.writerName}"></td>
-                        <td th:text="${#temporals.format(post.createdAt,'yyyy-MM-dd HH:mm')}"></td>
                         <td th:text="${post.viewCount}"></td>
                         <td th:text="${post.likeCount}"></td>
                         <td th:text="${post.dislikeCount}"></td>
+                        <td th:text="${#temporals.format(post.createdAt,'yyyy-MM-dd HH:mm')}"></td>
                     </tr>
                     </tbody>
                 </table>

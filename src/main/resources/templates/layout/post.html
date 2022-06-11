@@ -1,0 +1,136 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header"></head>
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!-- Sidebar -->
+    <ui th:replace="fragments/sidebar :: sidebar"></ui>
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- Topbar -->
+            <nav th:replace="fragments/bodyHeader :: bodyHeader"></nav>
+
+            <div class="container">
+
+                <!--line 1-->
+                <div class="row ml-1 align-items-end">
+
+                    <!--post list-->
+                    <div class="col">
+                        <div class="row">
+                            <a th:href="@{/boards/{boardId}(boardId = ${post.boardId})}">목록</a>
+                        </div>
+                    </div>
+
+                    <!--view count-->
+                    <div class="col">
+                        <div class="row justify-content-end">
+                            <div class="w-25 text-right">
+                                <a>조회수</a>
+                            </div>
+                            <div class="w-50 text-left ml-2">
+                                <a th:text="${post.viewCount}"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--line 2-->
+                <div class="row ml-1 align-items-end">
+
+                    <!--title-->
+                    <div class="col">
+                        <div class="row">
+                            <h2 class="m-0"><a th:text="${post.title}"></a></h2>
+                        </div>
+                    </div>
+
+                    <!--writer-->
+                    <div class="col">
+                        <div class="row justify-content-end">
+                            <div class="w-25 text-right">
+                                <a>작성자</a>
+                            </div>
+                            <div class="w-50 text-left ml-2">
+                                <a th:text="${post.writerName}"></a>
+                            </div>
+                        </div>
+                        <div class="row justify-content-end">
+                            <div class="w-25 text-right">
+                                <a>작성 시간</a>
+                            </div>
+                            <div class="w-50 text-left ml-2">
+                                <a th:text="${#temporals.format(post.createdAt,'yyyy-MM-dd HH:mm:ss')}">2022-06-11
+                                    14:00:00</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr/>
+
+                <div class="row ml-2">
+                    <span style="white-space: pre-line" th:text="${post.content}"></span>
+                </div>
+
+                <div class="row justify-content-center">
+
+                    <form th:action="@{/like/posts/{postId}(postId=${post_id})}" method="post">
+                        <button class="btn btn-primary m-3" type="submit">
+                            <i class="bi bi-hand-thumbs-up-fill">
+                                <br/>
+                                <span th:text="${post.likeCount}"></span>
+                            </i>
+                        </button>
+                    </form>
+
+                    <form th:action="@{/dislike/posts/{postId}(postId=${post_id})}" method="post">
+                        <button class="btn btn-danger m-3" type="submit">
+                            <i class="bi bi-hand-thumbs-down-fill">
+                                <br/>
+                                <span th:text="${post.dislikeCount}"></span>
+                            </i>
+                        </button>
+                    </form>
+
+                </div>
+                <hr>
+            </div>
+
+
+        </div>
+        <!-- End of Main Content -->
+
+        <!-- Footer -->
+        <footer th:replace="fragments/footer :: footer"></footer>
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+
+<!-- Bootstrap core JavaScript-->
+<script src="/vendor/jquery/jquery.min.js"></script>
+<script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+<!-- Custom scripts for all pages-->
+<script src="/js/sb-admin-2.min.js"></script>
+
+<!-- Page level plugins -->
+<script src="/vendor/chart.js/Chart.min.js"></script>
+
+</body>
+
+</html>

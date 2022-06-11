@@ -3,6 +3,7 @@ package com.yunseojin.MyLittleHomepage.view.controller;
 import com.yunseojin.MyLittleHomepage.board.service.BoardService;
 import com.yunseojin.MyLittleHomepage.etc.annotation.ValidationGroups;
 import com.yunseojin.MyLittleHomepage.etc.enums.PostSearchType;
+import com.yunseojin.MyLittleHomepage.evaluation.service.EvaluationService;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberInfo;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberRequest;
 import com.yunseojin.MyLittleHomepage.member.service.MemberService;
@@ -26,6 +27,7 @@ public class ViewController {
     private final BoardService boardService;
     private final MemberService memberService;
     private final PostService postService;
+    private final EvaluationService evaluationService;
 
     @GetMapping("")
     public String index(Model model) {
@@ -113,7 +115,24 @@ public class ViewController {
     public String getPost(
             Model model,
             @PathVariable(name = "post_id") Long postId) {
-        return "redirect:/";
+
+        model.addAttribute("post", postService.getPost(postId));
+        setCommonAttribute(model);
+        return "/layout/post";
+    }
+
+    @PostMapping("/like/posts/{post_id}")
+    public String likePost(@PathVariable(name = "post_id") Long postId, HttpServletRequest request) {
+
+        evaluationService.likePost(postId);
+        return "redirect:" + request.getHeader("Referer");
+    }
+
+    @PostMapping("/dislike/posts/{post_id}")
+    public String dislikePost(@PathVariable(name = "post_id") Long postId, HttpServletRequest request) {
+
+        evaluationService.dislikePost(postId);
+        return "redirect:" + request.getHeader("Referer");
     }
 
 
