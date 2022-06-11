@@ -1,6 +1,8 @@
 package com.yunseojin.MyLittleHomepage.view.controller;
 
 import com.yunseojin.MyLittleHomepage.board.service.BoardService;
+import com.yunseojin.MyLittleHomepage.comment.dto.CommentRequest;
+import com.yunseojin.MyLittleHomepage.comment.service.CommentService;
 import com.yunseojin.MyLittleHomepage.etc.annotation.ValidationGroups;
 import com.yunseojin.MyLittleHomepage.etc.enums.PostSearchType;
 import com.yunseojin.MyLittleHomepage.evaluation.service.EvaluationService;
@@ -28,6 +30,7 @@ public class ViewController {
     private final MemberService memberService;
     private final PostService postService;
     private final EvaluationService evaluationService;
+    private final CommentService commentService;
 
     @GetMapping("")
     public String index(Model model) {
@@ -117,11 +120,24 @@ public class ViewController {
     @GetMapping("/posts/{post_id}")
     public String getPost(
             Model model,
-            @PathVariable(name = "post_id") Long postId) {
+            @PathVariable(name = "post_id") Long postId,
+            @RequestParam(required = false, defaultValue = "0") Integer page) {
 
         model.addAttribute("post", postService.getPost(postId));
+        model.addAttribute("commentRequest", new CommentRequest());
+        model.addAttribute("comments", commentService.getCommentList(postId, page));
         setCommonAttribute(model);
         return "/layout/post";
+    }
+
+    @PostMapping("/comments/posts/{post_id}")
+    public String createComment(
+            @PathVariable(name = "post_id") Long postId,
+            @Validated(ValidationGroups.Create.class) CommentRequest commentRequest
+            , HttpServletRequest request) {
+
+        commentService.createComment(postId, commentRequest);
+        return "redirect:" + request.getHeader("Referer");
     }
 
     @PostMapping("/like/posts/{post_id}")

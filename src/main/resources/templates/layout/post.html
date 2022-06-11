@@ -67,8 +67,7 @@
                                 <a>작성 시간</a>
                             </div>
                             <div class="w-50 text-left ml-2">
-                                <a th:text="${#temporals.format(post.createdAt,'yyyy-MM-dd HH:mm:ss')}">2022-06-11
-                                    14:00:00</a>
+                                <a th:text="${#temporals.format(post.createdAt,'yyyy-MM-dd HH:mm:ss')}"></a>
                             </div>
                         </div>
                     </div>
@@ -102,6 +101,159 @@
 
                 </div>
                 <hr>
+
+                <!--comment-->
+                <div class="card mb-2">
+                    <div class="card-header bg-light">
+                        <i class="fa fa-comment fa"></i> 댓글
+                    </div>
+
+                    <div class="card-body">
+                        <li class="list-group">
+
+                            <!-- Parent comment-->
+                            <div class="list-group-item border-0" th:each="comment : ${comments}">
+
+                                <div class="row">
+
+                                    <div class="col-1 pr-3">
+
+                                        <div class="row justify-content-end">
+                                            <a>작성자</a>
+                                        </div>
+
+                                        <div class="row justify-content-end">
+                                            <a>작성 시간</a>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col ml-1">
+
+                                        <div class="row text-left">
+                                            <a th:text="${comment.writerName}"></a>
+                                        </div>
+
+                                        <div class="row text-left">
+                                            <a th:text="${#temporals.format(comment.createdAt,'yyyy-MM-dd HH:mm:ss')}"></a>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col align-self-end">
+
+                                        <div class="row justify-content-end m-1">
+
+                                            <form th:action="@{/like/comments/{commentId}(commentId=${comment.id})}"
+                                                  method="post">
+                                                <button class="btn btn-primary pl-2 pr-2 pb-1 pt-1" type="submit">
+                                                    <i class="bi bi-hand-thumbs-up-fill">
+                                                        <span th:text="${comment.likeCount}"></span>
+                                                    </i>
+                                                </button>
+                                            </form>
+
+                                            <form class="ml-2"
+                                                  th:action="@{/dislike/comments/{commentId}(commentId=${comment.id})}"
+                                                  method="post">
+                                                <button class="btn btn-danger pl-2 pr-2 pb-1 pt-1" type="submit">
+                                                    <i class="bi bi-hand-thumbs-down-fill">
+                                                        <span th:text="${comment.dislikeCount}"></span>
+                                                    </i>
+                                                </button>
+                                            </form>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="row m-1">
+                                    <span style="white-space: pre-line" th:text="${comment.content}"></span>
+                                </div>
+                                <hr>
+
+                                <!--Child comment-->
+                                <div class="list-group-item border-0" th:if="${comment.children} != null" th:each="child : ${comment.children}">
+
+                                    <div class="row">
+
+                                        <div class="col-1 pr-3">
+
+                                            <div class="row justify-content-end">
+                                                <a>작성자</a>
+                                            </div>
+
+                                            <div class="row justify-content-end">
+                                                <a>작성 시간</a>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col ml-1">
+
+                                            <div class="row text-left">
+                                                <a th:text="${child.writerName}"></a>
+                                            </div>
+
+                                            <div class="row text-left">
+                                                <a th:text="${#temporals.format(child.createdAt,'yyyy-MM-dd HH:mm:ss')}"></a>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col align-self-end">
+
+                                            <div class="row justify-content-end m-1">
+
+                                                <form th:action="@{/like/comments/{commentId}(commentId=${child.id})}"
+                                                      method="post">
+                                                    <button class="btn btn-primary pl-2 pr-2 pb-1 pt-1" type="submit">
+                                                        <i class="bi bi-hand-thumbs-up-fill">
+                                                            <span th:text="${child.likeCount}"></span>
+                                                        </i>
+                                                    </button>
+                                                </form>
+
+                                                <form class="ml-2"
+                                                      th:action="@{/dislike/comments/{commentId}(commentId=${child.id})}"
+                                                      method="post">
+                                                    <button class="btn btn-danger pl-2 pr-2 pb-1 pt-1" type="submit">
+                                                        <i class="bi bi-hand-thumbs-down-fill">
+                                                            <span th:text="${child.dislikeCount}"></span>
+                                                        </i>
+                                                    </button>
+                                                </form>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row m-1">
+                                        <span style="white-space: pre-line" th:text="${child.content}"></span>
+                                    </div>
+                                    <hr>
+
+                                </div>
+                            </div>
+                        </li>
+                    </div>
+
+                    <div class="card-body">
+                        <form th:action="@{/comments/posts/{postId}(postId=${post_id})}" th:object="${commentRequest}"
+                              method="post">
+                        <textarea type="text" style="resize: none" class="form-control" th:field="*{content}"
+                                  aria-label="Content"
+                                  rows="5" required></textarea>
+                            <button type="submit" class="btn btn-dark mt-3">
+                                작성
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
 
 
