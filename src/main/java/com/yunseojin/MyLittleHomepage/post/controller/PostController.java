@@ -52,7 +52,7 @@ public class PostController {
     @ApiOperation(value = "게시글 작성", notes = "게시판에 게시글을 작성합니다.")
     public ResponseEntity<?> create(
             @PathVariable(value = "board_id") Long boardId,
-            @RequestBody PostRequest postRequest) {
+            @RequestBody @Validated(ValidationGroups.Create.class) PostRequest postRequest) {
         return new ResponseEntity<>(postService.createPost(boardId, postRequest), HttpStatus.OK);
     }
 

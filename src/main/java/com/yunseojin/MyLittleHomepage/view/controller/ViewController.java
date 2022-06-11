@@ -6,6 +6,7 @@ import com.yunseojin.MyLittleHomepage.etc.enums.PostSearchType;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberInfo;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberRequest;
 import com.yunseojin.MyLittleHomepage.member.service.MemberService;
+import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
 import com.yunseojin.MyLittleHomepage.post.dto.PostSearch;
 import com.yunseojin.MyLittleHomepage.post.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -87,6 +88,35 @@ public class ViewController {
         return "layout/board";
     }
 
+    @GetMapping("/posts/write/{board_id}")
+    public String postWriteForm(
+            Model model,
+            @PathVariable(name = "board_id") Long boardId) {
+
+        if (memberInfo.getId() == null)
+            return "redirect:/login";
+        model.addAttribute("postRequest", new PostRequest());
+        setCommonAttribute(model);
+        return "layout/postForm";
+    }
+
+    @PostMapping("/posts/write/{board_id}")
+    public String createPost(
+            @PathVariable(name = "board_id") Long boardId,
+            @Validated(ValidationGroups.Create.class) PostRequest postRequest) {
+
+        var postRes = postService.createPost(boardId, postRequest);
+        return "redirect:/posts/" + postRes.getId();
+    }
+
+    @GetMapping("/posts/{post_id}")
+    public String getPost(
+            Model model,
+            @PathVariable(name = "post_id") Long postId) {
+        return "redirect:/";
+    }
+
+
     private void setCommonAttribute(Model model) {
 
         model.addAttribute("login_id", memberInfo.getLoginId());
@@ -102,7 +132,6 @@ public class ViewController {
         var endPage = Math.max(0, Math.min(startPage + 4, postPage.getTotalPages() - 1));
 
         model.addAttribute("searchTypes", PostSearchType.values());
-        model.addAttribute("boardId", boardId);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
         model.addAttribute("totalPage", postPage.getTotalPages());

@@ -44,8 +44,13 @@
             </table>
             <hr/>
             <div class="row justify-content-center white">
-                <!-- Topbar Search -->
-                <form class="navbar-search" th:object="${postSearch}">
+
+                <a class="nav-item btn btn-primary align-self-center mr-4"
+                   th:href="@{/posts/write/{board_id}(board_id = ${board_id})}">
+                    <i class="bi bi-pencil-square"></i>
+                    글쓰기
+                </a>
+                <form class="navbar-search mr-4" th:object="${postSearch}">
                     <div class="input-group">
                         <select class="form-control bg-light small w-25" th:field="*{postSearchType}">
                             <option th:each="type:${searchTypes}" th:value="${type}"
@@ -62,11 +67,11 @@
                     </div>
                 </form>
 
-                <div class="ml-5">
+                <div>
                     <ui class="pagination">
                         <li class="page-item" th:if="${startPage}>0">
                             <a class="page-link"
-                               th:href="@{/boards/{board_id}(board_id=${boardId}, page=${startPage - 1}, postSearchType=${postSearch.postSearchType}, keyword=${postSearch.keyword})}">
+                               th:href="@{/boards/{board_id}(board_id=${board_id}, page=${startPage - 1}, postSearchType=${postSearch.postSearchType}, keyword=${postSearch.keyword})}">
                                 Previous
                             </a>
                         </li>
@@ -78,7 +83,7 @@
                         <th:block th:each="page : ${#numbers.sequence(startPage,endPage)}">
                             <li class="page-item" th:if="${page}!=${postSearch.page}">
                                 <a class="page-link"
-                                   th:href="@{/boards/{board_id}(board_id=${boardId}, page=${page}, postSearchType=${postSearch.postSearchType}, keyword=${postSearch.keyword})}"
+                                   th:href="@{/boards/{board_id}(board_id=${board_id}, page=${page}, postSearchType=${postSearch.postSearchType}, keyword=${postSearch.keyword})}"
                                    th:text="${page+1}"></a>
                             </li>
                             <li class="page-item active" th:if="${page}==${postSearch.page}">
@@ -89,8 +94,8 @@
                         </th:block>
                         <li class="page-item" th:if="${endPage}<${totalPage - 1}">
                             <a class="page-link"
-                               th:href="@{/boards/{board_id}(board_id=${boardId}, page=${endPage+1}, postSearchType=${postSearch.postSearchType}, keyword=${postSearch.keyword})}">
-                               Next
+                               th:href="@{/boards/{board_id}(board_id=${board_id}, page=${endPage+1}, postSearchType=${postSearch.postSearchType}, keyword=${postSearch.keyword})}">
+                                Next
                             </a>
                         </li>
                         <li class="page-item disabled" th:if="${endPage}>=${totalPage - 1}">

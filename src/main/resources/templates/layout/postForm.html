@@ -1,0 +1,62 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header"></head>
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!-- Sidebar -->
+    <ui th:replace="fragments/sidebar :: sidebar"></ui>
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- Topbar -->
+            <nav th:replace="fragments/bodyHeader :: bodyHeader"></nav>
+
+            <form class="navbar-search mr-4" method="post" th:action="@{/posts/write/{boardId}(boardId=${board_id})}"
+                  th:object="${postRequest}">
+                <input type="text" class="form-control bg-light"
+                       th:field="*{title}" placeholder="제목"
+                       aria-label="Title" aria-describedby="basic-addon2" required/>
+                <textarea type="text" class="form-control bg-light"
+                          th:field="*{content}" placeholder="내용" rows="20" style="resize: none"
+                          aria-label="Content" aria-describedby="basic-addon2"></textarea>
+                <button class="nav-item btn btn-primary mr-4" type="submit">
+                    <i class="bi bi-pencil-square"></i>
+                    글쓰기
+                </button>
+            </form>
+
+        </div>
+        <!-- End of Main Content -->
+
+        <!-- Footer -->
+        <footer th:replace="fragments/footer :: footer"></footer>
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+
+<!-- Bootstrap core JavaScript-->
+<script src="/vendor/jquery/jquery.min.js"></script>
+<script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+<!-- Custom scripts for all pages-->
+<script src="/js/sb-admin-2.min.js"></script>
+
+<!-- Page level plugins -->
+<script src="/vendor/chart.js/Chart.min.js"></script>
+
+</body>
+
+</html>

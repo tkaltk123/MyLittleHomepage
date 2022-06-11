@@ -1,27 +1,25 @@
 package com.yunseojin.MyLittleHomepage.post.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yunseojin.MyLittleHomepage.etc.annotation.ValidationGroups;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.List;
 
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostRequest implements Serializable {
-    @Max(value = 255, groups = {
+
+    @Size(min = 2, max = 255, groups = {
             ValidationGroups.Create.class,
             ValidationGroups.Update.class,
-    }, message = "제목은 최대 255글자 입니다")
+    }, message = "제목은 2~255글자 입니다")
     @NotBlank(groups = {
             ValidationGroups.Create.class,
             ValidationGroups.Update.class
