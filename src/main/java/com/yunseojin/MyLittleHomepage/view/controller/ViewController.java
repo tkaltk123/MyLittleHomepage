@@ -67,6 +67,9 @@ public class ViewController {
     @GetMapping("/register")
     public String registerForm(Model model) {
 
+        if (memberInfo.getId() != null)
+            return "redirect:/";
+
         model.addAttribute("memberRequest", new MemberRequest());
         return "layout/register";
     }
