@@ -16,94 +16,94 @@
 
             <!-- Topbar -->
             <nav th:replace="fragments/bodyHeader :: bodyHeader"></nav>
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>번호</th>
-                    <th>제목</th>
-                    <th>작성자</th>
-                    <th>작성일자</th>
-                    <th>조회수</th>
-                    <th>좋아요</th>
-                    <th>싫어요</th>
-                </tr>
-                </thead>
-                <tbody>
-                <th:block th:each="post : ${posts}">
+            <div class="container">
+                <table class="table table-striped">
+                    <thead>
                     <tr>
+                        <th>번호</th>
+                        <th>제목</th>
+                        <th>작성자</th>
+                        <th>작성일자</th>
+                        <th>조회수</th>
+                        <th>좋아요</th>
+                        <th>싫어요</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="post : ${posts}" th:href="@{/posts/{postId}(postId=${post.id})}">
                         <td th:text="${post.id}"></td>
-                        <td th:text="${post.title}"></td>
+                        <td><a th:href="@{/posts/{postId}(postId=${post.id})}" th:text="${post.title}"></a></td>
                         <td th:text="${post.writerName}"></td>
                         <td th:text="${#temporals.format(post.createdAt,'yyyy-MM-dd HH:mm')}"></td>
                         <td th:text="${post.viewCount}"></td>
                         <td th:text="${post.likeCount}"></td>
                         <td th:text="${post.dislikeCount}"></td>
                     </tr>
-                </th:block>
-                </tbody>
-            </table>
-            <hr/>
-            <div class="row justify-content-center white">
+                    </tbody>
+                </table>
+                <hr/>
+                <div class="row justify-content-center white">
 
-                <a class="nav-item btn btn-primary align-self-center mr-4"
-                   th:href="@{/posts/write/{board_id}(board_id = ${board_id})}">
-                    <i class="bi bi-pencil-square"></i>
-                    글쓰기
-                </a>
-                <form class="navbar-search mr-4" th:object="${postSearch}">
-                    <div class="input-group">
-                        <select class="form-control bg-light small w-25" th:field="*{postSearchType}">
-                            <option th:each="type:${searchTypes}" th:value="${type}"
-                                    th:text="${type.getDisplayName()}"></option>
-                        </select>
-                        <input type="text" class="form-control bg-light small w-50" placeholder="Search for..."
-                               th:field="*{keyword}"
-                               aria-label="Search" aria-describedby="basic-addon2">
-                        <div class="input-group-append">
-                            <button class="btn btn-primary" type="submit">
-                                <i class="fas fa-search fa-sm"></i>
-                            </button>
+                    <a class="nav-item btn btn-primary align-self-center mr-4"
+                       th:href="@{/posts/write/{board_id}(board_id = ${board_id})}">
+                        <i class="bi bi-pencil-square"></i>
+                        글쓰기
+                    </a>
+                    <form class="navbar-search mr-4" th:object="${postSearch}">
+                        <div class="input-group">
+                            <select class="form-control bg-light small w-25" th:field="*{postSearchType}">
+                                <option th:each="type:${searchTypes}" th:value="${type}"
+                                        th:text="${type.getDisplayName()}"></option>
+                            </select>
+                            <input type="text" class="form-control bg-light small w-50" placeholder="Search for..."
+                                   th:field="*{keyword}"
+                                   aria-label="Search" aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="fas fa-search fa-sm"></i>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
 
-                <div>
-                    <ui class="pagination">
-                        <li class="page-item" th:if="${startPage}>0">
-                            <a class="page-link"
-                               th:href="@{/boards/{board_id}(board_id=${board_id}, page=${startPage - 1}, postSearchType=${postSearch.postSearchType}, keyword=${postSearch.keyword})}">
-                                Previous
-                            </a>
-                        </li>
-                        <li class="page-item disabled" th:if="${startPage}<=0">
-                            <a class="page-link">
-                                Previous
-                            </a>
-                        </li>
-                        <th:block th:each="page : ${#numbers.sequence(startPage,endPage)}">
-                            <li class="page-item" th:if="${page}!=${postSearch.page}">
+                    <div>
+                        <ui class="pagination">
+                            <li class="page-item" th:if="${startPage}>0">
                                 <a class="page-link"
-                                   th:href="@{/boards/{board_id}(board_id=${board_id}, page=${page}, postSearchType=${postSearch.postSearchType}, keyword=${postSearch.keyword})}"
-                                   th:text="${page+1}"></a>
+                                   th:href="@{/boards/{board_id}(board_id=${board_id}, page=${startPage - 1}, postSearchType=${postSearch.postSearchType}, keyword=${postSearch.keyword})}">
+                                    Previous
+                                </a>
                             </li>
-                            <li class="page-item active" th:if="${page}==${postSearch.page}">
+                            <li class="page-item disabled" th:if="${startPage}<=0">
+                                <a class="page-link">
+                                    Previous
+                                </a>
+                            </li>
+                            <th:block th:each="page : ${#numbers.sequence(startPage,endPage)}">
+                                <li class="page-item" th:if="${page}!=${postSearch.page}">
+                                    <a class="page-link"
+                                       th:href="@{/boards/{board_id}(board_id=${board_id}, page=${page}, postSearchType=${postSearch.postSearchType}, keyword=${postSearch.keyword})}"
+                                       th:text="${page+1}"></a>
+                                </li>
+                                <li class="page-item active" th:if="${page}==${postSearch.page}">
+                                    <a class="page-link"
+                                       th:if="${page}==${postSearch.page}"
+                                       th:text="${page+1}"></a>
+                                </li>
+                            </th:block>
+                            <li class="page-item" th:if="${endPage}<${totalPage - 1}">
                                 <a class="page-link"
-                                   th:if="${page}==${postSearch.page}"
-                                   th:text="${page+1}"></a>
+                                   th:href="@{/boards/{board_id}(board_id=${board_id}, page=${endPage+1}, postSearchType=${postSearch.postSearchType}, keyword=${postSearch.keyword})}">
+                                    Next
+                                </a>
                             </li>
-                        </th:block>
-                        <li class="page-item" th:if="${endPage}<${totalPage - 1}">
-                            <a class="page-link"
-                               th:href="@{/boards/{board_id}(board_id=${board_id}, page=${endPage+1}, postSearchType=${postSearch.postSearchType}, keyword=${postSearch.keyword})}">
-                                Next
-                            </a>
-                        </li>
-                        <li class="page-item disabled" th:if="${endPage}>=${totalPage - 1}">
-                            <a class="page-link">
-                                Next
-                            </a>
-                        </li>
-                    </ui>
+                            <li class="page-item disabled" th:if="${endPage}>=${totalPage - 1}">
+                                <a class="page-link">
+                                    Next
+                                </a>
+                            </li>
+                        </ui>
+                    </div>
                 </div>
             </div>
 

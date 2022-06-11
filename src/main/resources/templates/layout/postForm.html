@@ -17,20 +17,22 @@
             <!-- Topbar -->
             <nav th:replace="fragments/bodyHeader :: bodyHeader"></nav>
 
-            <form class="navbar-search mr-4" method="post" th:action="@{/posts/write/{boardId}(boardId=${board_id})}"
-                  th:object="${postRequest}">
-                <input type="text" class="form-control bg-light"
-                       th:field="*{title}" placeholder="제목"
-                       aria-label="Title" aria-describedby="basic-addon2" required/>
-                <textarea type="text" class="form-control bg-light"
-                          th:field="*{content}" placeholder="내용" rows="20" style="resize: none"
-                          aria-label="Content" aria-describedby="basic-addon2"></textarea>
-                <button class="nav-item btn btn-primary mr-4" type="submit">
-                    <i class="bi bi-pencil-square"></i>
-                    글쓰기
-                </button>
-            </form>
-
+            <div class="container">
+                <form class="navbar-search mr-4" method="post"
+                      th:action="@{/posts/write/{boardId}(boardId=${board_id})}"
+                      th:object="${postRequest}">
+                    <input type="text" class="form-control bg-light"
+                           th:field="*{title}" placeholder="제목"
+                           aria-label="Title" aria-describedby="basic-addon2" required/>
+                    <textarea type="text" class="form-control bg-light"
+                              th:field="*{content}" placeholder="내용" rows="20" style="resize: none"
+                              aria-label="Content" aria-describedby="basic-addon2"></textarea>
+                    <button class="nav-item btn btn-primary mr-4" type="submit">
+                        <i class="bi bi-pencil-square"></i>
+                        글쓰기
+                    </button>
+                </form>
+            </div>
         </div>
         <!-- End of Main Content -->
 
