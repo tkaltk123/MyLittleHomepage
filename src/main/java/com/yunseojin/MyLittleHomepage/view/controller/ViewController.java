@@ -97,7 +97,9 @@ public class ViewController {
     }
 
     @GetMapping("/posts/write/{board_id}")
-    public String postWriteForm(Model model) {
+    public String postWriteForm(
+            Model model,
+            @PathVariable(name = "board_id") Long boardId) {
 
         if (memberInfo.getId() == null)
             return "redirect:/login";
