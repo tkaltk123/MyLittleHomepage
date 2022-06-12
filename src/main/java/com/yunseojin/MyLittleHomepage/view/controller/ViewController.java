@@ -97,13 +97,29 @@ public class ViewController {
     }
 
     @GetMapping("/posts/write/{board_id}")
-    public String postWriteForm(
-            Model model,
-            @PathVariable(name = "board_id") Long boardId) {
+    public String postWriteForm(Model model) {
 
         if (memberInfo.getId() == null)
             return "redirect:/login";
         model.addAttribute("postRequest", new PostRequest());
+        setCommonAttribute(model);
+        return "layout/postForm";
+    }
+
+    @GetMapping("/posts/{post_id}/modify")
+    public String postUpdateForm(
+            Model model,
+            @PathVariable(name = "post_id") Long postId) {
+
+        if (memberInfo.getId() == null)
+            return "redirect:/login";
+        var post = postService.getPost(postId);
+        var postReq = PostRequest.builder()
+                .title(post.getTitle())
+                .content(post.getContent())
+                .hashTags(post.getHashtags())
+                .build();
+        model.addAttribute("postRequest", postReq);
         setCommonAttribute(model);
         return "layout/postForm";
     }
@@ -128,6 +144,21 @@ public class ViewController {
         setCommentsAttribute(model, postId, page);
         setCommonAttribute(model);
         return "/layout/post";
+    }
+
+    @PostMapping("/posts/{post_id}/modify")
+    public String updatePost(
+            @PathVariable(name = "post_id") Long postId,
+            @Validated(ValidationGroups.Update.class) PostRequest postRequest) {
+
+        postService.updatePost(postId, postRequest);
+        return "redirect:/posts/" + postId;
+    }
+
+    @PostMapping("/posts/{post_id}/delete")
+    public String deletePost(@PathVariable(name = "post_id") Long postId) {
+
+        return "redirect:/boards/" + postService.deletePost(postId);
     }
 
     @PostMapping("/comments/posts/{post_id}")

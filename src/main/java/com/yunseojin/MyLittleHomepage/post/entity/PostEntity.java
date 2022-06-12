@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 public class PostEntity extends BaseEntity implements Evaluable {
     @Setter
     @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.PERSIST)
-        @JoinColumn(name = "board_id", nullable = false)
+    @JoinColumn(name = "board_id", nullable = false)
     private BoardEntity board;
 
     @Setter
@@ -91,6 +91,8 @@ public class PostEntity extends BaseEntity implements Evaluable {
     }
 
     private void updateHashTag(String[] hashTags) {
+        if (hashTags == null)
+            return;
         var newTags = Arrays.stream(hashTags).collect(Collectors.toSet());
         for (var hashTag : List.copyOf(hashtags)) {
             var tag = hashTag.getTag();

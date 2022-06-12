@@ -24,7 +24,22 @@
                     <!--post list-->
                     <div class="col">
                         <div class="row">
-                            <a th:href="@{/boards/{boardId}(boardId = ${post.boardId})}">목록</a>
+                            <a th:href="@{/boards/{boardId}(boardId = ${post.boardId})}"
+                               class="btn btn-secondary p-0">
+                                목록
+                            </a>
+                            <a th:href="@{/posts/{postId}/modify(postId = ${post.id})}"
+                               th:if="${post.writerId} == ${id}"
+                               class="btn btn-primary p-0 ml-1" type="submit">
+                                수정
+                            </a>
+                            <form th:action="@{/posts/{postId}/delete(postId = ${post.id})}"
+                                  th:if="${post.writerId} == ${id}"
+                                  method="post">
+                                <button class="btn btn-danger p-0 ml-1" type="submit">
+                                    삭제
+                                </button>
+                            </form>
                         </div>
                     </div>
 

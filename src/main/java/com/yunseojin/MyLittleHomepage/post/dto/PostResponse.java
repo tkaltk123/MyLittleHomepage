@@ -18,6 +18,7 @@ import java.util.List;
 public class PostResponse {
     private Long id;
     private Long boardId;
+    private Long writerId;
     private String writerName;
     private String title;
     private String content;

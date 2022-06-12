@@ -71,7 +71,7 @@ public class PostServiceImpl implements PostService {
 
     @Login
     @Override
-    public void deletePost(Long postId) {
+    public Long deletePost(Long postId) {
 
         var member = memberRepository.getMember(memberInfo.getId());
         var post = postRepository.getPost(postId);
@@ -81,6 +81,8 @@ public class PostServiceImpl implements PostService {
         board.decreasePostCount();
         postRepository.delete(post);
         post.setIsDeleted(1);
+
+        return board.getId();
     }
 
     @Override
