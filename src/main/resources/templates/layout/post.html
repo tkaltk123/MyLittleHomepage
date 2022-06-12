@@ -13,10 +13,11 @@
     <div id="content-wrapper" class="d-flex flex-column">
         <!-- Main Content -->
         <div id="content">
+
             <!-- Topbar -->
             <nav th:replace="fragments/bodyHeader :: bodyHeader"></nav>
-            <div class="container">
 
+            <div class="container">
                 <!--line 1-->
                 <div class="row ml-1 align-items-end">
 
@@ -39,17 +40,14 @@
                         </div>
                     </div>
                 </div>
-
                 <!--line 2-->
                 <div class="row ml-1 align-items-end">
-
                     <!--title-->
                     <div class="col">
                         <div class="row">
                             <h2 class="m-0"><a th:text="${post.title}"></a></h2>
                         </div>
                     </div>
-
                     <!--writer-->
                     <div class="col">
                         <div class="row justify-content-end">
@@ -72,13 +70,13 @@
                 </div>
 
                 <hr/>
-
+                <!--post content-->
                 <div class="row ml-2">
                     <span style="white-space: pre-line" th:text="${post.content}"></span>
                 </div>
-
+                <!--evaluation-->
                 <div class="row justify-content-center">
-
+                    <!--like post-->
                     <form th:action="@{/like/posts/{postId}(postId=${post_id})}" method="post">
                         <button class="btn btn-primary m-3" type="submit">
                             <i class="bi bi-hand-thumbs-up-fill">
@@ -87,7 +85,7 @@
                             </i>
                         </button>
                     </form>
-
+                    <!--dislike post-->
                     <form th:action="@{/dislike/posts/{postId}(postId=${post_id})}" method="post">
                         <button class="btn btn-danger m-3" type="submit">
                             <i class="bi bi-hand-thumbs-down-fill">
@@ -96,52 +94,46 @@
                             </i>
                         </button>
                     </form>
-
                 </div>
                 <hr>
 
                 <!--comment-->
                 <div class="card mb-2">
+
+                    <!--title-->
                     <div class="card-header bg-light">
                         <i class="fa fa-comment fa"></i> 댓글
                     </div>
 
+                    <!--body-->
                     <div class="card-body">
                         <li class="list-group">
 
                             <!-- Parent comment-->
                             <div class="list-group-item border-0" th:each="comment : ${comments}">
 
+                                <!--comment info-->
                                 <div class="row">
 
-                                    <div class="col-1 pr-3">
-
-                                        <div class="row justify-content-end">
-                                            <a>작성자</a>
-                                        </div>
-
-                                        <div class="row justify-content-end">
-                                            <a>작성 시간</a>
-                                        </div>
-
-                                    </div>
-
+                                    <!--writer and date-->
                                     <div class="col ml-1">
 
+                                        <!--writer name-->
                                         <div class="row text-left">
                                             <a th:text="${comment.writerName}"></a>
                                         </div>
 
+                                        <!--created at-->
                                         <div class="row text-left">
                                             <a th:text="${#temporals.format(comment.createdAt,'yyyy-MM-dd HH:mm:ss')}"></a>
                                         </div>
-
                                     </div>
 
+                                    <!--action-->
                                     <div class="col align-self-end">
-
                                         <div class="row justify-content-end m-1">
 
+                                            <!--like comment-->
                                             <form th:action="@{/like/comments/{commentId}(commentId=${comment.id})}"
                                                   method="post">
                                                 <button class="btn btn-primary pl-2 pr-2 pb-1 pt-1" type="submit">
@@ -151,6 +143,7 @@
                                                 </button>
                                             </form>
 
+                                            <!--dislike comment-->
                                             <form class="ml-2"
                                                   th:action="@{/dislike/comments/{commentId}(commentId=${comment.id})}"
                                                   method="post">
@@ -161,16 +154,17 @@
                                                 </button>
                                             </form>
 
+                                            <!--reply-->
                                             <button class="btn btn-dark pl-2 pr-2 pb-1 pt-1 ml-2" data-toggle="modal"
-                                                    data-target="#replyModal" th:value="${comment.id}" onclick="setParentId(value)">
+                                                    data-target="#replyModal" th:value="${comment.id}"
+                                                    onclick="setParentId(value)">
                                                 답글
                                             </button>
                                         </div>
-
                                     </div>
-
                                 </div>
 
+                                <!--comment content-->
                                 <div class="row m-1">
                                     <span style="white-space: pre-line" th:text="${comment.content}"></span>
                                 </div>
@@ -180,36 +174,28 @@
                                 <div class="list-group-item border-0" th:if="${comment.children} != null"
                                      th:each="child : ${comment.children}">
 
+                                    <!--comment info-->
                                     <div class="row">
 
-                                        <div class="col-1 pr-3">
-
-                                            <div class="row justify-content-end">
-                                                <a>작성자</a>
-                                            </div>
-
-                                            <div class="row justify-content-end">
-                                                <a>작성 시간</a>
-                                            </div>
-
-                                        </div>
-
+                                        <!--writer and date-->
                                         <div class="col ml-1">
 
+                                            <!--writer name-->
                                             <div class="row text-left">
                                                 <a th:text="${child.writerName}"></a>
                                             </div>
 
+                                            <!--created at-->
                                             <div class="row text-left">
                                                 <a th:text="${#temporals.format(child.createdAt,'yyyy-MM-dd HH:mm:ss')}"></a>
                                             </div>
-
                                         </div>
 
+                                        <!--action-->
                                         <div class="col align-self-end">
-
                                             <div class="row justify-content-end m-1">
 
+                                                <!--like comment-->
                                                 <form th:action="@{/like/comments/{commentId}(commentId=${child.id})}"
                                                       method="post">
                                                     <button class="btn btn-primary pl-2 pr-2 pb-1 pt-1" type="submit">
@@ -219,6 +205,7 @@
                                                     </button>
                                                 </form>
 
+                                                <!--dislike comment-->
                                                 <form class="ml-2"
                                                       th:action="@{/dislike/comments/{commentId}(commentId=${child.id})}"
                                                       method="post">
@@ -228,30 +215,31 @@
                                                         </i>
                                                     </button>
                                                 </form>
-
                                             </div>
-
                                         </div>
-
                                     </div>
 
+                                    <!--comment content-->
                                     <div class="row m-1">
                                         <span style="white-space: pre-line" th:text="${child.content}"></span>
                                     </div>
                                     <hr>
-
                                 </div>
-                                <div th:id="reply + ${comment.id}"></div>
                             </div>
                         </li>
                     </div>
 
+                    <!--create comment-->
                     <div class="card-body">
                         <form th:action="@{/comments/posts/{postId}(postId=${post_id})}" th:object="${commentRequest}"
                               method="post">
-                        <textarea type="text" style="resize: none" class="form-control" th:field="*{content}"
-                                  aria-label="Content"
-                                  rows="5" required></textarea>
+
+                            <!--content-->
+                            <textarea type="text" style="resize: none" class="form-control" th:field="*{content}"
+                                      aria-label="Content"
+                                      rows="5" required></textarea>
+
+                            <!--submit-->
                             <button type="submit" class="btn btn-dark mt-3">
                                 작성
                             </button>
@@ -260,15 +248,14 @@
                 </div>
             </div>
 
-            <!-- Logout Modal-->
+            <!-- Reply Modal-->
             <div class="modal fade" id="replyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                  aria-hidden="true">
                 <div class="modal-dialog" role="document">
-
                     <div class="modal-content">
 
+                        <!--header-->
                         <div class="modal-header">
-
                             <h5 class="modal-title" id="exampleModalLabel">답글 작성</h5>
                             <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">×</span>
