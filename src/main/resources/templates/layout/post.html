@@ -13,10 +13,8 @@
     <div id="content-wrapper" class="d-flex flex-column">
         <!-- Main Content -->
         <div id="content">
-
             <!-- Topbar -->
             <nav th:replace="fragments/bodyHeader :: bodyHeader"></nav>
-
             <div class="container">
 
                 <!--line 1-->
@@ -163,6 +161,10 @@
                                                 </button>
                                             </form>
 
+                                            <button class="btn btn-dark pl-2 pr-2 pb-1 pt-1 ml-2" data-toggle="modal"
+                                                    data-target="#replyModal" th:value="${comment.id}" onclick="setParentId(value)">
+                                                답글
+                                            </button>
                                         </div>
 
                                     </div>
@@ -175,7 +177,8 @@
                                 <hr>
 
                                 <!--Child comment-->
-                                <div class="list-group-item border-0" th:if="${comment.children} != null" th:each="child : ${comment.children}">
+                                <div class="list-group-item border-0" th:if="${comment.children} != null"
+                                     th:each="child : ${comment.children}">
 
                                     <div class="row">
 
@@ -238,6 +241,7 @@
                                     <hr>
 
                                 </div>
+                                <div th:id="reply + ${comment.id}"></div>
                             </div>
                         </li>
                     </div>
@@ -256,6 +260,38 @@
                 </div>
             </div>
 
+            <!-- Logout Modal-->
+            <div class="modal fade" id="replyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+
+                            <h5 class="modal-title" id="exampleModalLabel">답글 작성</h5>
+                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+
+                        <form th:action="@{/comments/posts/{postId}(postId=${post_id})}" th:object="${commentRequest}"
+                              method="post">
+                            <div class="modal-body">
+                                <input type="hidden" th:field="*{parentId}" id="replyParentId">
+                                <textarea type="text" style="resize: none" class="form-control" th:field="*{content}"
+                                          aria-label="Content"
+                                          rows="5" required></textarea>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" type="button" data-dismiss="modal">취소</button>
+                                <button type="submit" class="btn btn-primary">작성</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
 
         </div>
         <!-- End of Main Content -->
@@ -282,6 +318,12 @@
 
 <!-- Page level plugins -->
 <script src="/vendor/chart.js/Chart.min.js"></script>
+
+<script>
+    function setParentId(pid) {
+        document.getElementById('replyParentId').value = pid;
+    }
+</script>
 
 </body>
 

@@ -154,6 +154,20 @@ public class ViewController {
         return "redirect:" + request.getHeader("Referer");
     }
 
+    @PostMapping("/like/comments/{comment_id}")
+    public String likeComment(@PathVariable(name = "comment_id") Long commentId, HttpServletRequest request) {
+
+        evaluationService.likeComment(commentId);
+        return "redirect:" + request.getHeader("Referer");
+    }
+
+    @PostMapping("/dislike/comments/{comment_id}")
+    public String dislikeComment(@PathVariable(name = "comment_id") Long commentId, HttpServletRequest request) {
+
+        evaluationService.dislikeComment(commentId);
+        return "redirect:" + request.getHeader("Referer");
+    }
+
 
     private void setCommonAttribute(Model model) {
 
