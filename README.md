@@ -1,6 +1,6 @@
 # MyLittleHomepage
 
-Koreatech 강의평가 & 소스 서비스 (ver. Spring Boot)
+Spring boot + JPA + Bootstrap을 사용한 웹페이지 
 
 tech stack
 
@@ -12,9 +12,13 @@ tech stack
 - tomcat
 - Jenkins 
 - AWS EC2
-- AWS RDS
-- 
+- ~~AWS RDS~~
+- nginx
+- bootstrap
+- thymeleaf
+
+배포
+- http://yunseojin.com/
 
 api 명세
-
-http://api.yunseojin.com:8080/swagger-ui/index.html
+- http://api.yunseojin.com/swagger-ui/index.html
