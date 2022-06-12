@@ -14,12 +14,12 @@ import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.member.repository.MemberRepository;
 import com.yunseojin.MyLittleHomepage.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -52,19 +52,19 @@ public class CommentServiceImpl implements CommentService {
         post.increaseCommentCount();
         commentRepository.save(comment);
 
-        return CommentMapper.INSTANCE.toPostResponse(comment);
+        return CommentMapper.INSTANCE.toCommentResponse(comment);
     }
 
     @Login
     @Override
-    public CommentResponse updateComment(Long commentId, CommentRequest postRequest) {
+    public CommentResponse updateComment(CommentRequest postRequest) {
         var member = memberRepository.getMember(memberInfo.getId());
-        var comment = commentRepository.getComment(commentId);
+        var comment = commentRepository.getComment(postRequest.getCommentId());
 
         checkCommentWriter(comment, member);
         comment.setContent(postRequest.getContent());
 
-        return CommentMapper.INSTANCE.toPostResponse(comment);
+        return CommentMapper.INSTANCE.toCommentResponse(comment);
     }
 
     @Login
@@ -76,13 +76,18 @@ public class CommentServiceImpl implements CommentService {
 
         checkCommentWriter(comment, member);
         post.decreaseCommentCount();
+        for (var child : comment.getChildren()) {
+            post.decreaseCommentCount();
+            commentRepository.delete(child);
+            child.setIsDeleted(1);
+        }
         commentRepository.delete(comment);
         comment.setIsDeleted(1);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<CommentResponse> getCommentList(Long postId, Integer page) {
+    public Page<CommentResponse> getCommentList(Long postId, Integer page) {
         var post = postRepository.getPost(postId);
         var pageable = PageRequest.of(page, 20);
         var commentPage = commentRepository.getRootComments(post, pageable);
@@ -90,7 +95,8 @@ public class CommentServiceImpl implements CommentService {
         if (page != 0 && commentPage.isEmpty())
             throw new BadRequestException(ErrorMessage.PAGE_OUT_OF_RANGE_EXCEPTION);
 
-        return CommentMapper.INSTANCE.toCommentResponseList(commentPage.toList());
+
+        return commentPage.map(CommentMapper.INSTANCE::toCommentResponse);
     }
 
     //댓글의 작성자가 입력한 회원이 맞는지 확인

@@ -27,9 +27,9 @@ public class MemberInfo implements Serializable {
     private Long id;
     private String loginId;
     private String nickname;
-    private final Set<Long> viewPosts = new HashSet<>();
-    private LocalDateTime lastCreatedPostAt;
-    private LocalDateTime lastCreatedCommentAt;
+    private final transient Set<Long> viewPosts = new HashSet<>();
+    private transient LocalDateTime lastCreatedPostAt;
+    private transient LocalDateTime lastCreatedCommentAt;
 
     public void clear() {
         id = null;

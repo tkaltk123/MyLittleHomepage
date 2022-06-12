@@ -9,15 +9,17 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
+import java.util.Objects;
 
 @Mapper(componentModel = "Spring")
 public interface CommentMapper {
     CommentMapper INSTANCE = Mappers.getMapper(CommentMapper.class);
 
     @Mapping(target = "postId", source = "post.id")
-    CommentResponse toPostResponse(CommentEntity comment);
+    @Mapping(target = "writerId", source = "writer.id")
+    CommentResponse toCommentResponse(CommentEntity comment);
 
-    List<CommentResponse> toCommentResponseList(List<CommentEntity> comments);
+//    List<CommentResponse> toCommentResponseList(List<CommentEntity> comments);
 
     CommentEntity toCommentEntity(CommentRequest comment);
 }

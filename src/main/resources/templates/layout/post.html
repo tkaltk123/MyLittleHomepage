@@ -102,7 +102,8 @@
 
                     <!--title-->
                     <div class="card-header bg-light">
-                        <i class="fa fa-comment fa"></i> 댓글
+                        <i class="fa fa-comment fa"></i>
+                        <span th:text="댓글+ '(' + ${post.commentCount} + ')'"></span>
                     </div>
 
                     <!--body-->
@@ -144,8 +145,8 @@
                                             </form>
 
                                             <!--dislike comment-->
-                                            <form class="ml-2"
-                                                  th:action="@{/dislike/comments/{commentId}(commentId=${comment.id})}"
+                                            <form th:action="@{/dislike/comments/{commentId}(commentId=${comment.id})}"
+                                                  class="ml-2"
                                                   method="post">
                                                 <button class="btn btn-danger pl-2 pr-2 pb-1 pt-1" type="submit">
                                                     <i class="bi bi-hand-thumbs-down-fill">
@@ -160,13 +161,33 @@
                                                     onclick="setParentId(value)">
                                                 답글
                                             </button>
+
+                                            <!--modify comment-->
+                                            <button class="btn btn-primary pl-2 pr-2 pb-1 pt-1 ml-2"
+                                                    data-toggle="modal"
+                                                    th:if="${comment.writerId} == ${id}"
+                                                    data-target="#modifyModal" th:value="${comment.id}"
+                                                    onclick="setCommentId(value)">
+                                                수정
+                                            </button>
+
+                                            <!--delete comment-->
+                                            <form th:action="@{/comments/{commentId}/delete(commentId=${comment.id})}"
+                                                  class="ml-2"
+                                                  th:if="${comment.writerId} == ${id}"
+                                                  method="post">
+                                                <button class="btn btn-danger pl-2 pr-2 pb-1 pt-1" type="submit">
+                                                    삭제
+                                                </button>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
 
                                 <!--comment content-->
-                                <div class="row m-1">
-                                    <span style="white-space: pre-line" th:text="${comment.content}"></span>
+                                <div class="row m-1" th:id="commentContent + ${comment.id}">
+                                    <span style="white-space: pre-line" th:value="${comment.content}"
+                                          th:text="${comment.content}"></span>
                                 </div>
                                 <hr>
 
@@ -215,18 +236,75 @@
                                                         </i>
                                                     </button>
                                                 </form>
+
+                                                <!--modify comment-->
+                                                <button class="btn btn-primary pl-2 pr-2 pb-1 pt-1 ml-2"
+                                                        data-toggle="modal"
+                                                        th:if="${child.writerId} == ${id}"
+                                                        data-target="#modifyModal" th:value="${child.id}"
+                                                        onclick="setCommentId(value)">
+                                                    수정
+                                                </button>
+
+                                                <!--delete comment-->
+                                                <form th:action="@{/comments/{commentId}/delete(commentId=${child.id})}"
+                                                      class="ml-2"
+                                                      th:if="${child.writerId} == ${id}"
+                                                      method="post">
+                                                    <button class="btn btn-danger pl-2 pr-2 pb-1 pt-1" type="submit">
+                                                        삭제
+                                                    </button>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
 
                                     <!--comment content-->
-                                    <div class="row m-1">
+                                    <div class="row m-1" th:id="commentContent + ${child.id}">
                                         <span style="white-space: pre-line" th:text="${child.content}"></span>
                                     </div>
                                     <hr>
                                 </div>
                             </div>
                         </li>
+                    </div>
+
+                    <div class="row justify-content-center">
+                        <ui class="pagination">
+                            <li class="page-item" th:if="${startPage}>0">
+                                <a class="page-link"
+                                   th:href="@{/posts/{post_id}(post_id=${post_id}, page=${startPage - 1})}">
+                                    Previous
+                                </a>
+                            </li>
+                            <li class="page-item disabled" th:if="${startPage}<=0">
+                                <a class="page-link">
+                                    Previous
+                                </a>
+                            </li>
+                            <th:block th:each="p : ${#numbers.sequence(startPage,endPage)}">
+                                <li class="page-item" th:if="${p}!=${page}">
+                                    <a class="page-link"
+                                       th:href="@{/posts/{post_id}(post_id=${post_id}, page=${p})}"
+                                       th:text="${p+1}"></a>
+                                </li>
+                                <li class="page-item active" th:if="${p}==${page}">
+                                    <a class="page-link"
+                                       th:text="${p+1}"></a>
+                                </li>
+                            </th:block>
+                            <li class="page-item" th:if="${endPage}<${totalPage - 1}">
+                                <a class="page-link"
+                                   th:href="@{/posts/{post_id}(post_id=${post_id}, page=${endPage+1})}">
+                                    Next
+                                </a>
+                            </li>
+                            <li class="page-item disabled" th:if="${endPage}>=${totalPage - 1}">
+                                <a class="page-link">
+                                    Next
+                                </a>
+                            </li>
+                        </ui>
                     </div>
 
                     <!--create comment-->
@@ -280,6 +358,41 @@
                 </div>
             </div>
 
+            <!-- Modify Modal-->
+            <div class="modal fade" id="modifyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+
+                        <!--header-->
+                        <div class="modal-header">
+                            <h5 class="modal-title">댓글 수정</h5>
+                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+
+                        <form th:action="@{/comments/modify}"
+                              th:object="${commentRequest}"
+                              method="post">
+                            <div class="modal-body">
+                                <input type="hidden" th:field="*{commentId}" id="modifyCommentId">
+                                <textarea type="text" style="resize: none" class="form-control"
+                                          id="modifyCommentContent"
+                                          th:field="*{content}" aria-label="Content"
+                                          rows="5" required>
+                                </textarea>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" type="button" data-dismiss="modal">취소</button>
+                                <button type="submit" class="btn btn-primary">수정</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
         </div>
         <!-- End of Main Content -->
 
@@ -309,6 +422,11 @@
 <script>
     function setParentId(pid) {
         document.getElementById('replyParentId').value = pid;
+    }
+
+    function setCommentId(cid) {
+        document.getElementById('modifyCommentId').value = cid;
+        document.getElementById('modifyCommentContent').value = document.getElementById('commentContent' + cid).innerText;
     }
 </script>
 

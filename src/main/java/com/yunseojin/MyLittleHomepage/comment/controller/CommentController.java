@@ -40,12 +40,11 @@ public class CommentController {
         return new ResponseEntity<>("댓글을 삭제했습니다.", HttpStatus.OK);
     }
 
-    @PatchMapping("/{comment_id}")
+    @PatchMapping("")
     @ApiOperation(value = "댓글 수정", notes = "댓글을 수정합니다.")
     public ResponseEntity<?> update(
-            @PathVariable("comment_id") Long commentId,
             @RequestBody @Validated(ValidationGroups.Update.class) CommentRequest commentRequest) {
-        return new ResponseEntity<>(commentService.updateComment(commentId, commentRequest), HttpStatus.OK);
+        return new ResponseEntity<>(commentService.updateComment(commentRequest), HttpStatus.OK);
     }
 
 }

@@ -121,11 +121,11 @@ public class ViewController {
     public String getPost(
             Model model,
             @PathVariable(name = "post_id") Long postId,
-            @RequestParam(required = false, defaultValue = "0") Integer page) {
+            @RequestParam(required = false, name = "page", defaultValue = "0") Integer page) {
 
+        model.addAttribute("page", page);
         model.addAttribute("post", postService.getPost(postId));
-        model.addAttribute("commentRequest", new CommentRequest());
-        model.addAttribute("comments", commentService.getCommentList(postId, page));
+        setCommentsAttribute(model, postId, page);
         setCommonAttribute(model);
         return "/layout/post";
     }
@@ -133,10 +133,28 @@ public class ViewController {
     @PostMapping("/comments/posts/{post_id}")
     public String createComment(
             @PathVariable(name = "post_id") Long postId,
-            @Validated(ValidationGroups.Create.class) CommentRequest commentRequest
-            , HttpServletRequest request) {
+            @Validated(ValidationGroups.Create.class) CommentRequest commentRequest,
+            HttpServletRequest request) {
 
         commentService.createComment(postId, commentRequest);
+        return "redirect:" + request.getHeader("Referer");
+    }
+
+    @PostMapping("/comments/modify")
+    public String updateComment(
+            @Validated(ValidationGroups.Update.class) CommentRequest commentRequest,
+            HttpServletRequest request) {
+
+        commentService.updateComment(commentRequest);
+        return "redirect:" + request.getHeader("Referer");
+    }
+
+    @PostMapping("/comments/{comment_id}/delete")
+    public String deleteComment(
+            @PathVariable(name = "comment_id") Long commentId,
+            HttpServletRequest request) {
+
+        commentService.deleteComment(commentId);
         return "redirect:" + request.getHeader("Referer");
     }
 
@@ -171,7 +189,8 @@ public class ViewController {
 
     private void setCommonAttribute(Model model) {
 
-        model.addAttribute("login_id", memberInfo.getLoginId());
+        model.addAttribute("id", memberInfo.getId());
+        model.addAttribute("loginId", memberInfo.getLoginId());
         model.addAttribute("nickname", memberInfo.getNickname());
         model.addAttribute("boards", boardService.getBoardList());
     }
@@ -179,8 +198,8 @@ public class ViewController {
     private void setPostSearchAttribute(Model model, Long boardId, PostSearch postSearch) {
 
         var postPage = postService.getPostList(boardId, postSearch);
-        var currenPage = postPage.getNumber();
-        var startPage = currenPage - currenPage % 5;
+        var currentPage = postPage.getNumber();
+        var startPage = currentPage - currentPage % 5;
         var endPage = Math.max(0, Math.min(startPage + 4, postPage.getTotalPages() - 1));
 
         model.addAttribute("searchTypes", PostSearchType.values());
@@ -188,6 +207,21 @@ public class ViewController {
         model.addAttribute("endPage", endPage);
         model.addAttribute("totalPage", postPage.getTotalPages());
         model.addAttribute("posts", postPage.getContent());
+    }
+
+    private void setCommentsAttribute(Model model, Long postId, Integer page) {
+
+        var commentPage = commentService.getCommentList(postId, page);
+        var currentPage = commentPage.getNumber();
+        var totalPage = commentPage.getTotalPages();
+        var startPage = currentPage - currentPage % 5;
+        var endPage = Math.max(0, Math.min(startPage + 4, totalPage - 1));
+
+        model.addAttribute("commentRequest", new CommentRequest());
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+        model.addAttribute("totalPage", totalPage);
+        model.addAttribute("comments", commentService.getCommentList(postId, page).getContent());
     }
 
 }
