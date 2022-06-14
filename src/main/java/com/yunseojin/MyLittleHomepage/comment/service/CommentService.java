@@ -13,6 +13,8 @@ public interface CommentService {
 
     void deleteComment(Long commentId);
 
+    CommentResponse getComment(Long commentId);
+
     Page<CommentResponse> getCommentList(Long postId, Integer page);
 
 }

@@ -20,7 +20,7 @@
             <div class="container">
                 <form class="navbar-search mr-4" method="post"
                       th:if="${post_id} == null"
-                      th:action="@{/posts/write/{boardId}(boardId=${board_id})}"
+                      th:action="@{/boards/{boardId}/write_post(boardId=${board_id})}"
                       th:object="${postRequest}">
                     <input type="text" class="form-control bg-light"
                            th:field="*{title}" placeholder="제목"

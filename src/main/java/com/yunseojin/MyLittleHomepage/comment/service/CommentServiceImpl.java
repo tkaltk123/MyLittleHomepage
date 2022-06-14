@@ -87,6 +87,14 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional(readOnly = true)
+    public CommentResponse getComment(Long commentId) {
+
+        var comment = commentRepository.getComment(commentId);
+        return CommentMapper.INSTANCE.toCommentResponse(comment);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Page<CommentResponse> getCommentList(Long postId, Integer page) {
         var post = postRepository.getPost(postId);
         var pageable = PageRequest.of(page, 20);

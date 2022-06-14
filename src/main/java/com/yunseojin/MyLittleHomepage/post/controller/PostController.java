@@ -1,59 +1,94 @@
 package com.yunseojin.MyLittleHomepage.post.controller;
 
+import com.yunseojin.MyLittleHomepage.board.service.BoardService;
+import com.yunseojin.MyLittleHomepage.comment.dto.CommentRequest;
+import com.yunseojin.MyLittleHomepage.comment.service.CommentService;
 import com.yunseojin.MyLittleHomepage.etc.annotation.ValidationGroups;
+import com.yunseojin.MyLittleHomepage.member.dto.MemberInfo;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
-import com.yunseojin.MyLittleHomepage.post.dto.PostSearch;
 import com.yunseojin.MyLittleHomepage.post.service.PostService;
-import io.swagger.annotations.ApiOperation;
+import com.yunseojin.MyLittleHomepage.util.ModelUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
+
 @RequiredArgsConstructor
-@RequestMapping("/api/posts")
-@RestController
+@RequestMapping("/posts/{post_id}")
+@Controller
 public class PostController {
+
+    @Resource
+    private MemberInfo memberInfo;
+    private final BoardService boardService;
     private final PostService postService;
+    private final CommentService commentService;
 
-    @GetMapping("/{post_id}")
-    @ApiOperation(value = "게시글 조회", notes = "게시글 하나를 조회합니다.")
-    public ResponseEntity<?> getPost(
-            @PathVariable("post_id") Long postId) {
-        return new ResponseEntity<>(postService.getPost(postId), HttpStatus.OK);
+    @GetMapping("")
+    public String getPost(
+            Model model,
+            @PathVariable(name = "post_id") Long postId,
+            @RequestParam(required = false, name = "page", defaultValue = "0") Integer page) {
+
+        setPostAttr(model, postId, page);
+        ModelUtil.setCommonAttr(model, memberInfo, boardService.getBoardList());
+        return "/layout/post";
     }
 
-    @DeleteMapping("/{post_id}")
-    @ApiOperation(value = "게시글 삭제", notes = "게시글을 삭제합니다.")
-    public ResponseEntity<?> delete(
-            @PathVariable("post_id") Long postId) {
+    @GetMapping("/modify")
+    public String postUpdateForm(
+            Model model,
+            @PathVariable(name = "post_id") Long postId) {
+
+        if (memberInfo.getId() == null)
+            return "redirect:/login";
+
+        var post = postService.getPost(postId);
+        var postReq = PostRequest.builder()
+                .title(post.getTitle())
+                .content(post.getContent())
+                .hashTags(post.getHashtags())
+                .build();
+        model.addAttribute("postRequest", postReq);
+        ModelUtil.setCommonAttr(model, memberInfo, boardService.getBoardList());
+        return "layout/postForm";
+    }
+
+    @PostMapping("/modify")
+    public String updatePost(
+            @PathVariable(name = "post_id") Long postId,
+            @Validated(ValidationGroups.Update.class) PostRequest postRequest) {
+
+        postService.updatePost(postId, postRequest);
+        return "redirect:/posts/" + postId;
+    }
+
+    @PostMapping("/delete")
+    public String deletePost(@PathVariable(name = "post_id") Long postId) {
+
+        var boardId = postService.getPost(postId).getBoardId();
         postService.deletePost(postId);
-        return new ResponseEntity<>("게시물을 삭제했습니다.", HttpStatus.OK);
+        return "redirect:/boards/" + boardId;
     }
 
-    @PatchMapping("/{post_id}")
-    @ApiOperation(value = "게시글 수정", notes = "게시글을 수정합니다.")
-    public ResponseEntity<?> update(
-            @PathVariable("post_id") Long postId,
-            @RequestBody @Validated(ValidationGroups.Update.class) PostRequest postRequest) {
-        return new ResponseEntity<>(postService.updatePost(postId, postRequest), HttpStatus.OK);
-    }
+    private void setPostAttr(Model model, Long postId, Integer page) {
 
-    @GetMapping("/boards/{board_id}")
-    @ApiOperation(value = "게시글 목록 조회", notes = "게시판의 게시글을 조회합니다.")
-    public ResponseEntity<?> getPosts(
-            @PathVariable("board_id") Long boardId,
-            @RequestParam PostSearch postSearch) {
-        return new ResponseEntity<>(postService.getPostList(boardId, postSearch), HttpStatus.OK);
-    }
+        var commentPage = commentService.getCommentList(postId, page);
+        var currentPage = commentPage.getNumber();
+        var totalPage = commentPage.getTotalPages();
+        var startPage = currentPage - currentPage % 5;
+        var endPage = Math.max(0, Math.min(startPage + 4, totalPage - 1));
 
-    @PostMapping("/boards/{board_id}")
-    @ApiOperation(value = "게시글 작성", notes = "게시판에 게시글을 작성합니다.")
-    public ResponseEntity<?> create(
-            @PathVariable(value = "board_id") Long boardId,
-            @RequestBody @Validated(ValidationGroups.Create.class) PostRequest postRequest) {
-        return new ResponseEntity<>(postService.createPost(boardId, postRequest), HttpStatus.OK);
+        model.addAttribute("post", postService.getPost(postId));
+        model.addAttribute("commentRequest", new CommentRequest());
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+        model.addAttribute("page", page);
+        model.addAttribute("totalPage", totalPage);
+        model.addAttribute("comments", commentService.getCommentList(postId, page).getContent());
     }
 
 

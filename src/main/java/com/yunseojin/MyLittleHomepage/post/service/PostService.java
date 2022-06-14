@@ -10,7 +10,7 @@ public interface PostService {
 
     PostResponse updatePost(Long postId, PostRequest postRequest);
 
-    Long deletePost(Long postId);
+    void deletePost(Long postId);
 
     PostResponse getPost(Long postId);
 

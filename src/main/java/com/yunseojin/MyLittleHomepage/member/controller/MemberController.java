@@ -1,54 +1,70 @@
 package com.yunseojin.MyLittleHomepage.member.controller;
 
 import com.yunseojin.MyLittleHomepage.etc.annotation.ValidationGroups;
+import com.yunseojin.MyLittleHomepage.member.dto.MemberInfo;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberRequest;
 import com.yunseojin.MyLittleHomepage.member.service.MemberService;
-import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 @RequiredArgsConstructor
-@RestController
-@RequestMapping("/api/member")
+@Controller
 public class MemberController {
+    @Resource
+    private MemberInfo memberInfo;
     private final MemberService memberService;
 
-    @PostMapping("/register")
-    @ApiOperation(value = "회원가입", notes = "회원 정보를 생성합니다.")
-    public ResponseEntity<?> register(
-            @RequestBody @Validated(ValidationGroups.Register.class) MemberRequest memberRequest) {
-        return new ResponseEntity<>(memberService.register(memberRequest), HttpStatus.OK);
-    }
+    @GetMapping("/login")
+    public String loginFrom(Model model, HttpServletRequest request) {
 
-    @PatchMapping("/modify")
-    @ApiOperation(value = "정보 수정", notes = "회원 정보를 수정합니다.")
-    public ResponseEntity<?> modify(
-            @RequestBody @Validated(ValidationGroups.Update.class) MemberRequest memberRequest) {
-        return new ResponseEntity<>(memberService.modify(memberRequest), HttpStatus.OK);
-    }
+        if (memberInfo.getId() != null)
+            return "redirect:/";
 
-    @DeleteMapping("/delete")
-    @ApiOperation(value = "회원 탈퇴", notes = "회원 정보를 삭제합니다")
-    public ResponseEntity<?> delete(
-            @RequestBody @Validated(ValidationGroups.Delete.class) MemberRequest memberRequest) {
-        memberService.delete(memberRequest);
-        return new ResponseEntity<>("회원 탈퇴를 성공했습니다.", HttpStatus.OK);
+        model.addAttribute("memberRequest", new MemberRequest());
+        model.addAttribute("referer", request.getHeader("Referer"));
+
+        return "layout/login";
     }
 
     @PostMapping("/login")
-    @ApiOperation(value = "로그인", notes = "세션을 사용해 로그인합니다.")
-    public ResponseEntity<?> login(
-            @RequestBody @Validated(ValidationGroups.LogIn.class) MemberRequest memberRequest) {
-        return new ResponseEntity<>(memberService.login(memberRequest), HttpStatus.OK);
+    public String login(
+            MemberRequest memberRequest,
+            @RequestParam(required = false, name = "referer", defaultValue = "/") String referer) {
+
+        memberService.login(memberRequest);
+        return "redirect:" + referer;
     }
 
-    @GetMapping("/log_out")
-    @ApiOperation(value = "로그아웃", notes = "로그아웃")
-    public ResponseEntity<?> logout() {
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request) {
+
         memberService.logout();
-        return new ResponseEntity<>("로그아웃이 성공했습니다.", HttpStatus.OK);
+        return "redirect:" + request.getHeader("Referer");
+    }
+
+    @GetMapping("/register")
+    public String registerForm(Model model) {
+
+        if (memberInfo.getId() != null)
+            return "redirect:/";
+
+        model.addAttribute("memberRequest", new MemberRequest());
+        return "layout/register";
+    }
+
+    @PostMapping(value = "/register")
+    public String register(
+            @Validated(ValidationGroups.Register.class) MemberRequest memberRequest) {
+
+        memberService.register(memberRequest);
+        return "redirect:/";
     }
 }
