@@ -32,7 +32,7 @@
                     <tbody>
                     <tr th:each="post : ${posts}" th:href="@{/posts/{postId}(postId=${post.id})}">
                         <td th:text="${post.id}"></td>
-                        <td><a th:href="@{/posts/{postId}(postId=${post.id})}" th:text="${post.title + '(' + post.commentCount + ')'}"></a></td>
+                        <td><a th:href="@{/posts/{postId}(postId=${post.id})}" th:text="${post.title + ' [' + post.commentCount + ']'}"></a></td>
                         <td th:text="${post.writerName}"></td>
                         <td th:text="${post.viewCount}"></td>
                         <td th:text="${post.likeCount}"></td>
@@ -71,12 +71,12 @@
                             <li class="page-item" th:if="${startPage}>0">
                                 <a class="page-link"
                                    th:href="@{/boards/{board_id}(board_id=${board_id}, page=${startPage - 1}, postSearchType=${postSearch.postSearchType}, keyword=${postSearch.keyword})}">
-                                    Previous
+                                    Prev
                                 </a>
                             </li>
                             <li class="page-item disabled" th:if="${startPage}<=0">
                                 <a class="page-link">
-                                    Previous
+                                    Prev
                                 </a>
                             </li>
                             <th:block th:each="page : ${#numbers.sequence(startPage,endPage)}">

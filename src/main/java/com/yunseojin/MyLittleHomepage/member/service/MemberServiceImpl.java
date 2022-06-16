@@ -43,7 +43,10 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Login
     public MemberResponse modify(MemberRequest memberRequest) {
+
         var member = memberRepository.getMember(memberInfo.getId());
+        PasswordUtil.checkPassword(memberRequest.getCurrentPassword(), member.getPassword());
+
         var loginId = memberRequest.getLoginId();
         var nickname = memberRequest.getNickname();
         var password = memberRequest.getPassword();
@@ -62,6 +65,7 @@ public class MemberServiceImpl implements MemberService {
         if (password != null)
             member.setPassword(PasswordUtil.getHashedPassword(password));
 
+        memberInfo.setMember(member);
         return MemberMapper.INSTANCE.toMemberResponse(member);
     }
 
@@ -69,7 +73,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void delete(MemberRequest memberRequest) {
         var member = memberRepository.getMember(memberInfo.getId());
-        PasswordUtil.checkPassword(memberRequest.getPassword(), member.getPassword());
+        PasswordUtil.checkPassword(memberRequest.getCurrentPassword(), member.getPassword());
 
         memberRepository.delete(member);
         member.setIsDeleted(1);

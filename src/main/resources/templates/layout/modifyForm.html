@@ -1,0 +1,119 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header"></head>
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!-- Sidebar -->
+    <ui th:replace="fragments/sidebar :: sidebar"></ui>
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Topbar -->
+        <nav th:replace="fragments/bodyHeader :: bodyHeader"></nav>
+
+        <div class="row justify-content-center">
+
+            <div class="col-xl-5 col-lg-6 col-md-9">
+
+                <div class="card o-hidden border-0 shadow-lg my-5">
+                    <div class="card-body p-0">
+                        <!-- Nested Row within Card Body -->
+                        <div class="row">
+                            <div class="col-lg">
+                                <div class="p-5">
+                                    <div class="text-center">
+                                        <h1 class="h4 text-gray-900 mb-4">정보 수정</h1>
+                                    </div>
+                                    <form th:action="@{/modify}" method="post" th:object="${memberRequest}">
+                                        <div class="row form-group">
+                                            <div class="col-auto">
+                                                <span class="row h-25 justify-content-center align-content-center">
+                                                    아이디
+                                                </span>
+                                                <span class="row h-25 justify-content-center align-content-center">
+                                                    닉네임
+                                                </span>
+                                                <span class="row h-25 justify-content-center align-content-center">
+                                                     변경 비밀번호
+                                                </span>
+                                                <span class="row h-25 justify-content-center align-content-center">
+                                                     이전 비밀번호
+                                                </span>
+                                            </div>
+                                            <div class="col">
+                                                <input type="text" class="form-control form-control-user row m-1"
+                                                       th:field="*{loginId}" placeholder="아이디" required>
+                                                <input type="text" class="form-control form-control-user row m-1"
+                                                       th:field="*{nickname}" placeholder="닉네임" required>
+                                                <input type="password" class="form-control form-control-user row m-1"
+                                                       th:field="*{password}" placeholder="변경 비밀번호">
+                                                <input type="password" class="form-control form-control-user row m-1"
+                                                       th:field="*{currentPassword}" id="currentPw"
+                                                       placeholder="이전 비밀번호" required>
+
+                                            </div>
+                                        </div>
+                                        <div class="alert alert-danger" role="alert" th:if="${errorMessage}!=null">
+                                            [[${errorMessage}]]
+                                            <tr th:if="${invalidParams}!=null" th:each="error : ${invalidParams}">
+                                                [[${error}]]<br>
+                                            </tr>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary btn-user btn-block">
+                                            수정
+                                        </button>
+                                    </form>
+                                    <hr>
+                                    <form th:action="@{/delete}" th:object="${memberRequest}" method="post">
+                                        <input type="hidden" th:field="*{currentPassword}" id="deletePw">
+                                        <button type="submit" class="btn btn-danger btn-user btn-block"
+                                                onclick="setDeletePw()">
+                                            탈퇴
+                                        </button>
+                                    </form>
+                                    <hr>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <footer th:replace="fragments/footer :: footer"></footer>
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+
+<!-- Bootstrap core JavaScript-->
+<script src="/vendor/jquery/jquery.min.js"></script>
+<script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+<!-- Custom scripts for all pages-->
+<script src="/js/sb-admin-2.min.js"></script>
+
+<!-- Page level plugins -->
+<script src="/vendor/chart.js/Chart.min.js"></script>
+
+<script>
+    function setDeletePw() {
+        document.getElementById('deletePw').value = document.getElementById('currentPw').value;
+    }
+</script>
+</body>
+
+</html>

@@ -25,18 +25,18 @@
                     <div class="col">
                         <div class="row">
                             <a th:href="@{/boards/{boardId}(boardId = ${post.boardId})}"
-                               class="btn btn-secondary p-0">
+                               class="btn btn-secondary ">
                                 목록
                             </a>
                             <a th:href="@{/posts/{postId}/modify(postId = ${post.id})}"
                                th:if="${post.writerId} == ${id}"
-                               class="btn btn-primary p-0 ml-1" type="submit">
+                               class="btn btn-primary  ml-1" type="submit">
                                 수정
                             </a>
                             <form th:action="@{/posts/{postId}/delete(postId = ${post.id})}"
                                   th:if="${post.writerId} == ${id}"
                                   method="post">
-                                <button class="btn btn-danger p-0 ml-1" type="submit">
+                                <button class="btn btn-danger  ml-1" type="submit">
                                     삭제
                                 </button>
                             </form>
@@ -289,12 +289,12 @@
                             <li class="page-item" th:if="${startPage}>0">
                                 <a class="page-link"
                                    th:href="@{/posts/{post_id}(post_id=${post_id}, page=${startPage - 1})}">
-                                    Previous
+                                    Prev
                                 </a>
                             </li>
                             <li class="page-item disabled" th:if="${startPage}<=0">
                                 <a class="page-link">
-                                    Previous
+                                    Prev
                                 </a>
                             </li>
                             <th:block th:each="p : ${#numbers.sequence(startPage,endPage)}">

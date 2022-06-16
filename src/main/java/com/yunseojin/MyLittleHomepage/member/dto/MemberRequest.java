@@ -42,4 +42,6 @@ public class MemberRequest {
             ValidationGroups.Update.class
     }, message = "닉네임은 알파벳, 한글, 숫자, _만 사용할 수 있습니다.")
     private String nickname;
+
+    private String currentPassword;
 }
