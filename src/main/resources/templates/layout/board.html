@@ -7,7 +7,7 @@
 <div id="wrapper">
 
     <!-- Sidebar -->
-    <ui th:replace="fragments/sidebar :: sidebar"></ui>
+    <div th:replace="fragments/sidebar :: sidebar"></div>
 
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
@@ -16,6 +16,7 @@
 
             <!-- Topbar -->
             <nav th:replace="fragments/bodyHeader :: bodyHeader"></nav>
+
             <div class="container">
                 <table class="table table-striped text-center">
                     <thead>
@@ -32,7 +33,12 @@
                     <tbody>
                     <tr th:each="post : ${posts}" th:href="@{/posts/{postId}(postId=${post.id})}">
                         <td th:text="${post.id}"></td>
-                        <td><a th:href="@{/posts/{postId}(postId=${post.id})}" th:text="${post.title + ' [' + post.commentCount + ']'}"></a></td>
+                        <td>
+                            <a th:href="@{/posts/{postId}(postId=${post.id})}"
+                               th:text="${post.title}"></a>
+                            <span th:if="${post.commentCount} != 0"
+                                  th:text="${' [' + post.commentCount + ']'}"></span>
+                        </td>
                         <td th:text="${post.writerName}"></td>
                         <td th:text="${post.viewCount}"></td>
                         <td th:text="${post.likeCount}"></td>
@@ -67,42 +73,52 @@
                     </form>
 
                     <div>
-                        <ui class="pagination">
-                            <li class="page-item" th:if="${startPage}>0">
+                        <div class="pagination">
+
+                            <!--Prev button-->
+                            <div class="page-item" th:if="${startPage}>0">
                                 <a class="page-link"
                                    th:href="@{/boards/{board_id}(board_id=${board_id}, page=${startPage - 1}, postSearchType=${postSearch.postSearchType}, keyword=${postSearch.keyword})}">
                                     Prev
                                 </a>
-                            </li>
-                            <li class="page-item disabled" th:if="${startPage}<=0">
+                            </div>
+
+                            <!--If first page-->
+                            <div class="page-item disabled" th:if="${startPage}<=0">
                                 <a class="page-link">
                                     Prev
                                 </a>
-                            </li>
+                            </div>
+
+                            <!--Page Buttons-->
                             <th:block th:each="page : ${#numbers.sequence(startPage,endPage)}">
-                                <li class="page-item" th:if="${page}!=${postSearch.page}">
+                                <li th:if="${page}!=${postSearch.page}" class="page-item">
                                     <a class="page-link"
                                        th:href="@{/boards/{board_id}(board_id=${board_id}, page=${page}, postSearchType=${postSearch.postSearchType}, keyword=${postSearch.keyword})}"
                                        th:text="${page+1}"></a>
                                 </li>
-                                <li class="page-item active" th:if="${page}==${postSearch.page}">
-                                    <a class="page-link"
-                                       th:if="${page}==${postSearch.page}"
-                                       th:text="${page+1}"></a>
+
+                                <!-- If current page-->
+                                <li th:if="${page}==${postSearch.page}" class="page-item active">
+                                    <a class="page-link" th:text="${page+1}"></a>
                                 </li>
                             </th:block>
-                            <li class="page-item" th:if="${endPage}<${totalPage - 1}">
+
+                            <!--Next button-->
+                            <div class="page-item" th:if="${endPage}<${totalPage - 1}">
                                 <a class="page-link"
                                    th:href="@{/boards/{board_id}(board_id=${board_id}, page=${endPage+1}, postSearchType=${postSearch.postSearchType}, keyword=${postSearch.keyword})}">
                                     Next
                                 </a>
-                            </li>
-                            <li class="page-item disabled" th:if="${endPage}>=${totalPage - 1}">
+                            </div>
+
+                            <!--If last page-->
+                            <div class="page-item disabled" th:if="${endPage}>=${totalPage - 1}">
                                 <a class="page-link">
                                     Next
                                 </a>
-                            </li>
-                        </ui>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -119,20 +135,6 @@
 
 </div>
 <!-- End of Page Wrapper -->
-
-
-<!-- Bootstrap core JavaScript-->
-<script src="/vendor/jquery/jquery.min.js"></script>
-<script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-<!-- Core plugin JavaScript-->
-<script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-<!-- Custom scripts for all pages-->
-<script src="/js/sb-admin-2.min.js"></script>
-
-<!-- Page level plugins -->
-<script src="/vendor/chart.js/Chart.min.js"></script>
 
 </body>
 
