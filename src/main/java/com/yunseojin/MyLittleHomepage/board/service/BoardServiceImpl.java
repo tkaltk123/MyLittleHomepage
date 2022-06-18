@@ -13,10 +13,18 @@ import java.util.List;
 @Service
 @Transactional
 public class BoardServiceImpl implements BoardService {
+
     private final BoardRepository boardRepository;
 
     @Override
+    public BoardResponse getBoardByName(String name) {
+
+        return BoardMapper.INSTANCE.toPostResponse(boardRepository.findByName(name));
+    }
+
+    @Override
     public List<BoardResponse> getBoardList() {
+
         return BoardMapper.INSTANCE.toPostResponseList(boardRepository.findAll());
     }
 }

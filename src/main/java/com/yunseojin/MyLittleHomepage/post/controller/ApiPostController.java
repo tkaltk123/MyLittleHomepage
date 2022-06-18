@@ -45,7 +45,7 @@ public class ApiPostController {
     public ResponseEntity<?> getPosts(
             @PathVariable("board_id") Long boardId,
             @RequestParam PostSearch postSearch) {
-        return new ResponseEntity<>(postService.getPostList(boardId, postSearch), HttpStatus.OK);
+        return new ResponseEntity<>(postService.getPostList(boardId, 20, postSearch), HttpStatus.OK);
     }
 
     @PostMapping("/boards/{board_id}")

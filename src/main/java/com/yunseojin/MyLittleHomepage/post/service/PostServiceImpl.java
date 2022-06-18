@@ -3,6 +3,7 @@ package com.yunseojin.MyLittleHomepage.post.service;
 import com.yunseojin.MyLittleHomepage.board.repository.BoardRepository;
 import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
+import com.yunseojin.MyLittleHomepage.etc.enums.PostOrderType;
 import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberInfo;
 import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
@@ -22,6 +23,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -96,12 +99,20 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<PostResponse> getPostList(Long boardId, PostSearch postSearch) {
+    public Page<PostResponse> getPostList(Long boardId, int postCount, PostSearch postSearch) {
 
-        var pageable = PageRequest.of(postSearch.getPage(), 20);
+        var pageable = PageRequest.of(postSearch.getPage(), postCount);
         var board = boardRepository.getBoard(boardId);
         var postPage = postRepository.getPosts(board, pageable, postSearch);
         return postPage.map(SimplePostMapper.INSTANCE::toPostResponse);
+    }
+
+    @Override
+    public List<PostResponse> getOrderedPostList(Long boardId, int postCount, PostOrderType postOrderType) {
+
+        var board = boardRepository.getBoard(boardId);
+        var postPage = postRepository.getPostsOrderedBy(board, postCount, postOrderType);
+        return postPage.stream().map(SimplePostMapper.INSTANCE::toPostResponse).collect(Collectors.toList());
     }
 
     //게시글의 작성자가 입력한 회원이 맞는지 확인

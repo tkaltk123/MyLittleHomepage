@@ -61,7 +61,7 @@ public class BoardController {
 
     private void setPostSearchAttribute(Model model, Long boardId, PostSearch postSearch) {
 
-        var postPage = postService.getPostList(boardId, postSearch);
+        var postPage = postService.getPostList(boardId,20, postSearch);
         var currentPage = postPage.getNumber();
         var startPage = currentPage - currentPage % 5;
         var endPage = Math.max(0, Math.min(startPage + 4, postPage.getTotalPages() - 1));

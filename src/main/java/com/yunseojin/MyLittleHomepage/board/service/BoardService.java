@@ -7,5 +7,8 @@ import com.yunseojin.MyLittleHomepage.comment.dto.CommentResponse;
 import java.util.List;
 
 public interface BoardService {
+
+    BoardResponse getBoardByName(String name);
+
     List<BoardResponse> getBoardList();
 }
