@@ -19,7 +19,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public BoardResponse getBoardByName(String name) {
 
-        return BoardMapper.INSTANCE.toPostResponse(boardRepository.findByName(name));
+        return BoardMapper.INSTANCE.toPostResponse(boardRepository.getBoardByName(name));
     }
 
     @Override

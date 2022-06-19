@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberResponse {
+
     private String loginId;
     private String nickname;
     private MemberType memberType;

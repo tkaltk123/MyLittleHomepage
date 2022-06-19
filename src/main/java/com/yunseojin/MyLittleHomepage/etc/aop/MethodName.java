@@ -8,8 +8,10 @@ import org.springframework.stereotype.Component;
 @Component
 @Aspect
 public class MethodName {
+
     @Before(value = "execution(* com.yunseojin.MyLittleHomepage.*.service.*.*(..))")
     public void printMethodName(JoinPoint joinPoint) {
+
         System.out.println();
         System.out.print("===========================");
         System.out.println(joinPoint.getSignature().getName());

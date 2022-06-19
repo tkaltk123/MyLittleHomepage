@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 @RequiredArgsConstructor
 @Controller
 public class EvaluationController {
+
     private final CommentService commentService;
     private final EvaluationService evaluationService;
 
@@ -17,6 +18,7 @@ public class EvaluationController {
     public String likePost(@PathVariable(name = "post_id") Long postId) {
 
         evaluationService.likePost(postId);
+
         return "redirect:/posts/" + postId;
     }
 
@@ -24,7 +26,9 @@ public class EvaluationController {
     public String likeComment(@PathVariable(name = "comment_id") Long commentId) {
 
         var comment = commentService.getComment(commentId);
+
         evaluationService.likeComment(commentId);
+
         return "redirect:/posts/" + comment.getPostId();
     }
 
@@ -32,6 +36,7 @@ public class EvaluationController {
     public String dislikePost(@PathVariable(name = "post_id") Long postId) {
 
         evaluationService.dislikePost(postId);
+
         return "redirect:/posts/" + postId;
     }
 
@@ -39,7 +44,9 @@ public class EvaluationController {
     public String dislikeComment(@PathVariable(name = "comment_id") Long commentId) {
 
         var comment = commentService.getComment(commentId);
+
         evaluationService.dislikeComment(commentId);
+
         return "redirect:/posts/" + comment.getPostId();
     }
 

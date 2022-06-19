@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface DslCommentRepository {
+
     Page<CommentEntity> getRootComments(PostEntity post, Pageable pageable);
 
     CommentEntity getComment(Long commentId);

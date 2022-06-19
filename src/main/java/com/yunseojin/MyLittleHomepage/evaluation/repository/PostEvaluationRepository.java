@@ -8,5 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PostEvaluationRepository extends JpaRepository<PostEvaluationEntity, Long> {
+
     PostEvaluationEntity findByPostAndWriter(PostEntity post, MemberEntity writer);
 }

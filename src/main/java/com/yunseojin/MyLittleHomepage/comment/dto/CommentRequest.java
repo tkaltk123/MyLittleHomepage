@@ -13,10 +13,12 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommentRequest implements Serializable {
+
     @NotBlank(groups = {
             ValidationGroups.Create.class,
             ValidationGroups.Update.class
     }, message = "내용이 비어있습니다.")
+    @Builder.Default
     private String content = "";
 
     private Long parentId;

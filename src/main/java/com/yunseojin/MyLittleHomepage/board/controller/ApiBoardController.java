@@ -13,11 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/boards")
 @RestController
 public class ApiBoardController {
+
     private final BoardService boardService;
 
     @GetMapping("")
     @ApiOperation(value = "게시판 목록 조회", notes = "모든 게시판의 목록을 조회합니다.")
     public ResponseEntity<?> getBoards() {
+
         return new ResponseEntity<>(boardService.getBoardList(), HttpStatus.OK);
     }
 }

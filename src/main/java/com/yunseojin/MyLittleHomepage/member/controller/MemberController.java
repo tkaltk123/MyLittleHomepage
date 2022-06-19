@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -45,6 +44,7 @@ public class MemberController {
             @RequestParam(required = false, name = "referer", defaultValue = "/") String referer) {
 
         memberService.login(memberRequest);
+
         return "redirect:" + referer;
     }
 
@@ -52,6 +52,7 @@ public class MemberController {
     public String logout(HttpServletRequest request) {
 
         memberService.logout();
+
         return "redirect:" + request.getHeader("Referer");
     }
 
@@ -62,14 +63,16 @@ public class MemberController {
             return "redirect:/";
 
         model.addAttribute("memberRequest", new MemberRequest());
+
         return "layout/register";
     }
 
     @PostMapping("/register")
     public String register(
-            @Validated(ValidationGroups.Register.class) MemberRequest memberRequest) {
+            @Validated(ValidationGroups.Create.class) MemberRequest memberRequest) {
 
         memberService.register(memberRequest);
+
         return "redirect:/";
     }
 
@@ -83,16 +86,19 @@ public class MemberController {
                 .loginId(memberInfo.getLoginId())
                 .nickname(memberInfo.getNickname())
                 .build();
+
         model.addAttribute("memberRequest", memberRequest);
         ModelUtil.setCommonAttr(model, memberInfo, boardService.getBoardList());
+
         return "/layout/modifyForm";
     }
 
     @PostMapping("/modify")
     public String modify(
-            @Validated(ValidationGroups.Register.class) MemberRequest memberRequest) {
+            @Validated(ValidationGroups.Update.class) MemberRequest memberRequest) {
 
         memberService.modify(memberRequest);
+
         return "redirect:/";
     }
 
@@ -100,6 +106,7 @@ public class MemberController {
     public String delete(MemberRequest memberRequest) {
 
         memberService.delete(memberRequest);
+
         return "redirect:/";
     }
 }

@@ -70,7 +70,7 @@
                                         <div class="row justify-content-end">
                                             <span id="test"></span>
                                             <select class="col-auto border-0 bg-light" onchange="changeBestFreePosts(value)">
-                                                <option th:each="type:${orderTypes}" th:value="${type.code}"
+                                                <option th:each="type:${T(com.yunseojin.MyLittleHomepage.etc.enums.PostOrderType).values()}" th:value="${type.code}"
                                                         th:text="${type.displayName}"></option>
                                             </select>
                                         </div>
@@ -206,7 +206,7 @@
                                     <div class="col">
                                         <div class="row justify-content-end">
                                             <select class="col-auto border-0 bg-light" onchange="changeBestHumorPosts(value)">
-                                                <option th:each="type:${orderTypes}" th:value="${type.code}"
+                                                <option th:each="type:${T(com.yunseojin.MyLittleHomepage.etc.enums.PostOrderType).values()}" th:value="${type.code}"
                                                         th:text="${type.displayName}"></option>
                                             </select>
                                         </div>

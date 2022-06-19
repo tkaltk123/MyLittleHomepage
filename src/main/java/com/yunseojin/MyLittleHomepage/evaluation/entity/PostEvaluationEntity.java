@@ -11,11 +11,12 @@ import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @Entity
 @SQLDelete(sql = "UPDATE evaluations SET is_deleted = 1 WHERE id=?")
 @DiscriminatorValue("post")
 public class PostEvaluationEntity extends EvaluationEntity {
+
     @Setter
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "post_id", nullable = false)

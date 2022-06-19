@@ -15,12 +15,14 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/posts")
 @RestController
 public class ApiPostController {
+
     private final PostService postService;
 
     @GetMapping("/{post_id}")
     @ApiOperation(value = "게시글 조회", notes = "게시글 하나를 조회합니다.")
     public ResponseEntity<?> getPost(
             @PathVariable("post_id") Long postId) {
+
         return new ResponseEntity<>(postService.getPost(postId), HttpStatus.OK);
     }
 
@@ -28,7 +30,9 @@ public class ApiPostController {
     @ApiOperation(value = "게시글 삭제", notes = "게시글을 삭제합니다.")
     public ResponseEntity<?> delete(
             @PathVariable("post_id") Long postId) {
+
         postService.deletePost(postId);
+
         return new ResponseEntity<>("게시물을 삭제했습니다.", HttpStatus.OK);
     }
 
@@ -37,6 +41,7 @@ public class ApiPostController {
     public ResponseEntity<?> update(
             @PathVariable("post_id") Long postId,
             @RequestBody @Validated(ValidationGroups.Update.class) PostRequest postRequest) {
+
         return new ResponseEntity<>(postService.updatePost(postId, postRequest), HttpStatus.OK);
     }
 
@@ -45,6 +50,7 @@ public class ApiPostController {
     public ResponseEntity<?> getPosts(
             @PathVariable("board_id") Long boardId,
             @RequestParam PostSearch postSearch) {
+
         return new ResponseEntity<>(postService.getPostList(boardId, 20, postSearch), HttpStatus.OK);
     }
 
@@ -53,6 +59,7 @@ public class ApiPostController {
     public ResponseEntity<?> create(
             @PathVariable(value = "board_id") Long boardId,
             @RequestBody @Validated(ValidationGroups.Create.class) PostRequest postRequest) {
+
         return new ResponseEntity<>(postService.createPost(boardId, postRequest), HttpStatus.OK);
     }
 

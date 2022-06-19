@@ -26,49 +26,52 @@ import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @Entity
 @SQLDelete(sql = "UPDATE posts SET is_deleted = 1 WHERE id=?")
 @Where(clause = "is_deleted = 0")
 @Table(name = "posts")
 public class PostEntity extends BaseEntity implements Evaluable {
-    @Setter
+
+    private static class PostEntityBuilderImpl extends PostEntityBuilder<PostEntity, PostEntityBuilderImpl> {
+
+        @Override
+        public PostEntity build() {
+
+            var post = new PostEntity(this);
+            post.getPostCount().setPost(post);
+
+            return post;
+        }
+    }
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "board_id", nullable = false)
     private BoardEntity board;
 
-    @Setter
     @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "writer_id", nullable = false)
     private MemberEntity writer;
 
-    @Setter
     @Column(name = "writer_name", nullable = false)
     private String writerName;
 
-    @Setter
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Setter
     @Lob
     @Column(name = "content")
     private String content;
 
     //즉시 로딩
     @OneToOne(mappedBy = "post", optional = false, cascade = CascadeType.PERSIST)
-    private PostCount postCount;
+    @Builder.Default
+    private PostCount postCount = new PostCount();
 
     @Builder.Default
     @OrderBy("id asc")
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HashtagEntity> hashtags = new ArrayList<>();
-
-    public void setPostCount(PostCount postCount) {
-        if (postCount != null)
-            postCount.setPost(this);
-        this.postCount = postCount;
-    }
 
     public String[] getStringHashtags() {
         return hashtags.stream().map(HashtagEntity::toString).toArray(String[]::new);

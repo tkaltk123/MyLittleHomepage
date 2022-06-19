@@ -72,7 +72,6 @@ class PostServiceImplTest {
         memberService.register(loginReq2);
         memberService.logout();
         board = BoardEntity.builder().name("test").build();
-        board.setBoardCount(new BoardCount());
         boardRepository.save(board);
         testBoardId = board.getId();
         member1 = memberRepository.findByLoginId(loginReq.getLoginId());

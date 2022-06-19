@@ -22,6 +22,7 @@ import java.util.Set;
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
 @ToString
 public class MemberInfo implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     private Long id;
@@ -32,6 +33,7 @@ public class MemberInfo implements Serializable {
     private transient LocalDateTime lastCreatedCommentAt;
 
     public void clear() {
+
         id = null;
         loginId = null;
         nickname = null;
@@ -40,12 +42,14 @@ public class MemberInfo implements Serializable {
     }
 
     public void setMember(MemberEntity member) {
+
         id = member.getId();
         loginId = member.getLoginId();
         nickname = member.getNickname();
     }
 
     public boolean viewPost(Long postId) {
+
         if (viewPosts.contains(postId))
             return false;
         viewPosts.add(postId);
@@ -53,18 +57,24 @@ public class MemberInfo implements Serializable {
     }
 
     public void createPost() {
+
         var now = LocalDateTime.now();
         long diff = 0;
+
         if (lastCreatedPostAt != null && (diff = Duration.between(lastCreatedPostAt, now).getSeconds()) < 10L)
             throw new CreateRepeatException(10 - (int) diff, ErrorMessage.POST_REPEAT_EXCEPTION);
+
         lastCreatedPostAt = now;
     }
 
     public void createComment() {
+
         var now = LocalDateTime.now();
         long diff = 0;
+
         if (lastCreatedCommentAt != null && (diff = Duration.between(lastCreatedCommentAt, now).getSeconds()) < 10L)
             throw new CreateRepeatException(10 - (int) diff, ErrorMessage.COMMENT_REPEAT_EXCEPTION);
+
         lastCreatedCommentAt = now;
     }
 }

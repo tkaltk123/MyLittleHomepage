@@ -10,6 +10,7 @@ import java.util.List;
 
 @Mapper(componentModel = "Spring")
 public interface SimplePostMapper {
+
     SimplePostMapper INSTANCE = Mappers.getMapper(SimplePostMapper.class);
 
     @Mapping(target = "boardId", source = "board.id")

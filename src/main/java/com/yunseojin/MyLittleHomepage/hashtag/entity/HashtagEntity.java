@@ -20,6 +20,7 @@ import javax.persistence.*;
 @Where(clause = "is_deleted = 0")
 @Table(name = "hashtags")
 public class HashtagEntity extends BaseEntity {
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "post_id", nullable = false)
     private PostEntity post;

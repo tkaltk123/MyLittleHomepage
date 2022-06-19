@@ -30,6 +30,7 @@ public class GlobalExceptionHandler {
         } else if (e instanceof BaseException) {
 
             var ex = (BaseException) e;
+
             if (ex.getCode().equals(ErrorMessage.NOT_LOGIN_EXCEPTION.getCode()))
                 return "redirect:/login";
 

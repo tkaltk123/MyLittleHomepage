@@ -14,12 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/evaluations")
 @RestController
 public class ApiEvaluationController {
+
     private final EvaluationService evaluationService;
 
     @PostMapping("/like/posts/{post_id}")
     @ApiOperation(value = "게시글 좋아요", notes = "게시글에 좋아요를 추가합니다.")
     public ResponseEntity<?> likePost(
             @PathVariable(value = "post_id") Long postId) {
+
         return new ResponseEntity<>(evaluationService.likePost(postId), HttpStatus.OK);
     }
 
@@ -27,6 +29,7 @@ public class ApiEvaluationController {
     @ApiOperation(value = "댓글 좋아요", notes = "댓글에 좋아요를 추가합니다.")
     public ResponseEntity<?> likeComment(
             @PathVariable(value = "comment_id") Long commentId) {
+
         return new ResponseEntity<>(evaluationService.likeComment(commentId), HttpStatus.OK);
     }
 
@@ -34,6 +37,7 @@ public class ApiEvaluationController {
     @ApiOperation(value = "게시글 싫어요", notes = "게시글에 싫어요를 추가합니다.")
     public ResponseEntity<?> dislikePost(
             @PathVariable(value = "post_id") Long postId) {
+
         return new ResponseEntity<>(evaluationService.dislikePost(postId), HttpStatus.OK);
     }
 
@@ -41,6 +45,7 @@ public class ApiEvaluationController {
     @ApiOperation(value = "댓글 싫어요", notes = "게시글에 싫어요를 추가합니다.")
     public ResponseEntity<?> dislikeComment(
             @PathVariable(value = "comment_id") Long commentId) {
+
         return new ResponseEntity<>(evaluationService.dislikeComment(commentId), HttpStatus.OK);
     }
 }

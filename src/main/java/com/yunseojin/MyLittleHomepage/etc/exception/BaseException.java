@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties({ "cause", "stackTrace","message","localizedMessage","message","suppressed" })
 public class BaseException extends RuntimeException{
+
     protected String className;
     protected String errorMessage;
     protected Integer code;
@@ -19,12 +20,15 @@ public class BaseException extends RuntimeException{
     protected HttpStatus httpStatus;
 
     public BaseException(ErrorMessage errorMessage) {
+
         this.className = this.getClass().getSimpleName();
         this.errorMessage = errorMessage.getErrorMessage();
         this.code = errorMessage.getCode();
         this.httpStatus = errorMessage.getHttpStatus();
     }
+
     public BaseException(String className, ErrorMessage errorMessage) {
+
         this.className = className;
         this.errorMessage = errorMessage.getErrorMessage();
         this.code = errorMessage.getCode();

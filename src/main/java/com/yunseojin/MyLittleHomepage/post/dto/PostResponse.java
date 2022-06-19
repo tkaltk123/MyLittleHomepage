@@ -16,6 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostResponse {
+
     private Long id;
     private Long boardId;
     private Long writerId;

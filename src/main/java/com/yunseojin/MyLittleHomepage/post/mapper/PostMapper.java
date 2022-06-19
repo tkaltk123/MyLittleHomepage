@@ -9,6 +9,7 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "Spring")
 public interface PostMapper {
+
     PostMapper INSTANCE = Mappers.getMapper(PostMapper.class);
 
     @Mapping(target = "boardId", source = "board.id")
@@ -17,4 +18,6 @@ public interface PostMapper {
     PostResponse toPostResponse(PostEntity post);
 
     PostEntity toPostEntity(PostRequest postRequest);
+
+    PostRequest toPostRequest(PostResponse postResponse);
 }

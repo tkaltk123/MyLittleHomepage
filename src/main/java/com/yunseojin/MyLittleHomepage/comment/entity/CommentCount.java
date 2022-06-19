@@ -11,6 +11,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "comment_counts")
 public class CommentCount {
+
     @Id
     private Long id;
 

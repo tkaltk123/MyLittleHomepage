@@ -1,5 +1,6 @@
 package com.yunseojin.MyLittleHomepage.board.entity;
 
+import com.yunseojin.MyLittleHomepage.comment.entity.CommentEntity;
 import com.yunseojin.MyLittleHomepage.etc.entity.BaseEntity;
 import com.yunseojin.MyLittleHomepage.post.entity.PostCount;
 import lombok.Builder;
@@ -14,14 +15,26 @@ import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @Entity
 @SQLDelete(sql = "UPDATE BOARDS SET IS_DELETED = 1 WHERE ID=?")
 @Where(clause = "IS_DELETED = 0")
 @Table(name = "BOARDS")
 public class BoardEntity extends BaseEntity {
+
+    private static class BoardEntityBuilderImpl extends BoardEntityBuilder<BoardEntity, BoardEntityBuilderImpl> {
+
+        @Override
+        public BoardEntity build() {
+
+            var board = new BoardEntity(this);
+            board.getBoardCount().setBoard(board);
+
+            return board;
+        }
+    }
+
     @Basic
-    @Setter
     @Column(name = "NAME", nullable = false, length = 50)
     private String name;
 
@@ -29,12 +42,6 @@ public class BoardEntity extends BaseEntity {
     @Builder.Default
     @OneToOne(mappedBy = "board", optional = false, cascade = CascadeType.PERSIST)
     private BoardCount boardCount = new BoardCount();
-
-    public void setBoardCount(BoardCount boardCount) {
-        if (boardCount != null)
-            boardCount.setBoard(this);
-        this.boardCount = boardCount;
-    }
 
     public Integer getPostCount() {
         return boardCount.getPostCount();

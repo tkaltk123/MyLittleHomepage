@@ -15,12 +15,14 @@ import javax.annotation.Resource;
 @Component
 @Aspect
 public class LoginAop {
+
     @Resource
     private MemberInfo memberInfo;
 
 
     @Before("@annotation(com.yunseojin.MyLittleHomepage.etc.annotation.Login)")
     public void checkLogin(JoinPoint joinPoint) throws BadRequestException {
+
         var methodSignature = (MethodSignature) joinPoint.getSignature();
         var login = methodSignature.getMethod().getAnnotation(Login.class);
         var requireLoggedIn = login.required();

@@ -25,6 +25,7 @@ import javax.annotation.Resource;
 @Service
 @Transactional
 public class EvaluationServiceImpl implements EvaluationService {
+
     @Resource
     private MemberInfo memberInfo;
 
@@ -36,123 +37,136 @@ public class EvaluationServiceImpl implements EvaluationService {
 
     @Login
     @Override
-    public String likePost(Long postId) {
+    public EvaluationType likePost(Long postId) {
+
+        return evaluatePost(postId, EvaluationType.LIKE);
+    }
+
+    @Login
+    @Override
+    public EvaluationType likeComment(Long commentId) {
+
+        return evaluateComment(commentId, EvaluationType.LIKE);
+    }
+
+    @Login
+    @Override
+    public EvaluationType dislikePost(Long postId) {
+
+        return evaluatePost(postId, EvaluationType.DISLIKE);
+    }
+
+    @Login
+    @Override
+    public EvaluationType dislikeComment(Long commentId) {
+
+        return evaluateComment(commentId, EvaluationType.DISLIKE);
+    }
+
+    private EvaluationType evaluatePost(Long postId, EvaluationType evaluationType) {
+
         var member = memberRepository.getMember(memberInfo.getId());
         var post = postRepository.getPost(postId);
         var postEvaluation = postEvaluationRepository.findByPostAndWriter(post, member);
 
-        if (postEvaluation != null)
-            return applyLike(post, postEvaluation);
+        if (postEvaluation == null)
+            return createPostEvaluation(member, post, evaluationType);
 
-        postEvaluation = getPostEvaluation(member, post, EvaluationType.LIKE);
-        postEvaluationRepository.save(postEvaluation);
-        post.increaseLikeCount();
-        return "좋아요 성공";
+        return evaluateOrCancel(post, postEvaluation, evaluationType);
+
     }
 
+    private EvaluationType evaluateComment(Long commentId, EvaluationType evaluationType) {
 
-    @Login
-    @Override
-    public String likeComment(Long commentId) {
         var member = memberRepository.getMember(memberInfo.getId());
         var comment = commentRepository.getComment(commentId);
         var commentEvaluation = commentEvaluationRepository.findByCommentAndWriter(comment, member);
 
-        if (commentEvaluation != null)
-            return applyLike(comment, commentEvaluation);
+        if (commentEvaluation == null)
+            return createCommentEvaluation(member, comment, evaluationType);
 
-        commentEvaluation = getCommentEvaluation(member, comment, EvaluationType.LIKE);
-        commentEvaluationRepository.save(commentEvaluation);
-        comment.increaseLikeCount();
-        return "좋아요 성공";
-    }
-
-    @Login
-    @Override
-    public String dislikePost(Long postId) {
-        var member = memberRepository.getMember(memberInfo.getId());
-        var post = postRepository.getPost(postId);
-        var postEvaluation = postEvaluationRepository.findByPostAndWriter(post, member);
-
-        if (postEvaluation != null)
-            return applyDislike(post, postEvaluation);
-
-        postEvaluation = getPostEvaluation(member, post, EvaluationType.DISLIKE);
-        postEvaluationRepository.save(postEvaluation);
-        post.increaseDislikeCount();
-        return "싫어요 성공";
+        return evaluateOrCancel(comment, commentEvaluation, evaluationType);
 
     }
 
-    @Login
-    @Override
-    public String dislikeComment(Long commentId) {
-        var member = memberRepository.getMember(memberInfo.getId());
-        var comment = commentRepository.getComment(commentId);
-        var commentEvaluation = commentEvaluationRepository.findByCommentAndWriter(comment, member);
+    private EvaluationType createPostEvaluation(MemberEntity member, PostEntity post, EvaluationType type) {
 
-        if (commentEvaluation != null)
-            return applyDislike(comment, commentEvaluation);
-
-        commentEvaluation = getCommentEvaluation(member, comment, EvaluationType.DISLIKE);
-        commentEvaluationRepository.save(commentEvaluation);
-        comment.increaseDislikeCount();
-        return "싫어요 성공";
-    }
-
-    private PostEvaluationEntity getPostEvaluation(MemberEntity member, PostEntity post, EvaluationType evaluationType) {
-        return PostEvaluationEntity.builder()
-                .evaluationType(evaluationType)
+        var postEvaluation = PostEvaluationEntity.builder()
+                .evaluationType(type)
                 .post(post)
                 .writer(member)
                 .build();
+
+        postEvaluationRepository.save(postEvaluation);
+        increaseEvaluation(post, type);
+
+        return type;
     }
 
-    private CommentEvaluationEntity getCommentEvaluation(MemberEntity member, CommentEntity comment, EvaluationType evaluationType) {
-        return CommentEvaluationEntity.builder()
-                .evaluationType(evaluationType)
+    private EvaluationType createCommentEvaluation(MemberEntity member, CommentEntity comment, EvaluationType type) {
+
+        var commentEvaluation = CommentEvaluationEntity.builder()
+                .evaluationType(type)
                 .comment(comment)
                 .writer(member)
                 .build();
+
+        commentEvaluationRepository.save(commentEvaluation);
+        increaseEvaluation(comment, type);
+
+        return type;
     }
 
-    private String applyLike(Evaluable evaluable, EvaluationEntity evaluation) {
-        switch (evaluation.getEvaluationType()) {
-            case DISLIKE:
-                evaluable.decreaseDislikeCount();
+    private EvaluationType evaluateOrCancel(Evaluable evaluable, EvaluationEntity evaluation, EvaluationType evaluationType) {
 
-            case NONE:
+        var evaluatedType = evaluation.getEvaluationType();
+
+        if (evaluatedType == evaluationType) {
+
+            evaluation.setEvaluationType(EvaluationType.NONE);
+            decreaseEvaluation(evaluable, evaluationType);
+
+            return EvaluationType.NONE;
+        }
+
+        if (evaluatedType != EvaluationType.NONE)
+            decreaseEvaluation(evaluable, evaluationType.opposite());
+
+        evaluation.setEvaluationType(evaluationType);
+        increaseEvaluation(evaluable, evaluationType);
+        return evaluationType;
+    }
+
+    private void increaseEvaluation(Evaluable evaluable, EvaluationType type) {
+
+        switch (type) {
+
+            case LIKE:
                 evaluable.increaseLikeCount();
-                evaluation.setEvaluationType(EvaluationType.LIKE);
-                return "좋아요 성공";
-
-            case LIKE:
-                evaluation.setEvaluationType(EvaluationType.NONE);
-                evaluable.decreaseLikeCount();
-                return "좋아요 취소";
-
-            default:
-                return "";
-        }
-    }
-
-    private String applyDislike(Evaluable evaluable, EvaluationEntity evaluation) {
-        switch (evaluation.getEvaluationType()) {
-            case LIKE:
-                evaluable.decreaseLikeCount();
-
-            case NONE:
-                evaluable.increaseDislikeCount();
-                evaluation.setEvaluationType(EvaluationType.DISLIKE);
-                return "싫어요 성공";
+                break;
 
             case DISLIKE:
-                evaluation.setEvaluationType(EvaluationType.NONE);
-                evaluable.decreaseDislikeCount();
-                return "싫어요 취소";
+                evaluable.increaseDislikeCount();
 
             default:
-                return "";
+                break;
         }
     }
+
+    private void decreaseEvaluation(Evaluable evaluable, EvaluationType type) {
+
+        switch (type) {
+
+            case LIKE:
+                evaluable.decreaseLikeCount();
+                break;
+
+            case DISLIKE:
+                evaluable.decreaseDislikeCount();
+
+            default:
+                break;
+        }
+    }
+
 }

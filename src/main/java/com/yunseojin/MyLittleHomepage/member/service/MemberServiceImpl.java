@@ -21,18 +21,21 @@ import javax.annotation.Resource;
 @Service
 @Transactional
 public class MemberServiceImpl implements MemberService {
-    private final MemberRepository memberRepository;
+
     @Resource
     private MemberInfo memberInfo;
+    private final MemberRepository memberRepository;
 
     @Override
     @Login(required = false)
     public MemberResponse register(MemberRequest memberRequest) {
-        checkLogInIdDuplicate(memberRequest.getLoginId());
-        checkNicknameDuplicate(memberRequest.getNickname());
 
-        var member = MemberMapper.INSTANCE.toMemberEntity(memberRequest);
-        member.setMemberType(MemberType.NORMAL);
+        checkDuplication(memberRequest);
+
+        var member = MemberMapper.INSTANCE.toMemberEntity(memberRequest)
+                .toBuilder()
+                .memberType(MemberType.NORMAL)
+                .build();
 
         memberRepository.save(member);
         memberInfo.setMember(member);
@@ -45,34 +48,22 @@ public class MemberServiceImpl implements MemberService {
     public MemberResponse modify(MemberRequest memberRequest) {
 
         var member = memberRepository.getMember(memberInfo.getId());
+
         PasswordUtil.checkPassword(memberRequest.getCurrentPassword(), member.getPassword());
+        checkDuplicationFor(member, memberRequest);
 
-        var loginId = memberRequest.getLoginId();
-        var nickname = memberRequest.getNickname();
-        var password = memberRequest.getPassword();
-
-        checkLogInIdDuplicate(member, loginId);
-        checkNicknameDuplicate(member, nickname);
-
-        if (loginId != null) {
-            member.setLoginId(loginId);
-            memberInfo.setMember(member);
-        }
-
-        if (nickname != null)
-            member.setNickname(nickname);
-
-        if (password != null)
-            member.setPassword(PasswordUtil.getHashedPassword(password));
-
+        member.update(memberRequest);
         memberInfo.setMember(member);
+
         return MemberMapper.INSTANCE.toMemberResponse(member);
     }
 
     @Login
     @Override
     public void delete(MemberRequest memberRequest) {
+
         var member = memberRepository.getMember(memberInfo.getId());
+
         PasswordUtil.checkPassword(memberRequest.getCurrentPassword(), member.getPassword());
 
         memberRepository.delete(member);
@@ -83,14 +74,11 @@ public class MemberServiceImpl implements MemberService {
     @Login(required = false)
     @Override
     public MemberResponse login(MemberRequest memberRequest) {
-        MemberEntity member = null;
-        try {
-            member = memberRepository.getMember(memberRequest.getLoginId());
-            PasswordUtil.checkPassword(memberRequest.getPassword(), member.getPassword());
-        } catch (Exception e) {
-            throw new BadRequestException(ErrorMessage.LOGIN_FAILED_EXCEPTION);
-        }
+
+        MemberEntity member = getLoginMember(memberRequest);
+
         memberInfo.setMember(member);
+
         return MemberMapper.INSTANCE.toMemberResponse(member);
     }
 
@@ -100,23 +88,42 @@ public class MemberServiceImpl implements MemberService {
         memberInfo.clear();
     }
 
-    private void checkLogInIdDuplicate(String newLogInId) {
-        if (memberRepository.existsByLoginId(newLogInId))
-            throw new BadRequestException(ErrorMessage.LOGIN_ID_DUPLICATE_EXCEPTION);
-    }
+    private void checkDuplication(MemberRequest memberRequest) {
 
-    private void checkLogInIdDuplicate(MemberEntity member, String newLogInId) {
-        if (newLogInId != null && !member.getLoginId().equals(newLogInId) && memberRepository.existsByLoginId(newLogInId))
+        if (memberRepository.existsByLoginId(memberRequest.getLoginId()))
             throw new BadRequestException(ErrorMessage.LOGIN_ID_DUPLICATE_EXCEPTION);
-    }
 
-    private void checkNicknameDuplicate(String newNickname) {
-        if (memberRepository.existsByNickname(newNickname))
+        if (memberRepository.existsByNickname(memberRequest.getNickname()))
             throw new BadRequestException(ErrorMessage.NICKNAME_DUPLICATE_EXCEPTION);
     }
 
-    private void checkNicknameDuplicate(MemberEntity member, String newNickname) {
-        if (newNickname != null && !member.getNickname().equals(newNickname) && memberRepository.existsByNickname(newNickname))
+    private void checkDuplicationFor(MemberEntity member, MemberRequest memberRequest) {
+
+        var newLoginId = memberRequest.getLoginId();
+        var newNickname = memberRequest.getNickname();
+
+        if (newLoginId != null
+                && !member.getLoginId().equals(newLoginId)
+                && memberRepository.existsByLoginId(newLoginId))
+            throw new BadRequestException(ErrorMessage.LOGIN_ID_DUPLICATE_EXCEPTION);
+
+        if (newNickname != null
+                && !member.getNickname().equals(newNickname)
+                && memberRepository.existsByNickname(newNickname))
             throw new BadRequestException(ErrorMessage.NICKNAME_DUPLICATE_EXCEPTION);
+    }
+
+    public MemberEntity getLoginMember(MemberRequest memberRequest) {
+
+        try {
+
+            var member = memberRepository.getMember(memberRequest.getLoginId());
+
+            PasswordUtil.checkPassword(memberRequest.getPassword(), member.getPassword());
+
+            return member;
+        } catch (Exception ignore) {
+            throw new BadRequestException(ErrorMessage.LOGIN_FAILED_EXCEPTION);
+        }
     }
 }

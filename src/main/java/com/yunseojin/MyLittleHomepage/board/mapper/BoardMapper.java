@@ -13,12 +13,11 @@ import java.util.List;
 
 @Mapper(componentModel = "Spring")
 public interface BoardMapper {
+
     BoardMapper INSTANCE = Mappers.getMapper(BoardMapper.class);
 
     @Mapping(target = "postCount", source = "boardCount.postCount")
     BoardResponse toPostResponse(BoardEntity board);
 
     List<BoardResponse> toPostResponseList(List<BoardEntity> boards);
-
-
 }

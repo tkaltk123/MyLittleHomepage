@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum PostSearchType {
+
     TITLE(0,"제목")
     ,CONTENT(1, "내용")
     ,WRITER(2, "작성자")
@@ -14,6 +15,7 @@ public enum PostSearchType {
     String displayName;
 
     PostSearchType(int code, String displayName) {
+
         this.code = code;
         this.displayName = displayName;
     }

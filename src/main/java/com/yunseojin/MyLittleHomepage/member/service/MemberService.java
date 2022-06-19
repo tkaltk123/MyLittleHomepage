@@ -6,6 +6,7 @@ import com.yunseojin.MyLittleHomepage.member.dto.MemberResponse;
 import java.util.Map;
 
 public interface MemberService {
+
     MemberResponse register(MemberRequest memberRequest);
 
     MemberResponse modify(MemberRequest memberRequest);

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
+
     MemberEntity findByLoginId(String loginId);
 
     boolean existsByLoginId(String loginId);
@@ -17,15 +18,17 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
 
 
     default MemberEntity getMember(Long memberId) throws BadRequestException {
-        var _member = findById(memberId);
 
-        if (_member.isEmpty())
+        var optMember = findById(memberId);
+
+        if (optMember.isEmpty())
             throw new BadRequestException(ErrorMessage.NOT_EXISTS_MEMBER_EXCEPTION);
 
-        return _member.get();
+        return optMember.get();
     }
 
     default MemberEntity getMember(String loginId) throws BadRequestException {
+
         var member = findByLoginId(loginId);
 
         if (member == null)

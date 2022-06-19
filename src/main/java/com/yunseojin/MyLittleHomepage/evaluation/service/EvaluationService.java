@@ -1,11 +1,14 @@
 package com.yunseojin.MyLittleHomepage.evaluation.service;
 
+import com.yunseojin.MyLittleHomepage.etc.enums.EvaluationType;
+
 public interface EvaluationService {
-    String likePost(Long postId);
 
-    String likeComment(Long commentId);
+    EvaluationType likePost(Long postId);
 
-    String dislikePost(Long postId);
+    EvaluationType likeComment(Long commentId);
 
-    String dislikeComment(Long commentId);
+    EvaluationType dislikePost(Long postId);
+
+    EvaluationType dislikeComment(Long commentId);
 }

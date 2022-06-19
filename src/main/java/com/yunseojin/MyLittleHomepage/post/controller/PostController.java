@@ -2,13 +2,16 @@ package com.yunseojin.MyLittleHomepage.post.controller;
 
 import com.yunseojin.MyLittleHomepage.board.service.BoardService;
 import com.yunseojin.MyLittleHomepage.comment.dto.CommentRequest;
+import com.yunseojin.MyLittleHomepage.comment.dto.CommentResponse;
 import com.yunseojin.MyLittleHomepage.comment.service.CommentService;
 import com.yunseojin.MyLittleHomepage.etc.annotation.ValidationGroups;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberInfo;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
+import com.yunseojin.MyLittleHomepage.post.mapper.PostMapper;
 import com.yunseojin.MyLittleHomepage.post.service.PostService;
 import com.yunseojin.MyLittleHomepage.util.ModelUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -33,8 +36,12 @@ public class PostController {
             @PathVariable(name = "post_id") Long postId,
             @RequestParam(required = false, name = "page", defaultValue = "0") Integer page) {
 
-        setPostAttr(model, postId, page);
+        var commentPage = commentService.getCommentList(postId, page);
+
+        model.addAttribute("post", postService.getPost(postId));
+        setCommentsAttr(model, commentPage);
         ModelUtil.setCommonAttr(model, memberInfo, boardService.getBoardList());
+
         return "/layout/post";
     }
 
@@ -47,13 +54,11 @@ public class PostController {
             return "redirect:/login";
 
         var post = postService.getPost(postId);
-        var postReq = PostRequest.builder()
-                .title(post.getTitle())
-                .content(post.getContent())
-                .hashTags(post.getHashtags())
-                .build();
+        var postReq = PostMapper.INSTANCE.toPostRequest(post);
+
         model.addAttribute("postRequest", postReq);
         ModelUtil.setCommonAttr(model, memberInfo, boardService.getBoardList());
+
         return "layout/postForm";
     }
 
@@ -63,6 +68,7 @@ public class PostController {
             @Validated(ValidationGroups.Update.class) PostRequest postRequest) {
 
         postService.updatePost(postId, postRequest);
+
         return "redirect:/posts/" + postId;
     }
 
@@ -70,26 +76,24 @@ public class PostController {
     public String deletePost(@PathVariable(name = "post_id") Long postId) {
 
         var boardId = postService.getPost(postId).getBoardId();
+
         postService.deletePost(postId);
+
         return "redirect:/boards/" + boardId;
     }
 
-    private void setPostAttr(Model model, Long postId, Integer page) {
+    private void setCommentsAttr(Model model, Page<CommentResponse> commentPage) {
 
-        var commentPage = commentService.getCommentList(postId, page);
         var currentPage = commentPage.getNumber();
         var totalPage = commentPage.getTotalPages();
         var startPage = currentPage - currentPage % 5;
         var endPage = Math.max(0, Math.min(startPage + 4, totalPage - 1));
 
-        model.addAttribute("post", postService.getPost(postId));
         model.addAttribute("commentRequest", new CommentRequest());
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
-        model.addAttribute("page", page);
+        model.addAttribute("page", currentPage);
         model.addAttribute("totalPage", totalPage);
-        model.addAttribute("comments", commentService.getCommentList(postId, page).getContent());
+        model.addAttribute("comments", commentPage.getContent());
     }
-
-
 }

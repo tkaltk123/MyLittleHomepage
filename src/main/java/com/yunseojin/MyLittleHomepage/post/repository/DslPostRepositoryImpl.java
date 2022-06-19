@@ -1,8 +1,10 @@
 package com.yunseojin.MyLittleHomepage.post.repository;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.yunseojin.MyLittleHomepage.board.entity.BoardEntity;
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
 import com.yunseojin.MyLittleHomepage.etc.enums.PostOrderType;
+import com.yunseojin.MyLittleHomepage.etc.enums.PostSearchType;
 import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
 import com.yunseojin.MyLittleHomepage.hashtag.entity.QHashtagEntity;
 import com.yunseojin.MyLittleHomepage.post.dto.PostSearch;
@@ -13,12 +15,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class DslPostRepositoryImpl extends QuerydslRepositorySupport implements DslPostRepository {
+
     private static final QPostEntity p = QPostEntity.postEntity;
     private static final QHashtagEntity t = QHashtagEntity.hashtagEntity;
 
@@ -29,58 +31,32 @@ public class DslPostRepositoryImpl extends QuerydslRepositorySupport implements 
     @Override
     public Page<PostEntity> getPosts(BoardEntity board, Pageable pageable, PostSearch postSearch) {
 
-        var contentQuery = from(p)
-                .select(p)
-                .join(p.postCount).fetchJoin()
-                .where(p.board.eq(board));
-
-        var countQuery = from(p)
-                .select(p)
-                .where(p.board.eq(board));
-
+        var condition = p.board.eq(board);
         var keyword = postSearch.getKeyword();
+
         if (keyword != null && !keyword.isBlank()) {
 
+            var postSearchType = postSearch.getPostSearchType();
+
             keyword = "%" + keyword + "%";
-            switch (postSearch.getPostSearchType()) {
+            condition = condition.and(includeKeyword(keyword, postSearchType));
 
-                case TITLE:
-                    contentQuery.where(p.title.like(keyword));
-                    countQuery.where(p.title.like(keyword));
-                    break;
-
-                case CONTENT:
-                    contentQuery.where(p.content.like(keyword));
-                    countQuery.where(p.content.like(keyword));
-                    break;
-
-                case WRITER:
-                    contentQuery.where(p.writerName.like(keyword));
-                    countQuery.where(p.writerName.like(keyword));
-                    break;
-
-                case TAG:
-                    contentQuery = from(t)
-                            .innerJoin(p).on(t.post.eq(p))
-                            .select(p).distinct()
-                            .join(p.postCount).fetchJoin()
-                            .where(t.tag.like(keyword), p.board.eq(board));
-                    countQuery = from(t)
-                            .innerJoin(p).on(t.post.eq(p))
-                            .select(p).distinct()
-                            .where(t.tag.like(keyword), p.board.eq(board));
-                    break;
-
-                default:
-                    break;
-            }
+            if (postSearchType == PostSearchType.TAG)
+                return getPostsByTag(condition, pageable);
         }
 
-        var content = contentQuery
+        var content = from(p)
+                .select(p)
+                .join(p.postCount).fetchJoin()
+                .where(condition)
                 .orderBy(p.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+
+        var countQuery = from(p)
+                .select(p)
+                .where(condition);
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
     }
@@ -93,7 +69,6 @@ public class DslPostRepositoryImpl extends QuerydslRepositorySupport implements 
                 .select(p)
                 .join(p.postCount).fetchJoin()
                 .where(p.board.eq(board), p.createdAt.after(Timestamp.valueOf(LocalDateTime.now().minusDays(7))));
-
 
         switch (postOrderType) {
 
@@ -112,11 +87,13 @@ public class DslPostRepositoryImpl extends QuerydslRepositorySupport implements 
             default:
                 break;
         }
+
         return query.limit(postCount).fetch();
     }
 
     @Override
     public PostEntity getPost(Long postId) throws BadRequestException {
+
         var post = from(p)
                 .select(p)
                 .join(p.postCount).fetchJoin()
@@ -127,5 +104,46 @@ public class DslPostRepositoryImpl extends QuerydslRepositorySupport implements 
             throw new BadRequestException(ErrorMessage.NOT_EXISTS_POST_EXCEPTION);
 
         return post;
+    }
+
+    private BooleanExpression includeKeyword(String keyword, PostSearchType postSearchType) {
+
+        switch (postSearchType) {
+
+            case TITLE:
+                return p.title.like(keyword);
+
+            case CONTENT:
+                return p.content.like(keyword);
+
+            case WRITER:
+                return p.writerName.like(keyword);
+
+            case TAG:
+                return t.tag.like(keyword);
+
+            default:
+                return null;
+        }
+    }
+
+    private Page<PostEntity> getPostsByTag(BooleanExpression condition, Pageable pageable) {
+
+        var content = from(t)
+                .innerJoin(p).on(t.post.eq(p))
+                .select(p).distinct()
+                .join(p.postCount).fetchJoin()
+                .where(condition)
+                .orderBy(p.id.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        var countQuery = from(t)
+                .innerJoin(p).on(t.post.eq(p))
+                .select(p).distinct()
+                .where(condition);
+
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
     }
 }

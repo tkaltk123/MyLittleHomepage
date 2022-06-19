@@ -65,8 +65,7 @@ public class BoardController {
         var currentPage = postPage.getNumber();
         var startPage = currentPage - currentPage % 5;
         var endPage = Math.max(0, Math.min(startPage + 4, postPage.getTotalPages() - 1));
-
-        model.addAttribute("searchTypes", PostSearchType.values());
+;
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
         model.addAttribute("totalPage", postPage.getTotalPages());

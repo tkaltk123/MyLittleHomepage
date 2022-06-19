@@ -18,6 +18,7 @@ import java.util.Set;
 public class SwaggerConfig {
 
     private ApiInfo swaggerInfo() {
+
         return new ApiInfoBuilder()
                 .title("IoT API")
                 .description("IoT API Docs")
@@ -26,6 +27,7 @@ public class SwaggerConfig {
 
     @Bean
     public Docket swaggerApi() {
+
         return new Docket(DocumentationType.SWAGGER_2)
                 .consumes(getConsumeContentTypes())
                 .produces(getProduceContentTypes())
@@ -38,6 +40,7 @@ public class SwaggerConfig {
     }
 
     private Set<String> getConsumeContentTypes() {
+
         Set<String> consumes = new HashSet<>();
         consumes.add("application/json;charset=UTF-8");
         consumes.add("application/x-www-form-urlencoded");
@@ -45,6 +48,7 @@ public class SwaggerConfig {
     }
 
     private Set<String> getProduceContentTypes() {
+
         Set<String> produces = new HashSet<>();
         produces.add("application/json;charset=UTF-8");
         return produces;

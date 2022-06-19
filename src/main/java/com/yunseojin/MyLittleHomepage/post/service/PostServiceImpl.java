@@ -1,5 +1,6 @@
 package com.yunseojin.MyLittleHomepage.post.service;
 
+import com.yunseojin.MyLittleHomepage.board.entity.BoardEntity;
 import com.yunseojin.MyLittleHomepage.board.repository.BoardRepository;
 import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
@@ -41,20 +42,19 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostResponse createPost(Long boardId, PostRequest postRequest) {
 
-        var member = memberRepository.getMember(memberInfo.getId());
         var board = boardRepository.getBoard(boardId);
-        var post = PostMapper.INSTANCE.toPostEntity(postRequest);
+        var writer = memberRepository.getMember(memberInfo.getId());
+        var post = PostMapper.INSTANCE.toPostEntity(postRequest)
+                .toBuilder()
+                .board(board)
+                .writer(writer)
+                .writerName(writer.getNickname())
+                .build();
 
-        post.setBoard(board);
-        post.setWriter(member);
-        post.setWriterName(member.getNickname());
-        post.setPostCount(new PostCount());
         if (postRequest.getHashTags() != null)
             post.setHashtags(postRequest.getHashTags());
 
-        memberInfo.createPost();
-        postRepository.save(post);
-        board.increasePostCount();
+        createPost(board, post);
 
         return PostMapper.INSTANCE.toPostResponse(post);
     }
@@ -63,10 +63,10 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostResponse updatePost(Long postId, PostRequest postRequest) {
 
-        var member = memberRepository.getMember(memberInfo.getId());
+        var writer = memberRepository.getMember(memberInfo.getId());
         var post = postRepository.getPost(postId);
 
-        checkPostWriter(post, member);
+        checkPostWriter(post, writer);
         post.update(postRequest);
 
         return PostMapper.INSTANCE.toPostResponse(post);
@@ -76,14 +76,11 @@ public class PostServiceImpl implements PostService {
     @Override
     public void deletePost(Long postId) {
 
-        var member = memberRepository.getMember(memberInfo.getId());
+        var writer = memberRepository.getMember(memberInfo.getId());
         var post = postRepository.getPost(postId);
-        var board = post.getBoard();
 
-        checkPostWriter(post, member);
-        board.decreasePostCount();
-        postRepository.delete(post);
-        post.setIsDeleted(1);
+        checkPostWriter(post, writer);
+        deletePost(post);
     }
 
     @Override
@@ -104,6 +101,7 @@ public class PostServiceImpl implements PostService {
         var pageable = PageRequest.of(postSearch.getPage(), postCount);
         var board = boardRepository.getBoard(boardId);
         var postPage = postRepository.getPosts(board, pageable, postSearch);
+
         return postPage.map(SimplePostMapper.INSTANCE::toPostResponse);
     }
 
@@ -112,13 +110,28 @@ public class PostServiceImpl implements PostService {
 
         var board = boardRepository.getBoard(boardId);
         var postPage = postRepository.getPostsOrderedBy(board, postCount, postOrderType);
+
         return postPage.stream().map(SimplePostMapper.INSTANCE::toPostResponse).collect(Collectors.toList());
     }
 
     //게시글의 작성자가 입력한 회원이 맞는지 확인
-    private void checkPostWriter(PostEntity post, MemberEntity member) {
+    private void checkPostWriter(PostEntity post, MemberEntity writer) {
 
-        if (post.getWriter() != member)
+        if (post.getWriter() != writer)
             throw new BadRequestException(ErrorMessage.NOT_WRITER_EXCEPTION);
+    }
+
+    private void createPost(BoardEntity board, PostEntity post) {
+
+        memberInfo.createPost();
+        postRepository.save(post);
+        board.increasePostCount();
+    }
+
+    private void deletePost(PostEntity post) {
+
+        post.getBoard().decreasePostCount();
+        postRepository.delete(post);
+        post.setIsDeleted(1);
     }
 }

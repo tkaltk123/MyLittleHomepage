@@ -8,5 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CommentEvaluationRepository extends JpaRepository<CommentEvaluationEntity, Long> {
+
     CommentEvaluationEntity findByCommentAndWriter(CommentEntity comment, MemberEntity writer);
 }

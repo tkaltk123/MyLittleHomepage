@@ -14,12 +14,13 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @Entity
 @Where(clause = "is_deleted = 0")
 @Table(name = "evaluations")
 @DiscriminatorColumn(name = "dtype")
 public abstract class EvaluationEntity extends BaseEntity {
+
     @Enumerated(EnumType.STRING)
     @Column(name = "evaluation_type", nullable = false)
     protected EvaluationType evaluationType;
