@@ -6,7 +6,6 @@ import com.yunseojin.MyLittleHomepage.member.dto.MemberRequest;
 import com.yunseojin.MyLittleHomepage.util.PasswordUtil;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -21,6 +20,15 @@ import javax.persistence.*;
 @Where(clause = "is_deleted = 0")
 @Table(name = "members")
 public class MemberEntity extends BaseEntity {
+
+    public abstract static class MemberEntityBuilder<C extends MemberEntity, B extends MemberEntityBuilder<C, B>> extends BaseEntityBuilder<C, B> {
+
+        public B password(String password) {
+
+            this.password = PasswordUtil.getHashedPassword(password);
+            return self();
+        }
+    }
 
     @Basic
     @Column(name = "login_id", nullable = false, length = 20)

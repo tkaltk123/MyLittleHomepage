@@ -34,6 +34,7 @@ public class MemberServiceImpl implements MemberService {
 
         var member = MemberMapper.INSTANCE.toMemberEntity(memberRequest)
                 .toBuilder()
+                .password(memberRequest.getPassword())
                 .memberType(MemberType.NORMAL)
                 .build();
 
