@@ -38,8 +38,8 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentResponse createComment(Long postId, CommentRequest commentRequest) {
 
-        var writer = memberRepository.getMember(memberInfo.getId());
-        var post = postRepository.getPost(postId);
+        var writer = getMemberById(memberInfo.getId());
+        var post = getPostById(postId);
         var parent = getParent(commentRequest.getParentId());
 
         var comment = CommentMapper.INSTANCE.toCommentEntity(commentRequest)
@@ -59,8 +59,8 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentResponse updateComment(CommentRequest commentRequest) {
 
-        var writer = memberRepository.getMember(memberInfo.getId());
-        var comment = commentRepository.getComment(commentRequest.getCommentId());
+        var writer = getMemberById(memberInfo.getId());
+        var comment = getCommentById(commentRequest.getCommentId());
 
         checkCommentWriter(comment, writer);
         comment.update(commentRequest);
@@ -72,8 +72,8 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void deleteComment(Long commentId) {
 
-        var writer = memberRepository.getMember(memberInfo.getId());
-        var comment = commentRepository.getComment(commentId);
+        var writer = getMemberById(memberInfo.getId());
+        var comment = getCommentById(commentId);
 
         checkCommentWriter(comment, writer);
         comment.getChildren().forEach(this::deleteComment);
@@ -84,7 +84,7 @@ public class CommentServiceImpl implements CommentService {
     @Transactional(readOnly = true)
     public CommentResponse getComment(Long commentId) {
 
-        var comment = commentRepository.getComment(commentId);
+        var comment = getCommentById(commentId);
         return CommentMapper.INSTANCE.toCommentResponse(comment);
     }
 
@@ -92,7 +92,7 @@ public class CommentServiceImpl implements CommentService {
     @Transactional(readOnly = true)
     public Page<CommentResponse> getCommentList(Long postId, Integer page) {
 
-        var post = postRepository.getPost(postId);
+        var post = getPostById(postId);
         var pageable = PageRequest.of(page, 20);
         var commentPage = getCommentPage(post, pageable);
 
@@ -101,12 +101,45 @@ public class CommentServiceImpl implements CommentService {
 
     private CommentEntity getParent(Long parentId) {
 
-        var parent = commentRepository.getComment(parentId);
+        if (parentId == null)
+            return null;
 
-        if (parent != null && parent.getParent() != null)
+        var parent = getCommentById(parentId);
+
+        if (parent.getParent() != null)
             throw new BadRequestException(ErrorMessage.COMMENT_PARENT_EXCEPTION);
 
         return parent;
+    }
+
+    private CommentEntity getCommentById(Long commentId) {
+
+        var optComment = commentRepository.findById(commentId);
+
+        if (optComment.isEmpty())
+            throw new BadRequestException(ErrorMessage.NOT_EXISTS_COMMENT_EXCEPTION);
+
+        return optComment.get();
+    }
+
+    private MemberEntity getMemberById(Long memberId) {
+
+        var optMember = memberRepository.findById(memberId);
+
+        if (optMember.isEmpty())
+            throw new BadRequestException(ErrorMessage.NOT_EXISTS_MEMBER_EXCEPTION);
+
+        return optMember.get();
+    }
+
+    private PostEntity getPostById(Long postId) {
+
+        var optPost = postRepository.findById(postId);
+
+        if (optPost.isEmpty())
+            throw new BadRequestException(ErrorMessage.NOT_EXISTS_POST_EXCEPTION);
+
+        return optPost.get();
     }
 
     private void createComment(PostEntity post, CommentEntity comment) {

@@ -3,7 +3,9 @@ package com.yunseojin.MyLittleHomepage.evaluation.service;
 import com.yunseojin.MyLittleHomepage.comment.entity.CommentEntity;
 import com.yunseojin.MyLittleHomepage.comment.repository.CommentRepository;
 import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
+import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
 import com.yunseojin.MyLittleHomepage.etc.enums.EvaluationType;
+import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
 import com.yunseojin.MyLittleHomepage.evaluation.entity.CommentEvaluationEntity;
 import com.yunseojin.MyLittleHomepage.evaluation.entity.Evaluable;
 import com.yunseojin.MyLittleHomepage.evaluation.entity.EvaluationEntity;
@@ -65,27 +67,27 @@ public class EvaluationServiceImpl implements EvaluationService {
 
     private EvaluationType evaluatePost(Long postId, EvaluationType evaluationType) {
 
-        var member = memberRepository.getMember(memberInfo.getId());
-        var post = postRepository.getPost(postId);
-        var postEvaluation = postEvaluationRepository.findByPostAndWriter(post, member);
+        var member = getMemberById(memberInfo.getId());
+        var post = getPostById(postId);
+        var optPostEvaluation = postEvaluationRepository.findByPostAndWriter(post, member);
 
-        if (postEvaluation == null)
+        if (optPostEvaluation.isEmpty())
             return createPostEvaluation(member, post, evaluationType);
 
-        return evaluateOrCancel(post, postEvaluation, evaluationType);
+        return evaluateOrCancel(post, optPostEvaluation.get(), evaluationType);
 
     }
 
     private EvaluationType evaluateComment(Long commentId, EvaluationType evaluationType) {
 
-        var member = memberRepository.getMember(memberInfo.getId());
-        var comment = commentRepository.getComment(commentId);
-        var commentEvaluation = commentEvaluationRepository.findByCommentAndWriter(comment, member);
+        var member = getMemberById(memberInfo.getId());
+        var comment = getCommentById(commentId);
+        var optCommentEvaluation = commentEvaluationRepository.findByCommentAndWriter(comment, member);
 
-        if (commentEvaluation == null)
+        if (optCommentEvaluation.isEmpty())
             return createCommentEvaluation(member, comment, evaluationType);
 
-        return evaluateOrCancel(comment, commentEvaluation, evaluationType);
+        return evaluateOrCancel(comment, optCommentEvaluation.get(), evaluationType);
 
     }
 
@@ -167,6 +169,36 @@ public class EvaluationServiceImpl implements EvaluationService {
             default:
                 break;
         }
+    }
+
+    private MemberEntity getMemberById(Long memberId) {
+
+        var optMember = memberRepository.findById(memberId);
+
+        if (optMember.isEmpty())
+            throw new BadRequestException(ErrorMessage.NOT_EXISTS_MEMBER_EXCEPTION);
+
+        return optMember.get();
+    }
+
+    private CommentEntity getCommentById(Long commentId) {
+
+        var optComment = commentRepository.findById(commentId);
+
+        if (optComment.isEmpty())
+            throw new BadRequestException(ErrorMessage.NOT_EXISTS_COMMENT_EXCEPTION);
+
+        return optComment.get();
+    }
+
+    private PostEntity getPostById(Long postId) {
+
+        var optPost = postRepository.findById(postId);
+
+        if (optPost.isEmpty())
+            throw new BadRequestException(ErrorMessage.NOT_EXISTS_POST_EXCEPTION);
+
+        return optPost.get();
     }
 
 }

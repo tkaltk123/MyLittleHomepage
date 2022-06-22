@@ -42,8 +42,8 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostResponse createPost(Long boardId, PostRequest postRequest) {
 
-        var board = boardRepository.getBoard(boardId);
-        var writer = memberRepository.getMember(memberInfo.getId());
+        var board = getBoardById(boardId);
+        var writer = getMemberById(memberInfo.getId());
         var post = PostMapper.INSTANCE.toPostEntity(postRequest)
                 .toBuilder()
                 .board(board)
@@ -63,8 +63,8 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostResponse updatePost(Long postId, PostRequest postRequest) {
 
-        var writer = memberRepository.getMember(memberInfo.getId());
-        var post = postRepository.getPost(postId);
+        var writer = getMemberById(memberInfo.getId());
+        var post = getPostById(postId);
 
         checkPostWriter(post, writer);
         post.update(postRequest);
@@ -76,8 +76,8 @@ public class PostServiceImpl implements PostService {
     @Override
     public void deletePost(Long postId) {
 
-        var writer = memberRepository.getMember(memberInfo.getId());
-        var post = postRepository.getPost(postId);
+        var writer = getMemberById(memberInfo.getId());
+        var post = getPostById(postId);
 
         checkPostWriter(post, writer);
         deletePost(post);
@@ -86,7 +86,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostResponse getPost(Long postId) {
 
-        var post = postRepository.getPost(postId);
+        var post = getPostById(postId);
 
         if (memberInfo.viewPost(postId))
             post.increaseViewCount();
@@ -99,7 +99,7 @@ public class PostServiceImpl implements PostService {
     public Page<PostResponse> getPostList(Long boardId, int postCount, PostSearch postSearch) {
 
         var pageable = PageRequest.of(postSearch.getPage(), postCount);
-        var board = boardRepository.getBoard(boardId);
+        var board = getBoardById(boardId);
         var postPage = postRepository.getPosts(board, pageable, postSearch);
 
         return postPage.map(SimplePostMapper.INSTANCE::toPostResponse);
@@ -108,10 +108,40 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<PostResponse> getOrderedPostList(Long boardId, int postCount, PostOrderType postOrderType) {
 
-        var board = boardRepository.getBoard(boardId);
+        var board = getBoardById(boardId);
         var postPage = postRepository.getPostsOrderedBy(board, postCount, postOrderType);
 
         return postPage.stream().map(SimplePostMapper.INSTANCE::toPostResponse).collect(Collectors.toList());
+    }
+
+    private MemberEntity getMemberById(Long memberId) {
+
+        var optMember = memberRepository.findById(memberId);
+
+        if (optMember.isEmpty())
+            throw new BadRequestException(ErrorMessage.NOT_EXISTS_MEMBER_EXCEPTION);
+
+        return optMember.get();
+    }
+
+    private BoardEntity getBoardById(Long boardId) {
+
+        var optBoard = boardRepository.findById(boardId);
+
+        if (optBoard.isEmpty())
+            throw new BadRequestException(ErrorMessage.NOT_EXISTS_BOARD_EXCEPTION);
+
+        return optBoard.get();
+    }
+
+    private PostEntity getPostById(Long postId) {
+
+        var optPost = postRepository.findById(postId);
+
+        if (optPost.isEmpty())
+            throw new BadRequestException(ErrorMessage.NOT_EXISTS_POST_EXCEPTION);
+
+        return optPost.get();
     }
 
     //게시글의 작성자가 입력한 회원이 맞는지 확인

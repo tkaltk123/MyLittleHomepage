@@ -6,8 +6,10 @@ import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface CommentEvaluationRepository extends JpaRepository<CommentEvaluationEntity, Long> {
 
-    CommentEvaluationEntity findByCommentAndWriter(CommentEntity comment, MemberEntity writer);
+    Optional<CommentEvaluationEntity> findByCommentAndWriter(CommentEntity comment, MemberEntity writer);
 }

@@ -38,22 +38,4 @@ public class DslCommentRepositoryImpl extends QuerydslRepositorySupport implemen
 
         return PageableExecutionUtils.getPage(content, pageable, count::fetchCount);
     }
-
-    @Override
-    public CommentEntity getComment(Long commentId) throws BadRequestException {
-
-        if (commentId == null)
-            return null;
-
-        var comment = from(c)
-                .select(c)
-                .join(c.commentCount).fetchJoin()
-                .where(c.id.eq(commentId))
-                .fetchOne();
-
-        if (comment == null)
-            throw new BadRequestException(ErrorMessage.NOT_EXISTS_COMMENT_EXCEPTION);
-
-        return comment;
-    }
 }

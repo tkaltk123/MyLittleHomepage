@@ -2,10 +2,8 @@ package com.yunseojin.MyLittleHomepage.post.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.yunseojin.MyLittleHomepage.board.entity.BoardEntity;
-import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
 import com.yunseojin.MyLittleHomepage.etc.enums.PostOrderType;
 import com.yunseojin.MyLittleHomepage.etc.enums.PostSearchType;
-import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
 import com.yunseojin.MyLittleHomepage.hashtag.entity.QHashtagEntity;
 import com.yunseojin.MyLittleHomepage.post.dto.PostSearch;
 import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
@@ -89,21 +87,6 @@ public class DslPostRepositoryImpl extends QuerydslRepositorySupport implements 
         }
 
         return query.limit(postCount).fetch();
-    }
-
-    @Override
-    public PostEntity getPost(Long postId) throws BadRequestException {
-
-        var post = from(p)
-                .select(p)
-                .join(p.postCount).fetchJoin()
-                .where(p.id.eq(postId))
-                .fetchOne();
-
-        if (post == null)
-            throw new BadRequestException(ErrorMessage.NOT_EXISTS_POST_EXCEPTION);
-
-        return post;
     }
 
     private BooleanExpression includeKeyword(String keyword, PostSearchType postSearchType) {

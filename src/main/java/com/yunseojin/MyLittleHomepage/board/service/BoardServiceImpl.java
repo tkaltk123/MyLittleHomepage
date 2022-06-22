@@ -1,8 +1,11 @@
 package com.yunseojin.MyLittleHomepage.board.service;
 
 import com.yunseojin.MyLittleHomepage.board.dto.BoardResponse;
+import com.yunseojin.MyLittleHomepage.board.entity.BoardEntity;
 import com.yunseojin.MyLittleHomepage.board.mapper.BoardMapper;
 import com.yunseojin.MyLittleHomepage.board.repository.BoardRepository;
+import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
+import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,14 +20,27 @@ public class BoardServiceImpl implements BoardService {
     private final BoardRepository boardRepository;
 
     @Override
-    public BoardResponse getBoardByName(String name) {
+    public BoardResponse getBoard(String name) {
 
-        return BoardMapper.INSTANCE.toPostResponse(boardRepository.getBoardByName(name));
+        var board = getBoardByName(name);
+
+        return BoardMapper.INSTANCE.toPostResponse(board);
     }
 
     @Override
     public List<BoardResponse> getBoardList() {
 
-        return BoardMapper.INSTANCE.toPostResponseList(boardRepository.findAll());
+        var boards = boardRepository.findAll();
+        return BoardMapper.INSTANCE.toPostResponseList(boards);
+    }
+
+    private BoardEntity getBoardByName(String name) {
+
+        var optBoard = boardRepository.findByName(name);
+
+        if (optBoard.isEmpty())
+            throw new BadRequestException(ErrorMessage.NOT_EXISTS_BOARD_EXCEPTION);
+
+        return optBoard.get();
     }
 }

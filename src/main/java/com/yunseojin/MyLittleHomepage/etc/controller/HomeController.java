@@ -34,7 +34,7 @@ public class HomeController {
 
     private void setOrderedFreePosts(Model model) {
 
-        var freeBoardId = boardService.getBoardByName("자유 게시판").getId();
+        var freeBoardId = boardService.getBoard("자유 게시판").getId();
 
         model.addAttribute("freePostsOrderedNew", postService.getPostList(freeBoardId, 10, new PostSearch()));
         model.addAttribute("freePostsOrderedLike", postService.getOrderedPostList(freeBoardId, 10, PostOrderType.LIKE));
@@ -44,7 +44,7 @@ public class HomeController {
 
     private void setOrderedHumorPosts(Model model) {
 
-        var humorBoardId = boardService.getBoardByName("유머 게시판").getId();
+        var humorBoardId = boardService.getBoard("유머 게시판").getId();
 
         model.addAttribute("humorPostsOrderedNew", postService.getPostList(humorBoardId, 10, new PostSearch()));
         model.addAttribute("humorPostsOrderedLike", postService.getOrderedPostList(humorBoardId, 10, PostOrderType.LIKE));

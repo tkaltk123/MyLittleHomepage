@@ -47,7 +47,7 @@ public class MemberServiceImpl implements MemberService {
     @Login
     public MemberResponse modify(MemberRequest memberRequest) {
 
-        var member = memberRepository.getMember(memberInfo.getId());
+        var member = getMemberById(memberInfo.getId());
 
         PasswordUtil.checkPassword(memberRequest.getCurrentPassword(), member.getPassword());
         checkDuplicationFor(member, memberRequest);
@@ -62,7 +62,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void delete(MemberRequest memberRequest) {
 
-        var member = memberRepository.getMember(memberInfo.getId());
+        var member = getMemberById(memberInfo.getId());
 
         PasswordUtil.checkPassword(memberRequest.getCurrentPassword(), member.getPassword());
 
@@ -117,7 +117,7 @@ public class MemberServiceImpl implements MemberService {
 
         try {
 
-            var member = memberRepository.getMember(memberRequest.getLoginId());
+            var member = getMemberByLoginId(memberRequest.getLoginId());
 
             PasswordUtil.checkPassword(memberRequest.getPassword(), member.getPassword());
 
@@ -125,5 +125,25 @@ public class MemberServiceImpl implements MemberService {
         } catch (Exception ignore) {
             throw new BadRequestException(ErrorMessage.LOGIN_FAILED_EXCEPTION);
         }
+    }
+
+    private MemberEntity getMemberById(Long memberId) {
+
+        var optMember = memberRepository.findById(memberId);
+
+        if (optMember.isEmpty())
+            throw new BadRequestException(ErrorMessage.NOT_EXISTS_MEMBER_EXCEPTION);
+
+        return optMember.get();
+    }
+
+    private MemberEntity getMemberByLoginId(String loginId) {
+
+        var optMember = memberRepository.findByLoginId(loginId);
+
+        if (optMember.isEmpty())
+            throw new BadRequestException(ErrorMessage.NOT_EXISTS_MEMBER_EXCEPTION);
+
+        return optMember.get();
     }
 }

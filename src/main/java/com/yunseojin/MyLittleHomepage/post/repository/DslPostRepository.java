@@ -14,6 +14,4 @@ public interface DslPostRepository {
     Page<PostEntity> getPosts(BoardEntity board, Pageable pageable, PostSearch postSearch);
 
     List<PostEntity> getPostsOrderedBy(BoardEntity board, int postCount, PostOrderType postOrderType);
-
-    PostEntity getPost(Long postId);
 }

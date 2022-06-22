@@ -7,33 +7,14 @@ import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
 
-    MemberEntity findByLoginId(String loginId);
+    Optional<MemberEntity> findByLoginId(String loginId);
 
     boolean existsByLoginId(String loginId);
 
     boolean existsByNickname(String nickname);
-
-
-    default MemberEntity getMember(Long memberId) throws BadRequestException {
-
-        var optMember = findById(memberId);
-
-        if (optMember.isEmpty())
-            throw new BadRequestException(ErrorMessage.NOT_EXISTS_MEMBER_EXCEPTION);
-
-        return optMember.get();
-    }
-
-    default MemberEntity getMember(String loginId) throws BadRequestException {
-
-        var member = findByLoginId(loginId);
-
-        if (member == null)
-            throw new BadRequestException(ErrorMessage.NOT_EXISTS_MEMBER_EXCEPTION);
-
-        return member;
-    }
 }
