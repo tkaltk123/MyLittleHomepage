@@ -30,7 +30,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public List<BoardResponse> getBoardList() {
 
-        var boards = boardRepository.findAll();
+        var boards = boardRepository.findAllWithCount();
         return BoardMapper.INSTANCE.toPostResponseList(boards);
     }
 
