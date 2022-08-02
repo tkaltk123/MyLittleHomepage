@@ -15,7 +15,7 @@ configurations {
         extendsFrom annotationProcessor
     }
 }
-bootWar{
+bootWar {
     archivesBaseName = 'MyLittleHomepage'
     archiveFileName = 'ROOT.war'
     archiveVersion = "0.0.1"
@@ -64,9 +64,18 @@ querydsl {
 sourceSets {
     main.java.srcDir querydslDir
 }
-compileQuerydsl{
+compileQuerydsl {
     options.annotationProcessorPath = configurations.querydsl
 }
+
+project.afterEvaluate {
+    project.tasks.compileQuerydsl.options.compilerArgs = [
+            "-proc:only",
+            "-processor", project.querydsl.processors() +
+                    ',lombok.launch.AnnotationProcessorHider$AnnotationProcessor'
+    ]
+}
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
