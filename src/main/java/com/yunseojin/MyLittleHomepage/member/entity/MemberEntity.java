@@ -21,11 +21,16 @@ import javax.persistence.*;
 @Table(name = "members")
 public class MemberEntity extends BaseEntity {
 
-    public abstract static class MemberEntityBuilder<C extends MemberEntity, B extends MemberEntityBuilder<C, B>> extends BaseEntityBuilder<C, B> {
+    private static class MemberEntityBuilderImpl extends MemberEntityBuilder<MemberEntity, MemberEntityBuilderImpl> {
 
-        public B password(String password) {
+        @Override
+        public MemberEntityBuilderImpl password(String password) {
 
-            this.password = PasswordUtil.getHashedPassword(password);
+            if (password != null)
+                super.password(PasswordUtil.getHashedPassword(password));
+            else
+                super.password(null);
+
             return self();
         }
     }
