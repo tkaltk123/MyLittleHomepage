@@ -2,8 +2,6 @@ package com.yunseojin.MyLittleHomepage.comment.repository;
 
 import com.yunseojin.MyLittleHomepage.comment.entity.CommentEntity;
 import com.yunseojin.MyLittleHomepage.comment.entity.QCommentEntity;
-import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
-import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
 import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

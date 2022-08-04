@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 @Getter
 @Setter
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommentRequest implements Serializable {

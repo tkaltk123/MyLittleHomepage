@@ -47,9 +47,9 @@ public class CommentServiceImpl implements CommentService {
                 .writer(writer)
                 .writerName(writer.getNickname())
                 .post(post)
-                .parent(parent)
                 .build();
 
+        comment.setParent(parent);
         createComment(post, comment);
 
         return CommentMapper.INSTANCE.toCommentResponse(comment);
@@ -85,12 +85,16 @@ public class CommentServiceImpl implements CommentService {
     public CommentResponse getComment(Long commentId) {
 
         var comment = getCommentById(commentId);
+
         return CommentMapper.INSTANCE.toCommentResponse(comment);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<CommentResponse> getCommentList(Long postId, Integer page) {
+
+        if (page < 0)
+            throw new BadRequestException(ErrorMessage.PAGE_OUT_OF_RANGE_EXCEPTION);
 
         var post = getPostById(postId);
         var pageable = PageRequest.of(page, 20);
