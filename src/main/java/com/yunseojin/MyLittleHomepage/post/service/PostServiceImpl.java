@@ -12,7 +12,6 @@ import com.yunseojin.MyLittleHomepage.member.repository.MemberRepository;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
 import com.yunseojin.MyLittleHomepage.post.dto.PostResponse;
 import com.yunseojin.MyLittleHomepage.post.dto.PostSearch;
-import com.yunseojin.MyLittleHomepage.post.entity.PostCount;
 import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
 import com.yunseojin.MyLittleHomepage.post.mapper.PostMapper;
 import com.yunseojin.MyLittleHomepage.post.mapper.SimplePostMapper;

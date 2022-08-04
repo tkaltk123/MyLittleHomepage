@@ -12,7 +12,7 @@ public class PasswordUtil {
 
     public static void checkPassword(String password, String dbPassword) {
 
-        if (!BCrypt.checkpw(password, dbPassword))
+        if (password == null || !BCrypt.checkpw(password, dbPassword))
             throw new BadRequestException(ErrorMessage.INCORRECT_PASSWORD_EXCEPTION);
     }
 }
