@@ -68,7 +68,6 @@ class PostServiceImplTest {
         var postRes = postService.createPost(board.getId(), postRequest);
 
         post = postRepository.findById(postRes.getId()).get();
-        memberService.logout();
     }
 
     @Test
@@ -131,7 +130,6 @@ class PostServiceImplTest {
                 .password("1234")
                 .nickname("testuser2")
                 .build();
-        memberService.logout();
         memberService.register(registerRequest);
 
         //수정할 게시글의 작성자가 아닌 경우
@@ -166,7 +164,6 @@ class PostServiceImplTest {
                 .password("1234")
                 .nickname("testuser2")
                 .build();
-        memberService.logout();
         memberService.register(registerRequest);
 
         //삭제할 게시글의 작성자가 아닌 경우
@@ -175,7 +172,6 @@ class PostServiceImplTest {
         );
 
         //게시글 삭제
-        memberService.logout();
         memberService.login(memberRequest);
         postService.deletePost(post.getId());
 

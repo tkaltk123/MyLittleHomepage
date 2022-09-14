@@ -1,92 +1,91 @@
 package com.yunseojin.MyLittleHomepage.member.service;
 
-import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
 import com.yunseojin.MyLittleHomepage.etc.enums.MemberType;
 import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
-import com.yunseojin.MyLittleHomepage.member.dto.MemberInfo;
+import com.yunseojin.MyLittleHomepage.member.dto.JwtTokenResponse;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberRequest;
-import com.yunseojin.MyLittleHomepage.member.dto.MemberResponse;
 import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.member.mapper.MemberMapper;
 import com.yunseojin.MyLittleHomepage.member.repository.MemberRepository;
+import com.yunseojin.MyLittleHomepage.etc.service.JwtService;
 import com.yunseojin.MyLittleHomepage.util.PasswordUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
 
 @RequiredArgsConstructor
 @Service
 @Transactional
 public class MemberServiceImpl implements MemberService {
 
-    @Resource
-    private MemberInfo memberInfo;
     private final MemberRepository memberRepository;
+    private final JwtService jwtService;
 
     @Override
-    @Login(required = false)
-    public MemberResponse register(MemberRequest memberRequest) {
+    public JwtTokenResponse register(MemberRequest memberRequest) {
 
         checkDuplication(memberRequest);
 
-        var member = MemberMapper.INSTANCE.toMemberEntity(memberRequest)
-                .toBuilder()
-                .password(memberRequest.getPassword())
-                .memberType(MemberType.NORMAL)
-                .build();
+        var member = createMemberEntity(memberRequest);
 
         memberRepository.save(member);
-        memberInfo.setMember(member);
 
-        return MemberMapper.INSTANCE.toMemberResponse(member);
+        var accessToken = jwtService.generateAccessToken(member);
+        var refreshToken = jwtService.generateRefreshToken(member);
+
+        return createTokenResponse(accessToken, refreshToken);
     }
 
     @Override
-    @Login
-    public MemberResponse modify(MemberRequest memberRequest) {
+    public String modify(Long memberId, MemberRequest memberRequest) {
 
-        var member = getMemberById(memberInfo.getId());
+        var member = getMemberById(memberId);
 
         PasswordUtil.checkPassword(memberRequest.getCurrentPassword(), member.getPassword());
         checkDuplicationFor(member, memberRequest);
 
         member.update(memberRequest);
-        memberInfo.setMember(member);
 
-        return MemberMapper.INSTANCE.toMemberResponse(member);
+        return jwtService.generateAccessToken(member);
     }
 
-    @Login
     @Override
-    public void delete(MemberRequest memberRequest) {
+    public void delete(Long memberId, MemberRequest memberRequest) {
 
-        var member = getMemberById(memberInfo.getId());
+        var member = getMemberById(memberId);
 
         PasswordUtil.checkPassword(memberRequest.getCurrentPassword(), member.getPassword());
 
         memberRepository.delete(member);
         member.setIsDeleted(1);
-        memberInfo.clear();
     }
 
-    @Login(required = false)
     @Override
-    public MemberResponse login(MemberRequest memberRequest) {
+    public JwtTokenResponse login(MemberRequest memberRequest) {
 
         MemberEntity member = getLoginMember(memberRequest);
 
-        memberInfo.setMember(member);
+        var accessToken = jwtService.generateAccessToken(member);
+        var refreshToken = jwtService.generateRefreshToken(member);
 
-        return MemberMapper.INSTANCE.toMemberResponse(member);
+        return JwtTokenResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 
-    @Login
     @Override
-    public void logout() {
-        memberInfo.clear();
+    public String refreshAccessToken(String accessToken, String refreshToken) {
+
+        var memberId = jwtService.getMemberId(accessToken);
+        var member = getMemberById(memberId);
+
+        if (!jwtService.isValidRefreshToken(accessToken, refreshToken))
+            throw new BadRequestException(ErrorMessage.INVALID_TOKEN_EXCEPTION);
+
+        return jwtService.generateAccessToken(member);
     }
 
     private void checkDuplication(MemberRequest memberRequest) {
@@ -147,4 +146,22 @@ public class MemberServiceImpl implements MemberService {
 
         return optMember.get();
     }
+
+    private MemberEntity createMemberEntity(MemberRequest memberRequest) {
+
+        return MemberMapper.INSTANCE.toMemberEntity(memberRequest)
+                .toBuilder()
+                .password(memberRequest.getPassword())
+                .memberType(MemberType.NORMAL)
+                .build();
+    }
+
+    private JwtTokenResponse createTokenResponse(String accessToken, String refreshToken) {
+
+        return JwtTokenResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
+
 }

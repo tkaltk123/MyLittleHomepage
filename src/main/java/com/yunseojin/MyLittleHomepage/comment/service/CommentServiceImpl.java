@@ -8,7 +8,7 @@ import com.yunseojin.MyLittleHomepage.comment.repository.CommentRepository;
 import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
 import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
-import com.yunseojin.MyLittleHomepage.member.dto.MemberInfo;
+import com.yunseojin.MyLittleHomepage.member.dto.MemberTokenDto;
 import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.member.repository.MemberRepository;
 import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
@@ -27,8 +27,7 @@ import javax.annotation.Resource;
 @Transactional
 public class CommentServiceImpl implements CommentService {
 
-    @Resource
-    private MemberInfo memberInfo;
+    private MemberTokenDto memberInfo;
 
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;

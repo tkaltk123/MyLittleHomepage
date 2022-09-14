@@ -6,7 +6,7 @@ import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
 import com.yunseojin.MyLittleHomepage.etc.enums.PostOrderType;
 import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
-import com.yunseojin.MyLittleHomepage.member.dto.MemberInfo;
+import com.yunseojin.MyLittleHomepage.member.dto.MemberTokenDto;
 import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.member.repository.MemberRepository;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
@@ -30,8 +30,8 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class PostServiceImpl implements PostService {
-    @Resource
-    private MemberInfo memberInfo;
+
+    private MemberTokenDto memberInfo;
 
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;

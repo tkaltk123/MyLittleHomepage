@@ -25,6 +25,8 @@ public enum ErrorMessage {
     ,POST_REPEAT_EXCEPTION(16,"10초 내에 게시글을 두번 작성했습니다.",HttpStatus.BAD_REQUEST)
     ,COMMENT_REPEAT_EXCEPTION(17,"10초 내에 댓글을 두번 작성했습니다.",HttpStatus.BAD_REQUEST)
     ,LOGIN_FAILED_EXCEPTION(18,"ID 또는 패스워드가 일치하지 않습니다.",HttpStatus.BAD_REQUEST)
+    ,INVALID_TOKEN_EXCEPTION(19,"올바르지 않은 형식의 토큰입니다.",HttpStatus.BAD_REQUEST)
+    ,EXPIRED_TOKEN_EXCEPTION(19,"만료된 토큰입니다.",HttpStatus.BAD_REQUEST)
     ;
 
     Integer code;

@@ -86,7 +86,6 @@ class EvaluationServiceImplTest {
 
         post = postRepository.findById(postRes.getId()).get();
         comment = commentRepository.findById(commentRes.getId()).get();
-        memberService.logout();
     }
 
     @Test

@@ -5,7 +5,7 @@ import com.yunseojin.MyLittleHomepage.comment.dto.CommentRequest;
 import com.yunseojin.MyLittleHomepage.comment.dto.CommentResponse;
 import com.yunseojin.MyLittleHomepage.comment.service.CommentService;
 import com.yunseojin.MyLittleHomepage.etc.annotation.ValidationGroups;
-import com.yunseojin.MyLittleHomepage.member.dto.MemberInfo;
+import com.yunseojin.MyLittleHomepage.member.dto.MemberTokenDto;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
 import com.yunseojin.MyLittleHomepage.post.mapper.PostMapper;
 import com.yunseojin.MyLittleHomepage.post.service.PostService;
@@ -24,8 +24,7 @@ import javax.annotation.Resource;
 @Controller
 public class PostController {
 
-    @Resource
-    private MemberInfo memberInfo;
+    private MemberTokenDto memberInfo;
     private final BoardService boardService;
     private final PostService postService;
     private final CommentService commentService;

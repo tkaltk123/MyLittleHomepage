@@ -1,28 +1,33 @@
 package com.yunseojin.MyLittleHomepage.member.service;
 
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
+import com.yunseojin.MyLittleHomepage.etc.enums.TokenValidationType;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberRequest;
 import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.member.repository.MemberRepository;
+import com.yunseojin.MyLittleHomepage.etc.service.JwtService;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestConstructor;
 
 import javax.transaction.Transactional;
 
 import static com.yunseojin.MyLittleHomepage.TestUtil.assertError;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @Transactional
+@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
+@RequiredArgsConstructor
 class MemberServiceImplTest {
 
-    @Autowired
-    private MemberRepository memberRepository;
-    @Autowired
-    private MemberServiceImpl memberService;
+    private final MemberRepository memberRepository;
+    private final MemberService memberService;
+    private final JwtService jwtUtil;
 
     private static MemberRequest memberRequest;
 
@@ -43,18 +48,10 @@ class MemberServiceImplTest {
 
         memberService.register(memberRequest);
         member = memberRepository.findByLoginId(memberRequest.getLoginId()).get();
-        memberService.logout();
     }
 
     @Test
     void register() {
-
-        //이미 로그인 된 경우
-        memberService.login(memberRequest);
-        assertError(ErrorMessage.ALREADY_LOGIN_EXCEPTION, () ->
-                memberService.register(memberRequest)
-        );
-        memberService.logout();
 
         //로그인 id가 중복된 경우
         var memberRequest2 = memberRequest.toBuilder()
@@ -87,10 +84,6 @@ class MemberServiceImplTest {
     @Test
     void modify() {
 
-        //로그인이 안 된 경우
-        assertError(ErrorMessage.NOT_LOGIN_EXCEPTION, () ->
-                memberService.modify(memberRequest)
-        );
 
         //회원 가입
         var registerRequest = memberRequest.toBuilder()
@@ -102,7 +95,7 @@ class MemberServiceImplTest {
 
         //현재 패스워드가 잘못된 경우
         assertError(ErrorMessage.INCORRECT_PASSWORD_EXCEPTION, () ->
-                memberService.modify(registerRequest)
+                memberService.modify(dbMember.getId(), registerRequest)
         );
 
         //로그인 id가 중복된 경우
@@ -111,7 +104,7 @@ class MemberServiceImplTest {
                 .currentPassword(registerRequest.getPassword())
                 .build();
         assertError(ErrorMessage.LOGIN_ID_DUPLICATE_EXCEPTION, () ->
-                memberService.modify(modifyRequest)
+                memberService.modify(dbMember.getId(), modifyRequest)
         );
 
         //닉네임이 중복된 경우
@@ -120,7 +113,7 @@ class MemberServiceImplTest {
                 .currentPassword(registerRequest.getPassword())
                 .build();
         assertError(ErrorMessage.NICKNAME_DUPLICATE_EXCEPTION, () ->
-                memberService.modify(modifyRequest2)
+                memberService.modify(dbMember.getId(), modifyRequest2)
         );
 
         //회원정보 수정
@@ -129,31 +122,27 @@ class MemberServiceImplTest {
                 .nickname("nickname3")
                 .currentPassword(registerRequest.getPassword())
                 .build();
-        memberService.modify(modifyRequest3);
+        var token = memberService.modify(dbMember.getId(), modifyRequest3);
 
         // then
         assertEquals(modifyRequest3.getNickname(), dbMember.getNickname());
+        assertEquals(TokenValidationType.VALID, jwtUtil.validateAccessToken(token));
     }
 
     @Test
     void delete() {
 
-        //로그인이 안 된 경우
-        assertError(ErrorMessage.NOT_LOGIN_EXCEPTION, () ->
-                memberService.delete(memberRequest)
-        );
-
         //현재 패스워드가 잘못된 경우
         memberService.login(memberRequest);
         assertError(ErrorMessage.INCORRECT_PASSWORD_EXCEPTION, () ->
-                memberService.delete(memberRequest)
+                memberService.delete(member.getId(), memberRequest)
         );
 
         //제거
         var deleteRequest = MemberRequest.builder()
                 .currentPassword(memberRequest.getPassword())
                 .build();
-        memberService.delete(deleteRequest);
+        memberService.delete(member.getId(), deleteRequest);
 
         // then
         assertEquals(1, member.getIsDeleted());
@@ -179,28 +168,9 @@ class MemberServiceImplTest {
         );
 
         //로그인
-        memberService.login(memberRequest);
+        var token = memberService.login(memberRequest);
 
-        //중복 로그인
-        assertError(ErrorMessage.ALREADY_LOGIN_EXCEPTION, () ->
-                memberService.login(memberRequest)
-        );
-
-    }
-
-    @Test
-    void logout() {
-
-        //로그인이 안 되있을 경우
-        assertError(ErrorMessage.NOT_LOGIN_EXCEPTION, () ->
-                memberService.logout()
-        );
-
-        //로그인
-        memberService.login(memberRequest);
-
-        //로그아웃
-        memberService.logout();
-
+        //then
+        assertEquals(TokenValidationType.VALID, jwtUtil.validateAccessToken(token.getAccessToken()));
     }
 }

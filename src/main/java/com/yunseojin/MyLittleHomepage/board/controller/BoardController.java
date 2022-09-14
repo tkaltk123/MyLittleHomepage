@@ -2,8 +2,7 @@ package com.yunseojin.MyLittleHomepage.board.controller;
 
 import com.yunseojin.MyLittleHomepage.board.service.BoardService;
 import com.yunseojin.MyLittleHomepage.etc.annotation.ValidationGroups;
-import com.yunseojin.MyLittleHomepage.etc.enums.PostSearchType;
-import com.yunseojin.MyLittleHomepage.member.dto.MemberInfo;
+import com.yunseojin.MyLittleHomepage.member.dto.MemberTokenDto;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
 import com.yunseojin.MyLittleHomepage.post.dto.PostSearch;
 import com.yunseojin.MyLittleHomepage.post.service.PostService;
@@ -21,8 +20,7 @@ import javax.annotation.Resource;
 @Controller
 public class BoardController {
 
-    @Resource
-    private MemberInfo memberInfo;
+    private MemberTokenDto memberInfo;
     private final BoardService boardService;
     private final PostService postService;
 

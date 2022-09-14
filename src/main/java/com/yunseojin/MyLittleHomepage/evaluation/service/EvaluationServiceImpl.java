@@ -12,7 +12,7 @@ import com.yunseojin.MyLittleHomepage.evaluation.entity.EvaluationEntity;
 import com.yunseojin.MyLittleHomepage.evaluation.entity.PostEvaluationEntity;
 import com.yunseojin.MyLittleHomepage.evaluation.repository.CommentEvaluationRepository;
 import com.yunseojin.MyLittleHomepage.evaluation.repository.PostEvaluationRepository;
-import com.yunseojin.MyLittleHomepage.member.dto.MemberInfo;
+import com.yunseojin.MyLittleHomepage.member.dto.MemberTokenDto;
 import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.member.repository.MemberRepository;
 import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
@@ -28,8 +28,7 @@ import javax.annotation.Resource;
 @Transactional
 public class EvaluationServiceImpl implements EvaluationService {
 
-    @Resource
-    private MemberInfo memberInfo;
+    private MemberTokenDto memberInfo;
 
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;

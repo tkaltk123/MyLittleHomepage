@@ -1,19 +1,18 @@
 package com.yunseojin.MyLittleHomepage.member.service;
 
+import com.yunseojin.MyLittleHomepage.member.dto.JwtTokenResponse;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberRequest;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberResponse;
 
-import java.util.Map;
-
 public interface MemberService {
 
-    MemberResponse register(MemberRequest memberRequest);
+    JwtTokenResponse register(MemberRequest memberRequest);
 
-    MemberResponse modify(MemberRequest memberRequest);
+    String modify(Long memberId, MemberRequest memberRequest);
 
-    void delete(MemberRequest memberRequest);
+    void delete(Long memberId, MemberRequest memberRequest);
 
-    MemberResponse login(MemberRequest memberRequest);
+    JwtTokenResponse login(MemberRequest memberRequest);
 
-    void logout();
+    String refreshAccessToken(String accessToken, String refreshToken);
 }

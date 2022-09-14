@@ -89,7 +89,6 @@ class CommentServiceImplTest {
         var postRes = postService.createPost(board.getId(), postRequest);
 
         post = postRepository.findById(postRes.getId()).get();
-        memberService.logout();
     }
 
     @Test
@@ -118,7 +117,6 @@ class CommentServiceImplTest {
         );
 
         //재로그인
-        memberService.logout();
         memberService.login(memberRequest);
 
         //존재하지 않는 댓글에 대댓글 작성 시
@@ -173,7 +171,6 @@ class CommentServiceImplTest {
                 .loginId("testuser2")
                 .nickname("testuser2")
                 .build();
-        memberService.logout();
         memberService.register(member2Request);
 
         //사용자가 작성하지 않은 댓글을 수정할 경우
@@ -210,7 +207,6 @@ class CommentServiceImplTest {
                 .loginId("testuser2")
                 .nickname("testuser2")
                 .build();
-        memberService.logout();
         memberService.register(member2Request);
 
         //사용자가 작성하지 않은 댓글을 삭제할 경우
@@ -219,7 +215,6 @@ class CommentServiceImplTest {
         );
 
         //멤버1로 로그인
-        memberService.logout();
         memberService.login(memberRequest);
 
         //댓글 삭제

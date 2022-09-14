@@ -1,8 +1,9 @@
 package com.yunseojin.MyLittleHomepage.etc.controller;
 
 import com.yunseojin.MyLittleHomepage.board.service.BoardService;
+import com.yunseojin.MyLittleHomepage.etc.annotation.MemberToken;
 import com.yunseojin.MyLittleHomepage.etc.enums.PostOrderType;
-import com.yunseojin.MyLittleHomepage.member.dto.MemberInfo;
+import com.yunseojin.MyLittleHomepage.member.dto.MemberTokenDto;
 import com.yunseojin.MyLittleHomepage.post.dto.PostSearch;
 import com.yunseojin.MyLittleHomepage.post.service.PostService;
 import com.yunseojin.MyLittleHomepage.util.ModelUtil;
@@ -12,22 +13,23 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequiredArgsConstructor
 public class HomeController {
 
-    @Resource
-    private MemberInfo memberInfo;
     private final BoardService boardService;
     private final PostService postService;
 
     @GetMapping("")
-    public String index(Model model) {
+    public String index(
+            @MemberToken MemberTokenDto memberTokenDto,
+            Model model) {
 
         setOrderedFreePosts(model);
         setOrderedHumorPosts(model);
-        ModelUtil.setCommonAttr(model, memberInfo, boardService.getBoardList());
+        ModelUtil.setCommonAttr(model, memberTokenDto, boardService.getBoardList());
 
         return "index";
     }
