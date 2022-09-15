@@ -1,17 +1,11 @@
 package com.yunseojin.MyLittleHomepage.member.controller;
 
-import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
-import com.yunseojin.MyLittleHomepage.etc.annotation.MemberId;
-import com.yunseojin.MyLittleHomepage.etc.annotation.MemberToken;
-import com.yunseojin.MyLittleHomepage.etc.annotation.ValidationGroups;
+import com.yunseojin.MyLittleHomepage.etc.annotation.*;
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
 import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
-import com.yunseojin.MyLittleHomepage.etc.service.JwtService;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberRequest;
-import com.yunseojin.MyLittleHomepage.member.dto.MemberTokenDto;
 import com.yunseojin.MyLittleHomepage.member.service.MemberService;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;

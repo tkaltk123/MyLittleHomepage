@@ -3,6 +3,7 @@ package com.yunseojin.MyLittleHomepage.etc.controller;
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
 import com.yunseojin.MyLittleHomepage.etc.exception.BaseException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.core.annotation.Order;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,6 +11,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 
+@Order(1)
 @ControllerAdvice
 public class GlobalExceptionHandler {
 

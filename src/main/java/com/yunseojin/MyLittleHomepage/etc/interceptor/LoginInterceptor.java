@@ -29,8 +29,8 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Value("${jwt.refresh.name}")
     protected String refreshTokenName;
 
-    protected final JwtService jwtService;
-    protected final MemberService memberService;
+    private final JwtService jwtService;
+    private final MemberService memberService;
 
     @Override
     public boolean preHandle(
@@ -46,7 +46,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         Login login = handlerMethod.getMethod().getDeclaredAnnotation(Login.class);
 
-        var accessToken = getToken(request, accessTokenName);
+        var accessToken = CookieUtil.getToken(request, accessTokenName);
         var validationType = jwtService.validateAccessToken(accessToken);
 
         //annotation 없으면 검증 생략
@@ -61,18 +61,13 @@ public class LoginInterceptor implements HandlerInterceptor {
             throw new BadRequestException(ErrorMessage.ALREADY_LOGIN_EXCEPTION);
 
         if (login.required() && validationType == TokenValidationType.EXPIRE) {
-            tokenExpired(accessToken, request, response);
+            refreshToken(accessToken, request, response);
         }
 
         return true;
     }
 
-    protected String getToken(HttpServletRequest request, String tokenName) {
-
-        return CookieUtil.getToken(request, tokenName);
-    }
-
-    protected void tokenExpired(String accessToken, HttpServletRequest request, HttpServletResponse response) {
+    private void refreshToken(String accessToken, HttpServletRequest request, HttpServletResponse response) {
 
         var refreshToken = CookieUtil.getToken(request, refreshTokenName);
         try {
