@@ -4,11 +4,11 @@ import com.yunseojin.MyLittleHomepage.etc.enums.EvaluationType;
 
 public interface EvaluationService {
 
-    EvaluationType likePost(Long postId);
+    EvaluationType likePost(Long memberId, Long postId);
 
-    EvaluationType likeComment(Long commentId);
+    EvaluationType likeComment(Long memberId, Long commentId);
 
-    EvaluationType dislikePost(Long postId);
+    EvaluationType dislikePost(Long memberId, Long postId);
 
-    EvaluationType dislikeComment(Long commentId);
+    EvaluationType dislikeComment(Long memberId, Long commentId);
 }

@@ -2,32 +2,20 @@ package com.yunseojin.MyLittleHomepage.comment.service;
 
 import com.yunseojin.MyLittleHomepage.board.entity.BoardEntity;
 import com.yunseojin.MyLittleHomepage.board.repository.BoardRepository;
-import com.yunseojin.MyLittleHomepage.comment.dto.CommentRequest;
 import com.yunseojin.MyLittleHomepage.comment.entity.CommentEntity;
-import com.yunseojin.MyLittleHomepage.comment.mapper.CommentMapper;
 import com.yunseojin.MyLittleHomepage.comment.repository.CommentRepository;
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
-import com.yunseojin.MyLittleHomepage.member.dto.MemberRequest;
 import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.member.repository.MemberRepository;
-import com.yunseojin.MyLittleHomepage.member.service.MemberServiceImpl;
-import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
 import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
 import com.yunseojin.MyLittleHomepage.post.repository.PostRepository;
-import com.yunseojin.MyLittleHomepage.post.service.PostServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.TestConstructor;
 
 import javax.transaction.Transactional;
-
-import java.awt.print.Pageable;
 
 import static com.yunseojin.MyLittleHomepage.TestUtil.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -47,13 +35,15 @@ class CommentServiceImplTest {
     private final CommentRepository commentRepository;
 
     private MemberEntity member;
+    private MemberEntity member2;
     private PostEntity post;
     private CommentEntity comment;
 
     @BeforeEach
     public void init() {
 
-        member = memberRepository.save(createTestMember("testId"));
+        member = memberRepository.save(createTestMember("testUser", "testUser"));
+        member2 = memberRepository.save(createTestMember("testUser2", "testUser2"));
         BoardEntity board = boardRepository.save(createTestBoard("testBoard"));
         post = postRepository.save(createTestPost(member, board, "내용"));
         comment = commentRepository.save(createTestComment(member, post, "내용"));
@@ -78,9 +68,6 @@ class CommentServiceImplTest {
         assertError(ErrorMessage.COMMENT_REPEAT_EXCEPTION, () ->
                 commentService.createComment(member.getId(), post.getId(), commentRequest)
         );
-
-        //멤버2 생성
-        var member2 = memberRepository.save(createTestMember("testUser2"));
 
         //존재하지 않는 댓글에 대댓글 작성 시
         var errorRequest = commentRequest.toBuilder().parentId(0L).build();
@@ -114,9 +101,6 @@ class CommentServiceImplTest {
         //댓글 수정
         var updateRes = commentService.updateComment(member.getId(), updateRequest);
 
-        //멤버2 생성
-        var member2 = memberRepository.save(createTestMember("testUser2"));
-
         //사용자가 작성하지 않은 댓글을 수정할 경우
         assertError(ErrorMessage.NOT_WRITER_EXCEPTION, () ->
                 commentService.updateComment(member2.getId(), updateRequest)
@@ -133,9 +117,6 @@ class CommentServiceImplTest {
         assertError(ErrorMessage.NOT_EXISTS_COMMENT_EXCEPTION, () ->
                 commentService.deleteComment(member.getId(), 0L)
         );
-
-        //멤버2 생성
-        var member2 = memberRepository.save(createTestMember("testUser2"));
 
         //사용자가 작성하지 않은 댓글을 삭제할 경우
         assertError(ErrorMessage.NOT_WRITER_EXCEPTION, () ->

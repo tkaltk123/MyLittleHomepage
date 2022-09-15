@@ -28,8 +28,6 @@ import javax.annotation.Resource;
 @Transactional
 public class EvaluationServiceImpl implements EvaluationService {
 
-    private MemberTokenDto memberInfo;
-
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
@@ -38,35 +36,35 @@ public class EvaluationServiceImpl implements EvaluationService {
 
     @Login
     @Override
-    public EvaluationType likePost(Long postId) {
+    public EvaluationType likePost(Long memberId, Long postId) {
 
-        return evaluatePost(postId, EvaluationType.LIKE);
+        return evaluatePost(memberId, postId, EvaluationType.LIKE);
     }
 
     @Login
     @Override
-    public EvaluationType likeComment(Long commentId) {
+    public EvaluationType likeComment(Long memberId, Long commentId) {
 
-        return evaluateComment(commentId, EvaluationType.LIKE);
+        return evaluateComment(memberId, commentId, EvaluationType.LIKE);
     }
 
     @Login
     @Override
-    public EvaluationType dislikePost(Long postId) {
+    public EvaluationType dislikePost(Long memberId, Long postId) {
 
-        return evaluatePost(postId, EvaluationType.DISLIKE);
+        return evaluatePost(memberId, postId, EvaluationType.DISLIKE);
     }
 
     @Login
     @Override
-    public EvaluationType dislikeComment(Long commentId) {
+    public EvaluationType dislikeComment(Long memberId, Long commentId) {
 
-        return evaluateComment(commentId, EvaluationType.DISLIKE);
+        return evaluateComment(memberId, commentId, EvaluationType.DISLIKE);
     }
 
-    private EvaluationType evaluatePost(Long postId, EvaluationType evaluationType) {
+    private EvaluationType evaluatePost(Long memberId, Long postId, EvaluationType evaluationType) {
 
-        var member = getMemberById(memberInfo.getId());
+        var member = getMemberById(memberId);
         var post = getPostById(postId);
         var optPostEvaluation = postEvaluationRepository.findByPostAndWriter(post, member);
 
@@ -77,9 +75,9 @@ public class EvaluationServiceImpl implements EvaluationService {
 
     }
 
-    private EvaluationType evaluateComment(Long commentId, EvaluationType evaluationType) {
+    private EvaluationType evaluateComment(Long memberId, Long commentId, EvaluationType evaluationType) {
 
-        var member = getMemberById(memberInfo.getId());
+        var member = getMemberById(memberId);
         var comment = getCommentById(commentId);
         var optCommentEvaluation = commentEvaluationRepository.findByCommentAndWriter(comment, member);
 

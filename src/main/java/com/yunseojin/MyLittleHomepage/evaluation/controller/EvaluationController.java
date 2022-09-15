@@ -1,7 +1,9 @@
 package com.yunseojin.MyLittleHomepage.evaluation.controller;
 
 import com.yunseojin.MyLittleHomepage.comment.service.CommentService;
+import com.yunseojin.MyLittleHomepage.etc.annotation.MemberToken;
 import com.yunseojin.MyLittleHomepage.evaluation.service.EvaluationService;
+import com.yunseojin.MyLittleHomepage.member.dto.MemberTokenDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,37 +17,45 @@ public class EvaluationController {
     private final EvaluationService evaluationService;
 
     @PostMapping("/like/posts/{post_id}")
-    public String likePost(@PathVariable(name = "post_id") Long postId) {
+    public String likePost(
+            @MemberToken MemberTokenDto memberTokenDto,
+            @PathVariable(name = "post_id") Long postId) {
 
-        evaluationService.likePost(postId);
+        evaluationService.likePost(memberTokenDto.getId(), postId);
 
         return "redirect:/posts/" + postId;
     }
 
     @PostMapping("/like/comments/{comment_id}")
-    public String likeComment(@PathVariable(name = "comment_id") Long commentId) {
+    public String likeComment(
+            @MemberToken MemberTokenDto memberTokenDto,
+            @PathVariable(name = "comment_id") Long commentId) {
 
         var comment = commentService.getComment(commentId);
 
-        evaluationService.likeComment(commentId);
+        evaluationService.likeComment(memberTokenDto.getId(), commentId);
 
         return "redirect:/posts/" + comment.getPostId();
     }
 
     @PostMapping("/dislike/posts/{post_id}")
-    public String dislikePost(@PathVariable(name = "post_id") Long postId) {
+    public String dislikePost(
+            @MemberToken MemberTokenDto memberTokenDto,
+            @PathVariable(name = "post_id") Long postId) {
 
-        evaluationService.dislikePost(postId);
+        evaluationService.dislikePost(memberTokenDto.getId(), postId);
 
         return "redirect:/posts/" + postId;
     }
 
     @PostMapping("/dislike/comments/{comment_id}")
-    public String dislikeComment(@PathVariable(name = "comment_id") Long commentId) {
+    public String dislikeComment(
+            @MemberToken MemberTokenDto memberTokenDto,
+            @PathVariable(name = "comment_id") Long commentId) {
 
         var comment = commentService.getComment(commentId);
 
-        evaluationService.dislikeComment(commentId);
+        evaluationService.dislikeComment(memberTokenDto.getId(), commentId);
 
         return "redirect:/posts/" + comment.getPostId();
     }

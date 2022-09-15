@@ -31,13 +31,15 @@ class PostServiceImplTest {
     private final PostRepository postRepository;
 
     private MemberEntity member;
+    private MemberEntity member2;
     private BoardEntity board;
     private PostEntity post;
 
     @BeforeEach
     public void init() {
 
-        member = memberRepository.save(createTestMember("testId"));
+        member = memberRepository.save(createTestMember("testUser", "testUser"));
+        member2 = memberRepository.save(createTestMember("testUser2", "testUser2"));
         board = boardRepository.save(createTestBoard("testBoard"));
         post = postRepository.save(createTestPost(member, board, "내용"));
         board.increasePostCount();
@@ -81,9 +83,6 @@ class PostServiceImplTest {
         //게시글 수정
         postService.updatePost(member.getId(), post.getId(), updateRequest);
 
-        //다른 유저 생성
-        var member2 = memberRepository.save(createTestMember("testUser2"));
-
         //수정할 게시글의 작성자가 아닌 경우
         assertError(ErrorMessage.NOT_WRITER_EXCEPTION, () ->
                 postService.updatePost(member2.getId(), post.getId(), updateRequest)
@@ -101,9 +100,6 @@ class PostServiceImplTest {
         assertError(ErrorMessage.NOT_EXISTS_POST_EXCEPTION, () ->
                 postService.deletePost(member.getId(), 0L)
         );
-
-        //다른 유저 생성
-        var member2 = memberRepository.save(createTestMember("testUser2"));
 
         //삭제할 게시글의 작성자가 아닌 경우
         assertError(ErrorMessage.NOT_WRITER_EXCEPTION, () ->

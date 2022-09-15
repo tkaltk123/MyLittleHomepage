@@ -6,6 +6,7 @@ import com.yunseojin.MyLittleHomepage.comment.entity.CommentEntity;
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
 import com.yunseojin.MyLittleHomepage.etc.enums.MemberType;
 import com.yunseojin.MyLittleHomepage.etc.exception.BaseException;
+import com.yunseojin.MyLittleHomepage.member.dto.MemberRequest;
 import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
 import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
@@ -20,13 +21,23 @@ public class TestUtil {
         assertEquals(error.getCode(), assertThrows(BaseException.class, executable).getCode());
     }
 
-    public static MemberEntity createTestMember(String loginId) {
+    public static MemberEntity createTestMember(String loginId, String nickname) {
 
         return MemberEntity.builder()
                 .loginId(loginId)
                 .password("1234")
-                .nickname(loginId)
+                .nickname(nickname)
                 .memberType(MemberType.NORMAL)
+                .build();
+    }
+
+    public static MemberRequest createMemberRequest(String loginId, String nickname,String currentPassword){
+
+        return MemberRequest.builder()
+                .loginId(loginId)
+                .nickname(nickname)
+                .password("1234")
+                .currentPassword(currentPassword)
                 .build();
     }
 
