@@ -1,6 +1,7 @@
 package com.yunseojin.MyLittleHomepage.board.controller;
 
 import com.yunseojin.MyLittleHomepage.board.service.BoardService;
+import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
 import com.yunseojin.MyLittleHomepage.etc.annotation.MemberToken;
 import com.yunseojin.MyLittleHomepage.etc.annotation.ValidationGroups;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberTokenDto;
@@ -21,34 +22,36 @@ import javax.annotation.Resource;
 @Controller
 public class BoardController {
 
-    private MemberTokenDto memberInfo;
     private final BoardService boardService;
     private final PostService postService;
 
     @GetMapping("")
     public String getBoard(
             Model model,
+            @MemberToken MemberTokenDto memberTokenDto,
             @PathVariable(name = "board_id") Long boardId,
             @ModelAttribute(name = "postSearch") PostSearch postSearch) {
 
         setPostSearchAttribute(model, boardId, postSearch);
-        ModelUtil.setCommonAttr(model, memberInfo, boardService.getBoardList());
+        ModelUtil.setCommonAttr(model, memberTokenDto, boardService.getBoardList());
         return "layout/board";
     }
 
     @GetMapping("/write_post")
     public String postWriteForm(
             Model model,
+            @MemberToken MemberTokenDto memberTokenDto,
             @PathVariable(name = "board_id") Long boardId) {
 
-        if (memberInfo.getId() == null)
+        if (!MemberTokenDto.isLoggedIn(memberTokenDto))
             return "redirect:/login";
 
         model.addAttribute("postRequest", new PostRequest());
-        ModelUtil.setCommonAttr(model, memberInfo, boardService.getBoardList());
+        ModelUtil.setCommonAttr(model, memberTokenDto, boardService.getBoardList());
         return "layout/postForm";
     }
 
+    @Login
     @PostMapping("/write_post")
     public String createPost(
             @MemberToken MemberTokenDto memberTokenDto,

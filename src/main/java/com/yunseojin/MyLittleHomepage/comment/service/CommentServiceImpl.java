@@ -8,6 +8,7 @@ import com.yunseojin.MyLittleHomepage.comment.repository.CommentRepository;
 import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
 import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
+import com.yunseojin.MyLittleHomepage.etc.service.RedisService;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberTokenDto;
 import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.member.repository.MemberRepository;
@@ -27,17 +28,16 @@ import javax.annotation.Resource;
 @Transactional
 public class CommentServiceImpl implements CommentService {
 
-    private MemberTokenDto memberInfo;
-
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
     private final CommentRepository commentRepository;
 
-    @Login
-    @Override
-    public CommentResponse createComment(Long postId, CommentRequest commentRequest) {
+    private final RedisService redisService;
 
-        var writer = getMemberById(memberInfo.getId());
+    @Override
+    public CommentResponse createComment(Long memberId, Long postId, CommentRequest commentRequest) {
+
+        var writer = getMemberById(memberId);
         var post = getPostById(postId);
         var parent = getParent(commentRequest.getParentId());
 
@@ -49,16 +49,15 @@ public class CommentServiceImpl implements CommentService {
                 .build();
 
         comment.setParent(parent);
-        createComment(post, comment);
+        createComment(memberId, post, comment);
 
         return CommentMapper.INSTANCE.toCommentResponse(comment);
     }
 
-    @Login
     @Override
-    public CommentResponse updateComment(CommentRequest commentRequest) {
+    public CommentResponse updateComment(Long memberId, CommentRequest commentRequest) {
 
-        var writer = getMemberById(memberInfo.getId());
+        var writer = getMemberById(memberId);
         var comment = getCommentById(commentRequest.getCommentId());
 
         checkCommentWriter(comment, writer);
@@ -67,11 +66,10 @@ public class CommentServiceImpl implements CommentService {
         return CommentMapper.INSTANCE.toCommentResponse(comment);
     }
 
-    @Login
     @Override
-    public void deleteComment(Long commentId) {
+    public void deleteComment(Long memberId, Long commentId) {
 
-        var writer = getMemberById(memberInfo.getId());
+        var writer = getMemberById(memberId);
         var comment = getCommentById(commentId);
 
         checkCommentWriter(comment, writer);
@@ -145,8 +143,10 @@ public class CommentServiceImpl implements CommentService {
         return optPost.get();
     }
 
-    private void createComment(PostEntity post, CommentEntity comment) {
+    private void createComment(Long memberId, PostEntity post, CommentEntity comment) {
 
+        if (!redisService.createComment(memberId))
+            throw new BadRequestException(ErrorMessage.COMMENT_REPEAT_EXCEPTION);
         post.increaseCommentCount();
         commentRepository.save(comment);
     }

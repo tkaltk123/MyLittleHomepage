@@ -36,7 +36,6 @@ public class PostServiceImpl implements PostService {
 
     private final RedisService redisService;
 
-    @Login
     @Override
     public PostResponse createPost(Long memberId, Long boardId, PostRequest postRequest) {
 
@@ -57,7 +56,6 @@ public class PostServiceImpl implements PostService {
         return PostMapper.INSTANCE.toPostResponse(post);
     }
 
-    @Login
     @Override
     public PostResponse updatePost(Long memberId, Long postId, PostRequest postRequest) {
 
@@ -70,7 +68,6 @@ public class PostServiceImpl implements PostService {
         return PostMapper.INSTANCE.toPostResponse(post);
     }
 
-    @Login
     @Override
     public void deletePost(Long memberId, Long postId) {
 

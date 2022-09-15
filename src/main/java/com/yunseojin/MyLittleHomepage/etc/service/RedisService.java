@@ -17,34 +17,6 @@ public class RedisService {
 
     private final RedisTemplate<String, String> redisTemplate;
 
-    private void setValues(String key, String data) {
-
-        ValueOperations<String, String> values = redisTemplate.opsForValue();
-        values.set(key, data);
-    }
-
-    private void setValues(String key, String data, Duration duration) {
-        ValueOperations<String, String> values = redisTemplate.opsForValue();
-        values.set(key, data, duration);
-    }
-
-    private String getValues(String key) {
-
-        ValueOperations<String, String> values = redisTemplate.opsForValue();
-
-        return values.get(key);
-    }
-
-    public void deleteValues(String key) {
-
-        redisTemplate.delete(key);
-    }
-
-    private String getRefreshKey(Long memberId) {
-
-        return "refresh" + memberId;
-    }
-
     public String getRefreshToken(Long memberId) {
 
         return getValues(getRefreshKey(memberId));
@@ -53,10 +25,6 @@ public class RedisService {
     public void setRefreshToken(Long memberId, String refreshToken, Integer remainHour) {
 
         setValues(getRefreshKey(memberId), refreshToken, Duration.ofHours(remainHour));
-    }
-
-    private String getViewKey(String ip, Long postId) {
-        return "post" + postId + "ip" + ip;
     }
 
     public boolean viewPost(String ip, Long postId) {
@@ -74,10 +42,6 @@ public class RedisService {
         return true;
     }
 
-    private String getCreatePostKey(Long memberId) {
-        return "createPost" + memberId;
-    }
-
     public boolean createPost(Long memberId) {
 
         var key = getCreatePostKey(memberId);
@@ -86,5 +50,44 @@ public class RedisService {
         setValues(key, "", Duration.ofSeconds(10));
 
         return true;
+    }
+
+    public boolean createComment(Long memberId) {
+
+        var key = getCreateCommentKey(memberId);
+        if (getValues(key) != null)
+            return false;
+        setValues(key, "", Duration.ofSeconds(10));
+
+        return true;
+    }
+
+    private void setValues(String key, String data, Duration duration) {
+        ValueOperations<String, String> values = redisTemplate.opsForValue();
+        values.set(key, data, duration);
+    }
+
+    private String getValues(String key) {
+
+        ValueOperations<String, String> values = redisTemplate.opsForValue();
+
+        return values.get(key);
+    }
+
+    private String getRefreshKey(Long memberId) {
+
+        return "refresh" + memberId;
+    }
+
+    private String getViewKey(String ip, Long postId) {
+        return "post" + postId + "ip" + ip;
+    }
+
+    private String getCreatePostKey(Long memberId) {
+        return "createPost" + memberId;
+    }
+
+    private String getCreateCommentKey(Long memberId) {
+        return "createComment" + memberId;
     }
 }

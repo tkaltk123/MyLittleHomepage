@@ -4,6 +4,7 @@ import com.yunseojin.MyLittleHomepage.board.service.BoardService;
 import com.yunseojin.MyLittleHomepage.comment.dto.CommentRequest;
 import com.yunseojin.MyLittleHomepage.comment.dto.CommentResponse;
 import com.yunseojin.MyLittleHomepage.comment.service.CommentService;
+import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
 import com.yunseojin.MyLittleHomepage.etc.annotation.MemberToken;
 import com.yunseojin.MyLittleHomepage.etc.annotation.ValidationGroups;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberTokenDto;
@@ -66,6 +67,7 @@ public class PostController {
         return "layout/postForm";
     }
 
+    @Login
     @PostMapping("/modify")
     public String updatePost(
             @MemberToken MemberTokenDto memberTokenDto,
@@ -77,6 +79,7 @@ public class PostController {
         return "redirect:/posts/" + postId;
     }
 
+    @Login
     @PostMapping("/delete")
     public String deletePost(
             @MemberToken MemberTokenDto memberTokenDto,
