@@ -4,15 +4,19 @@ import com.yunseojin.MyLittleHomepage.board.entity.BoardEntity;
 import com.yunseojin.MyLittleHomepage.board.repository.BoardRepository;
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberRequest;
+import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
+import com.yunseojin.MyLittleHomepage.member.repository.MemberRepository;
 import com.yunseojin.MyLittleHomepage.member.service.MemberServiceImpl;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
 import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
 import com.yunseojin.MyLittleHomepage.post.repository.PostRepository;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestConstructor;
 
 import javax.transaction.Transactional;
 
@@ -21,21 +25,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @Transactional
+@RequiredArgsConstructor
+@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 class PostServiceImplTest {
 
-    @Autowired
-    private MemberServiceImpl memberService;
-    @Autowired
-    private PostServiceImpl postService;
+    private final MemberServiceImpl memberService;
+    private final PostServiceImpl postService;
 
-    @Autowired
-    private BoardRepository boardRepository;
-    @Autowired
-    private PostRepository postRepository;
+    private final MemberRepository memberRepository;
+    private final BoardRepository boardRepository;
+    private final PostRepository postRepository;
 
     private static MemberRequest memberRequest;
     private static PostRequest postRequest;
 
+    private MemberEntity member;
     private BoardEntity board;
     private PostEntity post;
 
@@ -63,9 +67,10 @@ class PostServiceImplTest {
                 .build();
 
         memberService.register(memberRequest);
+        member = memberRepository.findByLoginId(memberRequest.getLoginId()).get();
 
         board = boardRepository.save(board);
-        var postRes = postService.createPost(board.getId(), postRequest);
+        var postRes = postService.createPost(member.getId(), board.getId(), postRequest);
 
         post = postRepository.findById(postRes.getId()).get();
     }
@@ -73,25 +78,26 @@ class PostServiceImplTest {
     @Test
     void createPost() {
 
-        //로그인 안됨
-        assertError(ErrorMessage.NOT_LOGIN_EXCEPTION, () ->
-                postService.createPost(board.getId(), postRequest)
-        );
+        var registerRequest = MemberRequest.builder()
+                .loginId("testuser2")
+                .password("1234")
+                .nickname("testuser2")
+                .build();
+        memberService.register(registerRequest);
+        var member = memberRepository.findByLoginId(registerRequest.getLoginId()).get();
 
-        //로그인
-        memberService.login(memberRequest);
 
         //게시판 없음
         assertError(ErrorMessage.NOT_EXISTS_BOARD_EXCEPTION, () ->
-                postService.createPost(0L, postRequest)
+                postService.createPost(member.getId(), 0L, postRequest)
         );
 
         //게시글 작성
-        var postRes = postService.createPost(board.getId(), postRequest);
+        var postRes = postService.createPost(member.getId(),board.getId(), postRequest);
 
         //연속 작성
         assertError(ErrorMessage.POST_REPEAT_EXCEPTION, () ->
-                postService.createPost(board.getId(), postRequest)
+                postService.createPost(member.getId(),board.getId(), postRequest)
         );
 
         //then
@@ -104,17 +110,9 @@ class PostServiceImplTest {
     @Test
     void updatePost() {
 
-        //로그인 안됨
-        assertError(ErrorMessage.NOT_LOGIN_EXCEPTION, () ->
-                postService.updatePost(post.getId(), postRequest)
-        );
-
-        //로그인
-        memberService.login(memberRequest);
-
         //게시글 없음
         assertError(ErrorMessage.NOT_EXISTS_POST_EXCEPTION, () ->
-                postService.updatePost(0L, postRequest)
+                postService.updatePost(member.getId(),0L, postRequest)
         );
 
         //게시글 수정
@@ -122,7 +120,7 @@ class PostServiceImplTest {
                 .title("제목2")
                 .content("내용2")
                 .build();
-        postService.updatePost(post.getId(), updateRequest);
+        postService.updatePost(member.getId(),post.getId(), updateRequest);
 
         //다른 유저로 로그인
         var registerRequest = MemberRequest.builder()
@@ -131,10 +129,11 @@ class PostServiceImplTest {
                 .nickname("testuser2")
                 .build();
         memberService.register(registerRequest);
+        var member2 = memberRepository.findByLoginId(registerRequest.getLoginId()).get();
 
         //수정할 게시글의 작성자가 아닌 경우
         assertError(ErrorMessage.NOT_WRITER_EXCEPTION, () ->
-                postService.updatePost(post.getId(), updateRequest)
+                postService.updatePost(member2.getId(),post.getId(), updateRequest)
         );
 
         //then
@@ -145,17 +144,9 @@ class PostServiceImplTest {
     @Test
     void deletePost() {
 
-        //로그인 안됨
-        assertError(ErrorMessage.NOT_LOGIN_EXCEPTION, () ->
-                postService.deletePost(post.getId())
-        );
-
-        //로그인
-        memberService.login(memberRequest);
-
         //게시글 없음
         assertError(ErrorMessage.NOT_EXISTS_POST_EXCEPTION, () ->
-                postService.deletePost(0L)
+                postService.deletePost(member.getId(),0L)
         );
 
         //다른 유저로 로그인
@@ -165,15 +156,17 @@ class PostServiceImplTest {
                 .nickname("testuser2")
                 .build();
         memberService.register(registerRequest);
+        var member2 = memberRepository.findByLoginId(registerRequest.getLoginId()).get();
+
 
         //삭제할 게시글의 작성자가 아닌 경우
         assertError(ErrorMessage.NOT_WRITER_EXCEPTION, () ->
-                postService.deletePost(post.getId())
+                postService.deletePost(member2.getId(), post.getId())
         );
 
         //게시글 삭제
         memberService.login(memberRequest);
-        postService.deletePost(post.getId());
+        postService.deletePost(member.getId(), post.getId());
 
         //then
         assertEquals(1, post.getIsDeleted());
@@ -194,8 +187,6 @@ class PostServiceImplTest {
         //then
         assertEquals(postRes.getTitle(), post.getTitle());
         assertEquals(postRes.getContent(), post.getContent());
-        assertEquals(1, postRes.getViewCount());
         postService.getPost(post.getId());
-        assertEquals(1, postRes.getViewCount());
     }
 }

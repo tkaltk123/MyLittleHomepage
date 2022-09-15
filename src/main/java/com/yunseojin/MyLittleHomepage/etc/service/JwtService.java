@@ -53,8 +53,7 @@ public class JwtService {
 
     public String generateRefreshToken(MemberEntity member) {
 
-        var key = getRedisRefreshKey(member.getId());
-        var refreshToken = redisService.getValues(key);
+        var refreshToken = redisService.getRefreshToken(member.getId());
 
         //저장된 토큰이 있을 경우 유효성 검증
         if (refreshToken != null) {
@@ -73,7 +72,7 @@ public class JwtService {
                     .setExpiration(createExpiration(refreshTokenRemainHour))
                     .signWith(SignatureAlgorithm.HS256, getKey())
                     .compact();
-            redisService.setValues(key, refreshToken, Duration.ofHours(refreshTokenRemainHour));
+            redisService.setRefreshToken(member.getId(), refreshToken, refreshTokenRemainHour);
         }
 
         return refreshToken;
@@ -157,7 +156,7 @@ public class JwtService {
                 return false;
 
             var memberId = payload.get("memberId", Long.class);
-            var dbRefresh = redisService.getValues(getRedisRefreshKey(memberId));
+            var dbRefresh = redisService.getRefreshToken(memberId);
 
             return refreshToken.equals(dbRefresh);
         } catch (Exception ignore) {
@@ -197,10 +196,5 @@ public class JwtService {
 
         byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(secret);
         return new SecretKeySpec(apiKeySecretBytes, SignatureAlgorithm.HS256.getJcaName());
-    }
-
-    private String getRedisRefreshKey(Long memberId) {
-
-        return "refresh" + memberId;
     }
 }

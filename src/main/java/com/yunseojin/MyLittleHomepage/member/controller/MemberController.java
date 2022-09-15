@@ -45,7 +45,7 @@ public class MemberController {
             Model model,
             HttpServletRequest request) {
 
-        if (isLoggedIn(memberTokenDto))
+        if (MemberTokenDto.isLoggedIn(memberTokenDto))
             return "redirect:/";
 
         model.addAttribute("memberRequest", new MemberRequest());
@@ -82,7 +82,7 @@ public class MemberController {
             @MemberToken MemberTokenDto memberTokenDto,
             Model model) {
 
-        if (isLoggedIn(memberTokenDto))
+        if (MemberTokenDto.isLoggedIn(memberTokenDto))
             return "redirect:/";
 
         model.addAttribute("memberRequest", new MemberRequest());
@@ -108,7 +108,7 @@ public class MemberController {
             @MemberToken MemberTokenDto memberTokenDto,
             Model model) {
 
-        if (!isLoggedIn(memberTokenDto))
+        if (!MemberTokenDto.isLoggedIn(memberTokenDto))
             return "redirect:/login";
 
         var memberRequest = MemberRequest.builder()
@@ -144,10 +144,5 @@ public class MemberController {
         memberService.delete(memberTokenDto.getId(), memberRequest);
 
         return "redirect:/";
-    }
-
-    private boolean isLoggedIn(MemberTokenDto memberTokenDto) {
-
-        return memberTokenDto != null && memberTokenDto.getId() != null;
     }
 }

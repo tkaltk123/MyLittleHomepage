@@ -147,7 +147,6 @@ public class CommentServiceImpl implements CommentService {
 
     private void createComment(PostEntity post, CommentEntity comment) {
 
-        memberInfo.createComment();
         post.increaseCommentCount();
         commentRepository.save(comment);
     }

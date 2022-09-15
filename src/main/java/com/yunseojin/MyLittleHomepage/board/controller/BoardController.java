@@ -1,6 +1,7 @@
 package com.yunseojin.MyLittleHomepage.board.controller;
 
 import com.yunseojin.MyLittleHomepage.board.service.BoardService;
+import com.yunseojin.MyLittleHomepage.etc.annotation.MemberToken;
 import com.yunseojin.MyLittleHomepage.etc.annotation.ValidationGroups;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberTokenDto;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
@@ -50,20 +51,21 @@ public class BoardController {
 
     @PostMapping("/write_post")
     public String createPost(
+            @MemberToken MemberTokenDto memberTokenDto,
             @PathVariable(name = "board_id") Long boardId,
             @Validated(ValidationGroups.Create.class) PostRequest postRequest) {
 
-        var postRes = postService.createPost(boardId, postRequest);
+        var postRes = postService.createPost(memberTokenDto.getId(), boardId, postRequest);
         return "redirect:/posts/" + postRes.getId();
     }
 
     private void setPostSearchAttribute(Model model, Long boardId, PostSearch postSearch) {
 
-        var postPage = postService.getPostList(boardId,20, postSearch);
+        var postPage = postService.getPostList(boardId, 20, postSearch);
         var currentPage = postPage.getNumber();
         var startPage = currentPage - currentPage % 5;
         var endPage = Math.max(0, Math.min(startPage + 4, postPage.getTotalPages() - 1));
-;
+        ;
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
         model.addAttribute("totalPage", postPage.getTotalPages());

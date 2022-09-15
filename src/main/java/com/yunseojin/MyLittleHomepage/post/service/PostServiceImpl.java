@@ -6,7 +6,7 @@ import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
 import com.yunseojin.MyLittleHomepage.etc.enums.PostOrderType;
 import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
-import com.yunseojin.MyLittleHomepage.member.dto.MemberTokenDto;
+import com.yunseojin.MyLittleHomepage.etc.service.RedisService;
 import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.member.repository.MemberRepository;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
@@ -22,7 +22,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,18 +30,18 @@ import java.util.stream.Collectors;
 @Transactional
 public class PostServiceImpl implements PostService {
 
-    private MemberTokenDto memberInfo;
-
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
 
+    private final RedisService redisService;
+
     @Login
     @Override
-    public PostResponse createPost(Long boardId, PostRequest postRequest) {
+    public PostResponse createPost(Long memberId, Long boardId, PostRequest postRequest) {
 
         var board = getBoardById(boardId);
-        var writer = getMemberById(memberInfo.getId());
+        var writer = getMemberById(memberId);
         var post = PostMapper.INSTANCE.toPostEntity(postRequest)
                 .toBuilder()
                 .board(board)
@@ -53,16 +52,16 @@ public class PostServiceImpl implements PostService {
         if (postRequest.getHashTags() != null)
             post.setHashtags(postRequest.getHashTags());
 
-        createPost(board, post);
+        createPost(memberId, board, post);
 
         return PostMapper.INSTANCE.toPostResponse(post);
     }
 
     @Login
     @Override
-    public PostResponse updatePost(Long postId, PostRequest postRequest) {
+    public PostResponse updatePost(Long memberId, Long postId, PostRequest postRequest) {
 
-        var writer = getMemberById(memberInfo.getId());
+        var writer = getMemberById(memberId);
         var post = getPostById(postId);
 
         checkPostWriter(post, writer);
@@ -73,9 +72,9 @@ public class PostServiceImpl implements PostService {
 
     @Login
     @Override
-    public void deletePost(Long postId) {
+    public void deletePost(Long memberId, Long postId) {
 
-        var writer = getMemberById(memberInfo.getId());
+        var writer = getMemberById(memberId);
         var post = getPostById(postId);
 
         checkPostWriter(post, writer);
@@ -85,12 +84,16 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostResponse getPost(Long postId) {
 
+        return PostMapper.INSTANCE.toPostResponse(getPostById(postId));
+    }
+
+    @Override
+    public void viewPost(String ip, Long postId) {
+
         var post = getPostById(postId);
 
-        if (memberInfo.viewPost(postId))
+        if (redisService.viewPost(ip, postId))
             post.increaseViewCount();
-
-        return PostMapper.INSTANCE.toPostResponse(post);
     }
 
     @Override
@@ -150,9 +153,10 @@ public class PostServiceImpl implements PostService {
             throw new BadRequestException(ErrorMessage.NOT_WRITER_EXCEPTION);
     }
 
-    private void createPost(BoardEntity board, PostEntity post) {
+    private void createPost(Long memberId, BoardEntity board, PostEntity post) {
 
-        memberInfo.createPost();
+        if (!redisService.createPost(memberId))
+            throw new BadRequestException(ErrorMessage.POST_REPEAT_EXCEPTION);
         postRepository.save(post);
         board.increasePostCount();
     }

@@ -86,9 +86,9 @@ class CommentServiceImplTest {
         memberService.register(memberRequest);
 
         board = boardRepository.save(board);
-        var postRes = postService.createPost(board.getId(), postRequest);
+        //var postRes = postService.createPost(board.getId(), postRequest);
 
-        post = postRepository.findById(postRes.getId()).get();
+        //post = postRepository.findById(postRes.getId()).get();
     }
 
     @Test

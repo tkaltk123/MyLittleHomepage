@@ -81,11 +81,11 @@ class EvaluationServiceImplTest {
         memberService.register(memberRequest);
 
         board = boardRepository.save(board);
-        var postRes = postService.createPost(board.getId(), postRequest);
-        var commentRes = commentService.createComment(postRes.getId(), commentRequest);
+        //var postRes = postService.createPost(board.getId(), postRequest);
+        //var commentRes = commentService.createComment(postRes.getId(), commentRequest);
 
-        post = postRepository.findById(postRes.getId()).get();
-        comment = commentRepository.findById(commentRes.getId()).get();
+        //post = postRepository.findById(postRes.getId()).get();
+        //comment = commentRepository.findById(commentRes.getId()).get();
     }
 
     @Test

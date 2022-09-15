@@ -10,13 +10,15 @@ import java.util.List;
 
 public interface PostService {
 
-    PostResponse createPost(Long boardId, PostRequest postRequest);
+    PostResponse createPost(Long memberId, Long boardId, PostRequest postRequest);
 
-    PostResponse updatePost(Long postId, PostRequest postRequest);
+    PostResponse updatePost(Long memberId, Long postId, PostRequest postRequest);
 
-    void deletePost(Long postId);
+    void deletePost(Long memberId, Long postId);
 
     PostResponse getPost(Long postId);
+
+    void viewPost(String ip, Long postId);
 
     Page<PostResponse> getPostList(Long boardId, int postCount, PostSearch postSearch);
 

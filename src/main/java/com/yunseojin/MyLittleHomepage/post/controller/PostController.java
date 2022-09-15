@@ -4,6 +4,7 @@ import com.yunseojin.MyLittleHomepage.board.service.BoardService;
 import com.yunseojin.MyLittleHomepage.comment.dto.CommentRequest;
 import com.yunseojin.MyLittleHomepage.comment.dto.CommentResponse;
 import com.yunseojin.MyLittleHomepage.comment.service.CommentService;
+import com.yunseojin.MyLittleHomepage.etc.annotation.MemberToken;
 import com.yunseojin.MyLittleHomepage.etc.annotation.ValidationGroups;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberTokenDto;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
@@ -18,13 +19,13 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 @RequiredArgsConstructor
 @RequestMapping("/posts/{post_id}")
 @Controller
 public class PostController {
 
-    private MemberTokenDto memberInfo;
     private final BoardService boardService;
     private final PostService postService;
     private final CommentService commentService;
@@ -32,14 +33,17 @@ public class PostController {
     @GetMapping("")
     public String getPost(
             Model model,
+            HttpServletRequest request,
+            @MemberToken MemberTokenDto memberTokenDto,
             @PathVariable(name = "post_id") Long postId,
             @RequestParam(required = false, name = "page", defaultValue = "0") Integer page) {
 
         var commentPage = commentService.getCommentList(postId, page);
 
+        postService.viewPost(request.getRemoteAddr(), postId);
         model.addAttribute("post", postService.getPost(postId));
         setCommentsAttr(model, commentPage);
-        ModelUtil.setCommonAttr(model, memberInfo, boardService.getBoardList());
+        ModelUtil.setCommonAttr(model, memberTokenDto, boardService.getBoardList());
 
         return "/layout/post";
     }
@@ -47,36 +51,40 @@ public class PostController {
     @GetMapping("/modify")
     public String postUpdateForm(
             Model model,
+            @MemberToken MemberTokenDto memberTokenDto,
             @PathVariable(name = "post_id") Long postId) {
 
-        if (memberInfo.getId() == null)
+        if (!MemberTokenDto.isLoggedIn(memberTokenDto))
             return "redirect:/login";
 
         var post = postService.getPost(postId);
         var postReq = PostMapper.INSTANCE.toPostRequest(post);
 
         model.addAttribute("postRequest", postReq);
-        ModelUtil.setCommonAttr(model, memberInfo, boardService.getBoardList());
+        ModelUtil.setCommonAttr(model, memberTokenDto, boardService.getBoardList());
 
         return "layout/postForm";
     }
 
     @PostMapping("/modify")
     public String updatePost(
+            @MemberToken MemberTokenDto memberTokenDto,
             @PathVariable(name = "post_id") Long postId,
             @Validated(ValidationGroups.Update.class) PostRequest postRequest) {
 
-        postService.updatePost(postId, postRequest);
+        postService.updatePost(memberTokenDto.getId(), postId, postRequest);
 
         return "redirect:/posts/" + postId;
     }
 
     @PostMapping("/delete")
-    public String deletePost(@PathVariable(name = "post_id") Long postId) {
+    public String deletePost(
+            @MemberToken MemberTokenDto memberTokenDto,
+            @PathVariable(name = "post_id") Long postId) {
 
         var boardId = postService.getPost(postId).getBoardId();
 
-        postService.deletePost(postId);
+        postService.deletePost(memberTokenDto.getId(), postId);
 
         return "redirect:/boards/" + boardId;
     }
