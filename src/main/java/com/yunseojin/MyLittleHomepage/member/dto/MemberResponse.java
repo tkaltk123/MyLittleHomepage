@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
@@ -19,5 +20,5 @@ public class MemberResponse {
     private String loginId;
     private String nickname;
     private MemberType memberType;
-    private LocalDateTime createdAt;
+    private Date createdAt;
 }

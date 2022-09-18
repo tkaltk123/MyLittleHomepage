@@ -43,7 +43,7 @@
                         <td th:text="${post.viewCount}"></td>
                         <td th:text="${post.likeCount}"></td>
                         <td th:text="${post.dislikeCount}"></td>
-                        <td th:text="${#temporals.format(post.createdAt,'yyyy-MM-dd HH:mm')}"></td>
+                        <td th:text="${#dates.format(post.createdAt,'yyyy-MM-dd HH:mm')}"></td>
                     </tr>
                     </tbody>
                 </table>

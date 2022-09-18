@@ -2,6 +2,7 @@ package com.yunseojin.MyLittleHomepage.etc.controller;
 
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
 import com.yunseojin.MyLittleHomepage.etc.exception.BaseException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.List;
 
 @Order(0)
+@Slf4j
 @RestControllerAdvice(annotations = RestController.class)
 public class RestGlobalExceptionHandler {
 
@@ -45,6 +47,8 @@ public class RestGlobalExceptionHandler {
             baseException.setErrorMessage(e.getMessage());
             baseException.setErrorTrace(e.getStackTrace()[0].toString());
         }
+
+        log.error(baseException.getErrorMessage(), e);
 
         return new ResponseEntity<>(baseException, baseException.getHttpStatus());
     }

@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
@@ -22,7 +22,7 @@ public class CommentResponse {
     private String content;
     private Integer likeCount;
     private Integer dislikeCount;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private Date createdAt;
+    private Date updatedAt;
     private CommentResponse[] children;
 }

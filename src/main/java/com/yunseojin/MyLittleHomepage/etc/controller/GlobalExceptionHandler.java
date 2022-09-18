@@ -2,6 +2,7 @@ package com.yunseojin.MyLittleHomepage.etc.controller;
 
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
 import com.yunseojin.MyLittleHomepage.etc.exception.BaseException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.core.annotation.Order;
 import org.springframework.validation.BindException;
@@ -13,11 +14,13 @@ import javax.servlet.http.HttpServletRequest;
 
 @Order(1)
 @ControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(Throwable.class)
     public String errorHandler(Throwable e, HttpServletRequest request, RedirectAttributes redirectAttributes) {
 
+        log.error(e.getMessage(), e);
         if (e instanceof BindException) {
 
             var be = (BindException) e;

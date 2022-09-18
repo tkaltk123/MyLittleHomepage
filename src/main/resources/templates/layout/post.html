@@ -78,7 +78,7 @@
                                 <a>작성 시간</a>
                             </div>
                             <div class="w-50 text-left ml-2">
-                                <a th:text="${#temporals.format(post.createdAt,'yyyy-MM-dd HH:mm:ss')}"></a>
+                                <a th:text="${#dates.format(post.createdAt,'yyyy-MM-dd HH:mm:ss')}"></a>
                             </div>
                         </div>
                     </div>
@@ -141,7 +141,7 @@
 
                                         <!--created at-->
                                         <div class="row text-left">
-                                            <a th:text="${#temporals.format(comment.createdAt,'yyyy-MM-dd HH:mm:ss')}"></a>
+                                            <a th:text="${#dates.format(comment.createdAt,'yyyy-MM-dd HH:mm:ss')}"></a>
                                         </div>
                                     </div>
 
@@ -223,7 +223,7 @@
 
                                             <!--created at-->
                                             <div class="row text-left">
-                                                <a th:text="${#temporals.format(child.createdAt,'yyyy-MM-dd HH:mm:ss')}"></a>
+                                                <a th:text="${#dates.format(child.createdAt,'yyyy-MM-dd HH:mm:ss')}"></a>
                                             </div>
                                         </div>
 
