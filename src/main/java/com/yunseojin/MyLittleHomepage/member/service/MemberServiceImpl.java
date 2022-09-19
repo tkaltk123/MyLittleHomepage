@@ -17,31 +17,31 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
+    private final InternalMemberService memberService;
     private final JwtService jwtService;
 
+    @Transactional
     @Override
     public JwtTokenResponse register(MemberRequest memberRequest) {
 
         checkDuplication(memberRequest);
 
         var member = createMemberEntity(memberRequest);
-
-        memberRepository.save(member);
-
         var accessToken = jwtService.generateAccessToken(member);
         var refreshToken = jwtService.generateRefreshToken(member);
 
         return createTokenResponse(accessToken, refreshToken);
     }
 
+    @Transactional
     @Override
     public String modify(Long memberId, MemberRequest memberRequest) {
 
-        var member = getMemberById(memberId);
+        var member = memberService.getMemberById(memberId);
 
         PasswordUtil.checkPassword(memberRequest.getCurrentPassword(), member.getPassword());
         checkDuplicationFor(member, memberRequest);
@@ -51,15 +51,15 @@ public class MemberServiceImpl implements MemberService {
         return jwtService.generateAccessToken(member);
     }
 
+    @Transactional
     @Override
     public void delete(Long memberId, MemberRequest memberRequest) {
 
-        var member = getMemberById(memberId);
+        var member = memberService.getMemberById(memberId);
 
         PasswordUtil.checkPassword(memberRequest.getCurrentPassword(), member.getPassword());
 
-        memberRepository.delete(member);
-        member.setIsDeleted(1);
+        deleteMemberEntity(member);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class MemberServiceImpl implements MemberService {
     public String refreshAccessToken(String accessToken, String refreshToken) {
 
         var memberId = jwtService.getMemberId(accessToken);
-        var member = getMemberById(memberId);
+        var member = memberService.getMemberById(memberId);
 
         if (!jwtService.isValidRefreshToken(accessToken, refreshToken))
             throw new BadRequestException(ErrorMessage.INVALID_TOKEN_EXCEPTION);
@@ -113,11 +113,11 @@ public class MemberServiceImpl implements MemberService {
             throw new BadRequestException(ErrorMessage.NICKNAME_DUPLICATE_EXCEPTION);
     }
 
-    public MemberEntity getLoginMember(MemberRequest memberRequest) {
+    private MemberEntity getLoginMember(MemberRequest memberRequest) {
 
         try {
 
-            var member = getMemberByLoginId(memberRequest.getLoginId());
+            var member = memberService.getMemberByLoginId(memberRequest.getLoginId());
 
             PasswordUtil.checkPassword(memberRequest.getPassword(), member.getPassword());
 
@@ -127,33 +127,18 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
-    private MemberEntity getMemberById(Long memberId) {
-
-        var optMember = memberRepository.findById(memberId);
-
-        if (optMember.isEmpty())
-            throw new BadRequestException(ErrorMessage.NOT_EXISTS_MEMBER_EXCEPTION);
-
-        return optMember.get();
-    }
-
-    private MemberEntity getMemberByLoginId(String loginId) {
-
-        var optMember = memberRepository.findByLoginId(loginId);
-
-        if (optMember.isEmpty())
-            throw new BadRequestException(ErrorMessage.NOT_EXISTS_MEMBER_EXCEPTION);
-
-        return optMember.get();
-    }
-
     private MemberEntity createMemberEntity(MemberRequest memberRequest) {
 
-        return MemberMapper.INSTANCE.toMemberEntity(memberRequest)
-                .toBuilder()
-                .password(memberRequest.getPassword())
-                .memberType(MemberType.NORMAL)
-                .build();
+        var member = MemberMapper.INSTANCE.toMemberEntity(memberRequest).withHashingPassword();
+        member.setMemberType(MemberType.NORMAL);
+
+        return memberRepository.save(member);
+    }
+
+    private void deleteMemberEntity(MemberEntity member) {
+
+        memberRepository.delete(member);
+        member.setIsDeleted(1);
     }
 
     private JwtTokenResponse createTokenResponse(String accessToken, String refreshToken) {

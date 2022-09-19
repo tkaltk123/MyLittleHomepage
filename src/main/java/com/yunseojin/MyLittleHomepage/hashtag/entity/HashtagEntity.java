@@ -19,6 +19,7 @@ import javax.persistence.*;
 @SQLDelete(sql = "UPDATE hashtags SET is_deleted = 1 WHERE id=?")
 @Where(clause = "is_deleted = 0")
 @Table(name = "hashtags")
+@Cacheable
 public class HashtagEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

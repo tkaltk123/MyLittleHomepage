@@ -5,15 +5,13 @@ import com.yunseojin.MyLittleHomepage.comment.dto.CommentResponse;
 import com.yunseojin.MyLittleHomepage.comment.entity.CommentEntity;
 import com.yunseojin.MyLittleHomepage.comment.mapper.CommentMapper;
 import com.yunseojin.MyLittleHomepage.comment.repository.CommentRepository;
-import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
 import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
 import com.yunseojin.MyLittleHomepage.etc.service.RedisService;
-import com.yunseojin.MyLittleHomepage.member.dto.MemberTokenDto;
 import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
-import com.yunseojin.MyLittleHomepage.member.repository.MemberRepository;
+import com.yunseojin.MyLittleHomepage.member.service.InternalMemberService;
 import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
-import com.yunseojin.MyLittleHomepage.post.repository.PostRepository;
+import com.yunseojin.MyLittleHomepage.post.service.InternalPostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,44 +19,36 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
-
 @RequiredArgsConstructor
 @Service
 @Transactional
 public class CommentServiceImpl implements CommentService {
 
-    private final PostRepository postRepository;
-    private final MemberRepository memberRepository;
     private final CommentRepository commentRepository;
 
     private final RedisService redisService;
+    private final InternalMemberService memberService;
+    private final InternalPostService postService;
+    private final InternalCommentService commentService;
 
+
+    @Transactional
     @Override
     public CommentResponse createComment(Long memberId, Long postId, CommentRequest commentRequest) {
 
-        var writer = getMemberById(memberId);
-        var post = getPostById(postId);
-        var parent = getParent(commentRequest.getParentId());
-
-        var comment = CommentMapper.INSTANCE.toCommentEntity(commentRequest)
-                .toBuilder()
-                .writer(writer)
-                .writerName(writer.getNickname())
-                .post(post)
-                .build();
-
-        comment.setParent(parent);
-        createComment(memberId, post, comment);
+        var writer = memberService.getMemberById(memberId);
+        var post = postService.getPostById(postId);
+        var comment = createComment(writer, post, commentRequest);
 
         return CommentMapper.INSTANCE.toCommentResponse(comment);
     }
 
+    @Transactional
     @Override
     public CommentResponse updateComment(Long memberId, CommentRequest commentRequest) {
 
-        var writer = getMemberById(memberId);
-        var comment = getCommentById(commentRequest.getCommentId());
+        var writer = memberService.getMemberById(memberId);
+        var comment = commentService.getCommentById(commentRequest.getCommentId());
 
         checkCommentWriter(comment, writer);
         comment.update(commentRequest);
@@ -66,34 +56,34 @@ public class CommentServiceImpl implements CommentService {
         return CommentMapper.INSTANCE.toCommentResponse(comment);
     }
 
+    @Transactional
     @Override
     public void deleteComment(Long memberId, Long commentId) {
 
-        var writer = getMemberById(memberId);
-        var comment = getCommentById(commentId);
+        var writer = memberService.getMemberById(memberId);
+        var comment = commentService.getCommentById(commentId);
 
         checkCommentWriter(comment, writer);
         comment.getChildren().forEach(this::deleteComment);
+
         deleteComment(comment);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public CommentResponse getComment(Long commentId) {
 
-        var comment = getCommentById(commentId);
+        var comment = commentService.getCommentById(commentId);
 
         return CommentMapper.INSTANCE.toCommentResponse(comment);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Page<CommentResponse> getCommentList(Long postId, Integer page) {
 
         if (page < 0)
             throw new BadRequestException(ErrorMessage.PAGE_OUT_OF_RANGE_EXCEPTION);
 
-        var post = getPostById(postId);
+        var post = postService.getPostById(postId);
         var pageable = PageRequest.of(page, 20);
         var commentPage = getCommentPage(post, pageable);
 
@@ -105,7 +95,7 @@ public class CommentServiceImpl implements CommentService {
         if (parentId == null)
             return null;
 
-        var parent = getCommentById(parentId);
+        var parent = commentService.getCommentById(parentId);
 
         if (parent.getParent() != null)
             throw new BadRequestException(ErrorMessage.COMMENT_PARENT_EXCEPTION);
@@ -113,42 +103,26 @@ public class CommentServiceImpl implements CommentService {
         return parent;
     }
 
-    private CommentEntity getCommentById(Long commentId) {
+    private CommentEntity createComment(MemberEntity writer, PostEntity post, CommentRequest commentRequest) {
 
-        var optComment = commentRepository.findById(commentId);
+        var parent = getParent(commentRequest.getParentId());
+        var comment = CommentMapper.INSTANCE.toCommentEntity(commentRequest)
+                .toBuilder()
+                .writer(writer)
+                .writerName(writer.getNickname())
+                .post(post)
+                .build()
+                .withCommentCount();
 
-        if (optComment.isEmpty())
-            throw new BadRequestException(ErrorMessage.NOT_EXISTS_COMMENT_EXCEPTION);
+        comment.setParent(parent);
 
-        return optComment.get();
-    }
-
-    private MemberEntity getMemberById(Long memberId) {
-
-        var optMember = memberRepository.findById(memberId);
-
-        if (optMember.isEmpty())
-            throw new BadRequestException(ErrorMessage.NOT_EXISTS_MEMBER_EXCEPTION);
-
-        return optMember.get();
-    }
-
-    private PostEntity getPostById(Long postId) {
-
-        var optPost = postRepository.findById(postId);
-
-        if (optPost.isEmpty())
-            throw new BadRequestException(ErrorMessage.NOT_EXISTS_POST_EXCEPTION);
-
-        return optPost.get();
-    }
-
-    private void createComment(Long memberId, PostEntity post, CommentEntity comment) {
-
-        if (!redisService.createComment(memberId))
+        if (!redisService.createComment(writer.getId()))
             throw new BadRequestException(ErrorMessage.COMMENT_REPEAT_EXCEPTION);
-        post.increaseCommentCount();
-        commentRepository.save(comment);
+
+        comment = commentRepository.save(comment);
+        postService.increaseCommentCount(post.getId());
+
+        return comment;
     }
 
     private void checkCommentWriter(CommentEntity comment, MemberEntity member) {
@@ -159,7 +133,7 @@ public class CommentServiceImpl implements CommentService {
 
     private void deleteComment(CommentEntity comment) {
 
-        comment.getPost().decreaseCommentCount();
+        postService.decreaseCommentCount(comment.getPost().getId());
         commentRepository.delete(comment);
         comment.setIsDeleted(1);
     }

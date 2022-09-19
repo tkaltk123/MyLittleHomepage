@@ -17,50 +17,26 @@ public class PostCount {
 
     @MapsId
     @Setter
-    @OneToOne(optional = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     private PostEntity post;
 
     @Basic
+    @Setter
     @Column(name = "view_count", nullable = false)
     private Integer viewCount = 0;
 
     @Basic
+    @Setter
     @Column(name = "comment_count", nullable = false)
     private Integer commentCount = 0;
 
     @Basic
+    @Setter
     @Column(name = "like_count", nullable = false)
     private Integer likeCount = 0;
 
     @Basic
+    @Setter
     @Column(name = "dislike_count", nullable = false)
     private Integer dislikeCount = 0;
-
-    public void increaseCommentCount() {
-        ++this.commentCount;
-    }
-
-    public void decreaseCommentCount() {
-        --this.commentCount;
-    }
-
-    public void increaseViewCount() {
-        ++this.viewCount;
-    }
-
-    public void increaseLikeCount() {
-        ++this.likeCount;
-    }
-
-    public void decreaseLikeCount() {
-        --this.likeCount;
-    }
-
-    public void increaseDislikeCount() {
-        ++this.dislikeCount;
-    }
-
-    public void decreaseDislikeCount() {
-        --this.dislikeCount;
-    }
 }

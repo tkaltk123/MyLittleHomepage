@@ -2,7 +2,6 @@ package com.yunseojin.MyLittleHomepage.post.entity;
 
 import com.yunseojin.MyLittleHomepage.board.entity.BoardEntity;
 import com.yunseojin.MyLittleHomepage.etc.entity.BaseEntity;
-import com.yunseojin.MyLittleHomepage.evaluation.entity.Evaluable;
 import com.yunseojin.MyLittleHomepage.hashtag.entity.HashtagEntity;
 import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
@@ -26,19 +25,8 @@ import java.util.stream.Collectors;
 @SQLDelete(sql = "UPDATE posts SET is_deleted = 1 WHERE id=?")
 @Where(clause = "is_deleted = 0")
 @Table(name = "posts")
-public class PostEntity extends BaseEntity implements Evaluable {
-
-    private static class PostEntityBuilderImpl extends PostEntityBuilder<PostEntity, PostEntityBuilderImpl> {
-
-        @Override
-        public PostEntity build() {
-
-            var post = new PostEntity(this);
-            post.getPostCount().setPost(post);
-
-            return post;
-        }
-    }
+@Cacheable
+public class PostEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "board_id", nullable = false)
@@ -58,15 +46,21 @@ public class PostEntity extends BaseEntity implements Evaluable {
     @Column(name = "content")
     private String content;
 
-    //즉시 로딩
-    @OneToOne(mappedBy = "post", optional = false, cascade = CascadeType.PERSIST)
-    @Builder.Default
-    private PostCount postCount = new PostCount();
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "post", optional = false, cascade = CascadeType.PERSIST)
+    private PostCount postCount;
 
     @Builder.Default
     @OrderBy("id asc")
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HashtagEntity> hashtags = new ArrayList<>();
+
+    public PostEntity withPostCount() {
+
+        postCount = new PostCount();
+        postCount.setPost(this);
+        return this;
+    }
 
     public String[] getStringHashtags() {
         return hashtags.stream().map(HashtagEntity::toString).toArray(String[]::new);
@@ -102,53 +96,5 @@ public class PostEntity extends BaseEntity implements Evaluable {
         for (var tag : newTags) {
             hashtags.add(toHashTag(tag));
         }
-    }
-
-    public Integer getCommentCount() {
-        return postCount.getCommentCount();
-    }
-
-    public void increaseCommentCount() {
-        postCount.increaseCommentCount();
-    }
-
-    public void decreaseCommentCount() {
-        postCount.decreaseCommentCount();
-    }
-
-    public Integer getViewCount() {
-        return postCount.getViewCount();
-    }
-
-    public void increaseViewCount() {
-        postCount.increaseViewCount();
-    }
-
-    public Integer getLikeCount() {
-        return postCount.getLikeCount();
-    }
-
-    @Override
-    public void increaseLikeCount() {
-        postCount.increaseLikeCount();
-    }
-
-    @Override
-    public void decreaseLikeCount() {
-        postCount.decreaseLikeCount();
-    }
-
-    public Integer getDislikeCount() {
-        return postCount.getDislikeCount();
-    }
-
-    @Override
-    public void increaseDislikeCount() {
-        postCount.increaseDislikeCount();
-    }
-
-    @Override
-    public void decreaseDislikeCount() {
-        postCount.decreaseDislikeCount();
     }
 }

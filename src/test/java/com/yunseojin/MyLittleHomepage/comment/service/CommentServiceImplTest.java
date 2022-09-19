@@ -9,6 +9,7 @@ import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.member.repository.MemberRepository;
 import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
 import com.yunseojin.MyLittleHomepage.post.repository.PostRepository;
+import com.yunseojin.MyLittleHomepage.post.service.InternalPostService;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,12 +28,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class CommentServiceImplTest {
 
 
-    private final CommentServiceImpl commentService;
+    private final CommentService commentService;
 
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
+
+    private final InternalPostService postService;
 
     private MemberEntity member;
     private MemberEntity member2;
@@ -47,7 +50,7 @@ class CommentServiceImplTest {
         BoardEntity board = boardRepository.save(createTestBoard("testBoard"));
         post = postRepository.save(createTestPost(member, board, "내용"));
         comment = commentRepository.save(createTestComment(member, post, "내용"));
-        post.getPostCount().increaseCommentCount();
+        postService.increaseCommentCount(post.getId());
     }
 
     @Test
@@ -128,7 +131,7 @@ class CommentServiceImplTest {
 
         //then
         assertEquals(comment.getIsDeleted(), 1);
-        assertEquals(post.getCommentCount(), 0);
+        assertEquals(post.getPostCount().getCommentCount(), 0);
     }
 
     @Test
@@ -153,13 +156,13 @@ class CommentServiceImplTest {
 
             var comment = createTestComment(member, post, "댓글");
 
-            post.increaseCommentCount();
+            postService.increaseCommentCount(post.getId());
             commentRepository.save(comment);
         }
 
         var reply = createTestComment(member, post, "댓글");
         reply.setParent(comment);
-        post.increaseCommentCount();
+        postService.increaseCommentCount(post.getId());
         commentRepository.save(reply);
 
         //게시글 없음

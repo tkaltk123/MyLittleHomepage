@@ -60,27 +60,27 @@ class EvaluationServiceImplTest {
 
         //게시글 좋아요
         evaluationService.likePost(member.getId(), post.getId());
-        assertEquals(1, post.getLikeCount());
+        assertEquals(1, post.getPostCount().getLikeCount());
 
         //좋아요 취소
         evaluationService.likePost(member.getId(), post.getId());
-        assertEquals(0, post.getLikeCount());
+        assertEquals(0, post.getPostCount().getLikeCount());
 
         //좋아요 후 싫어요
         evaluationService.likePost(member.getId(), post.getId());
         evaluationService.dislikePost(member.getId(), post.getId());
-        assertEquals(0, post.getLikeCount());
-        assertEquals(1, post.getDislikeCount());
+        assertEquals(0, post.getPostCount().getLikeCount());
+        assertEquals(1, post.getPostCount().getDislikeCount());
 
         //싫어요 취소
         evaluationService.dislikePost(member.getId(), post.getId());
-        assertEquals(0, post.getDislikeCount());
+        assertEquals(0, post.getPostCount().getDislikeCount());
 
         //싫어요 후 좋아요
         evaluationService.dislikePost(member.getId(), post.getId());
         evaluationService.likePost(member.getId(), post.getId());
-        assertEquals(0, post.getDislikeCount());
-        assertEquals(1, post.getLikeCount());
+        assertEquals(0, post.getPostCount().getDislikeCount());
+        assertEquals(1, post.getPostCount().getLikeCount());
     }
 
     @Test
@@ -96,26 +96,26 @@ class EvaluationServiceImplTest {
 
         //댓글 좋아요
         evaluationService.likeComment(member.getId(), comment.getId());
-        assertEquals(1, comment.getLikeCount());
+        assertEquals(1, comment.getCommentCount().getLikeCount());
 
         //좋아요 취소
         evaluationService.likeComment(member.getId(), comment.getId());
-        assertEquals(0, comment.getLikeCount());
+        assertEquals(0, comment.getCommentCount().getLikeCount());
 
         //좋아요 후 싫어요
         evaluationService.likeComment(member.getId(), comment.getId());
         evaluationService.dislikeComment(member.getId(), comment.getId());
-        assertEquals(0, comment.getLikeCount());
-        assertEquals(1, comment.getDislikeCount());
+        assertEquals(0, comment.getCommentCount().getLikeCount());
+        assertEquals(1, comment.getCommentCount().getDislikeCount());
 
         //싫어요 취소
         evaluationService.dislikeComment(member.getId(), comment.getId());
-        assertEquals(0, comment.getDislikeCount());
+        assertEquals(0, comment.getCommentCount().getDislikeCount());
 
         //싫어요 후 좋아요
         evaluationService.dislikeComment(member.getId(), comment.getId());
         evaluationService.likeComment(member.getId(), comment.getId());
-        assertEquals(0, comment.getDislikeCount());
-        assertEquals(1, comment.getLikeCount());
+        assertEquals(0, comment.getCommentCount().getDislikeCount());
+        assertEquals(1, comment.getCommentCount().getLikeCount());
     }
 }

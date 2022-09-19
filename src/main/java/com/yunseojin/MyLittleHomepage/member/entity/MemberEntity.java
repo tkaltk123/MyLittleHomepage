@@ -6,6 +6,7 @@ import com.yunseojin.MyLittleHomepage.member.dto.MemberRequest;
 import com.yunseojin.MyLittleHomepage.util.PasswordUtil;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -21,20 +22,6 @@ import javax.persistence.*;
 @Table(name = "members")
 public class MemberEntity extends BaseEntity {
 
-    private static class MemberEntityBuilderImpl extends MemberEntityBuilder<MemberEntity, MemberEntityBuilderImpl> {
-
-        @Override
-        public MemberEntityBuilderImpl password(String password) {
-
-            if (password != null)
-                super.password(PasswordUtil.getHashedPassword(password));
-            else
-                super.password(null);
-
-            return self();
-        }
-    }
-
     @Basic
     @Column(name = "login_id", nullable = false, length = 20)
     private String loginId;
@@ -47,9 +34,16 @@ public class MemberEntity extends BaseEntity {
     @Column(name = "nickname", nullable = false, length = 20)
     private String nickname;
 
+    @Setter
     @Enumerated(EnumType.STRING)
     @Column(name = "member_type", nullable = false)
     private MemberType memberType;
+
+    public MemberEntity withHashingPassword() {
+
+        password = PasswordUtil.getHashedPassword(password);
+        return this;
+    }
 
     public void update(MemberRequest memberRequest) {
 

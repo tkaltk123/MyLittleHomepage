@@ -13,7 +13,6 @@ public interface MemberMapper {
 
     MemberMapper INSTANCE = Mappers.getMapper(MemberMapper.class);
 
-    @Mapping(target = "password", ignore = true)
     MemberEntity toMemberEntity(MemberRequest memberRequest);
 
     MemberResponse toMemberResponse(MemberEntity memberEntity);

@@ -6,17 +6,20 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+
 @Getter
 @NoArgsConstructor
 @Entity
 @Table(name = "BOARD_COUNTS")
 public class BoardCount {
+
     @Id
     private Long id;
 
     @Setter
     @MapsId
-    @OneToOne(optional = false)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "board_id")
     private BoardEntity board;
 
     @Basic

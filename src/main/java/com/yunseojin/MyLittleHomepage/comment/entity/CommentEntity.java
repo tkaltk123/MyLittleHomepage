@@ -2,7 +2,6 @@ package com.yunseojin.MyLittleHomepage.comment.entity;
 
 import com.yunseojin.MyLittleHomepage.comment.dto.CommentRequest;
 import com.yunseojin.MyLittleHomepage.etc.entity.BaseEntity;
-import com.yunseojin.MyLittleHomepage.evaluation.entity.Evaluable;
 import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
 import lombok.Builder;
@@ -24,19 +23,8 @@ import java.util.List;
 @SQLDelete(sql = "UPDATE comments SET is_deleted = 1 WHERE id=?")
 @Where(clause = "is_deleted = 0")
 @Table(name = "comments")
-public class CommentEntity extends BaseEntity implements Evaluable {
-
-    private static class CommentEntityBuilderImpl extends CommentEntityBuilder<CommentEntity, CommentEntityBuilderImpl> {
-
-        @Override
-        public CommentEntity build() {
-
-            var comment = new CommentEntity(this);
-            comment.getCommentCount().setComment(comment);
-
-            return comment;
-        }
-    }
+@Cacheable
+public class CommentEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "post_id", nullable = false)
@@ -57,10 +45,8 @@ public class CommentEntity extends BaseEntity implements Evaluable {
     @Column(name = "content")
     private String content;
 
-    //즉시 로딩
-    @OneToOne(mappedBy = "comment", optional = false, cascade = CascadeType.PERSIST)
-    @Builder.Default
-    private CommentCount commentCount = new CommentCount();
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "comment", optional = false, cascade = CascadeType.PERSIST)
+    private CommentCount commentCount;
 
     //글로벌 적용했는데 BatchSize 안붙이니 동작 안함
     @BatchSize(size = 100)
@@ -68,6 +54,13 @@ public class CommentEntity extends BaseEntity implements Evaluable {
     @OrderBy("id asc")
     @OneToMany(mappedBy = "parent")
     private List<CommentEntity> children = new ArrayList<>();
+
+    public CommentEntity withCommentCount() {
+
+        commentCount = new CommentCount();
+        commentCount.setComment(this);
+        return this;
+    }
 
     public void setParent(CommentEntity parent) {
 
@@ -84,33 +77,5 @@ public class CommentEntity extends BaseEntity implements Evaluable {
     public void update(CommentRequest commentRequest) {
 
         content = commentRequest.getContent();
-    }
-
-    public Integer getLikeCount() {
-        return commentCount.getLikeCount();
-    }
-
-    @Override
-    public void increaseLikeCount() {
-        commentCount.increaseLikeCount();
-    }
-
-    @Override
-    public void decreaseLikeCount() {
-        commentCount.decreaseLikeCount();
-    }
-
-    public Integer getDislikeCount() {
-        return commentCount.getDislikeCount();
-    }
-
-    @Override
-    public void increaseDislikeCount() {
-        commentCount.increaseDislikeCount();
-    }
-
-    @Override
-    public void decreaseDislikeCount() {
-        commentCount.decreaseDislikeCount();
     }
 }

@@ -2,6 +2,7 @@ package com.yunseojin.MyLittleHomepage.post.service;
 
 import com.yunseojin.MyLittleHomepage.board.entity.BoardEntity;
 import com.yunseojin.MyLittleHomepage.board.repository.BoardRepository;
+import com.yunseojin.MyLittleHomepage.board.service.InternalBoardService;
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
 import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.member.repository.MemberRepository;
@@ -24,11 +25,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 class PostServiceImplTest {
 
-    private final PostServiceImpl postService;
+    private final PostService postService;
 
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
     private final PostRepository postRepository;
+
+    private final InternalBoardService boardService;
 
     private MemberEntity member;
     private MemberEntity member2;
@@ -42,7 +45,7 @@ class PostServiceImplTest {
         member2 = memberRepository.save(createTestMember("testUser2", "testUser2"));
         board = boardRepository.save(createTestBoard("testBoard"));
         post = postRepository.save(createTestPost(member, board, "내용"));
-        board.increasePostCount();
+        boardService.increasePostCount(board);
     }
 
     @Test
@@ -111,7 +114,7 @@ class PostServiceImplTest {
 
         //then
         assertEquals(1, post.getIsDeleted());
-        assertEquals(0, board.getPostCount());
+        assertEquals(0, board.getBoardCount().getPostCount());
     }
 
     @Test

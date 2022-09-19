@@ -28,7 +28,8 @@ public class TestUtil {
                 .password("1234")
                 .nickname(nickname)
                 .memberType(MemberType.NORMAL)
-                .build();
+                .build()
+                .withHashingPassword();
     }
 
     public static MemberRequest createMemberRequest(String loginId, String nickname,String currentPassword){
@@ -45,7 +46,8 @@ public class TestUtil {
 
         return BoardEntity.builder().
                 name(name)
-                .build();
+                .build()
+                .withBoardCount();
     }
 
     public static PostEntity createTestPost(MemberEntity member, BoardEntity board, String content) {
@@ -56,7 +58,8 @@ public class TestUtil {
                 .board(board)
                 .title("제목")
                 .content(content)
-                .build();
+                .build()
+                .withPostCount();
     }
 
     public static PostRequest createPostRequest(String content) {
@@ -75,7 +78,8 @@ public class TestUtil {
                 .writerName(member.getNickname())
                 .post(post)
                 .content(content)
-                .build();
+                .build()
+                .withCommentCount();
     }
 
     public static CommentRequest createCommentRequest(Long parentId, Long commentId, String content) {

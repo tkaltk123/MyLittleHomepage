@@ -17,30 +17,16 @@ public class CommentCount {
 
     @MapsId
     @Setter
-    @OneToOne(optional = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     private CommentEntity comment;
 
     @Basic
+    @Setter
     @Column(name = "like_count", nullable = false)
     private Integer likeCount = 0;
 
     @Basic
+    @Setter
     @Column(name = "dislike_count", nullable = false)
     private Integer dislikeCount = 0;
-
-    public void increaseLikeCount() {
-        ++this.likeCount;
-    }
-
-    public void decreaseLikeCount() {
-        --this.likeCount;
-    }
-
-    public void increaseDislikeCount() {
-        ++this.dislikeCount;
-    }
-
-    public void decreaseDislikeCount() {
-        --this.dislikeCount;
-    }
 }

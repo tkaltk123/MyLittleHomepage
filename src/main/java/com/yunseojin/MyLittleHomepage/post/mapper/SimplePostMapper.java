@@ -16,5 +16,9 @@ public interface SimplePostMapper {
     @Mapping(target = "boardId", source = "board.id")
     @Mapping(target = "hashtags", ignore = true)
     @Mapping(target = "content", ignore = true)
+    @Mapping(target = "viewCount" ,source = "postCount.viewCount")
+    @Mapping(target = "commentCount" ,source = "postCount.commentCount")
+    @Mapping(target = "likeCount" ,source = "postCount.likeCount")
+    @Mapping(target = "dislikeCount" ,source = "postCount.dislikeCount")
     PostResponse toPostResponse(PostEntity post);
 }

@@ -6,11 +6,13 @@ import com.yunseojin.MyLittleHomepage.board.repository.BoardRepository;
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
 import com.yunseojin.MyLittleHomepage.member.repository.MemberRepository;
 import com.yunseojin.MyLittleHomepage.member.service.MemberServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestConstructor;
 
 import javax.transaction.Transactional;
 
@@ -18,12 +20,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
+@RequiredArgsConstructor
+@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 class BoardServiceImplTest {
 
-    @Autowired
-    private BoardRepository boardRepository;
-    @Autowired
-    private BoardServiceImpl boardService;
+    private final BoardService boardService;
+    private final BoardRepository boardRepository;
 
     @BeforeEach
     void init() {
