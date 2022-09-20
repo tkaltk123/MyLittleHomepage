@@ -47,7 +47,7 @@ public class PostEntity extends BaseEntity {
     private String content;
 
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "post", optional = false, cascade = CascadeType.PERSIST)
+    @OneToOne(mappedBy = "post", optional = false, cascade = CascadeType.PERSIST)
     private PostCount postCount;
 
     @Builder.Default

@@ -18,7 +18,7 @@ public class BoardCount {
 
     @Setter
     @MapsId
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "board_id")
     private BoardEntity board;
 

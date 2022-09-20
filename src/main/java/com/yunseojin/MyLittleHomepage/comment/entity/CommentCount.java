@@ -3,6 +3,7 @@ package com.yunseojin.MyLittleHomepage.comment.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 
@@ -17,7 +18,7 @@ public class CommentCount {
 
     @MapsId
     @Setter
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne
     private CommentEntity comment;
 
     @Basic

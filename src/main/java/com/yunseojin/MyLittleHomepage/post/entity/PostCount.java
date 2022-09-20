@@ -17,7 +17,7 @@ public class PostCount {
 
     @MapsId
     @Setter
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne
     private PostEntity post;
 
     @Basic

@@ -23,7 +23,7 @@ public class BoardEntity extends BaseEntity {
     @Column(name = "NAME", nullable = false, length = 50)
     private String name;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "board", cascade = CascadeType.PERSIST)
+    @OneToOne(mappedBy = "board", cascade = CascadeType.PERSIST)
     private BoardCount boardCount;
 
     public BoardEntity withBoardCount() {

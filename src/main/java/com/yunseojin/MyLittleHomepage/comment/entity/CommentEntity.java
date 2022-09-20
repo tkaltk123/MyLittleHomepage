@@ -23,7 +23,6 @@ import java.util.List;
 @SQLDelete(sql = "UPDATE comments SET is_deleted = 1 WHERE id=?")
 @Where(clause = "is_deleted = 0")
 @Table(name = "comments")
-@Cacheable
 public class CommentEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -45,7 +44,7 @@ public class CommentEntity extends BaseEntity {
     @Column(name = "content")
     private String content;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "comment", optional = false, cascade = CascadeType.PERSIST)
+    @OneToOne(mappedBy = "comment", optional = false, cascade = CascadeType.PERSIST)
     private CommentCount commentCount;
 
     //글로벌 적용했는데 BatchSize 안붙이니 동작 안함
