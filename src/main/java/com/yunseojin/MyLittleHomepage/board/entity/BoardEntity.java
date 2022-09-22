@@ -16,7 +16,6 @@ import javax.persistence.*;
 @SQLDelete(sql = "UPDATE BOARDS SET IS_DELETED = 1 WHERE ID=?")
 @Where(clause = "IS_DELETED = 0")
 @Table(name = "BOARDS")
-@Cacheable
 public class BoardEntity extends BaseEntity {
 
     @Basic

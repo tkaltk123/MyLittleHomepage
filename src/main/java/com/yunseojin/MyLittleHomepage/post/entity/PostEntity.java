@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 @SQLDelete(sql = "UPDATE posts SET is_deleted = 1 WHERE id=?")
 @Where(clause = "is_deleted = 0")
 @Table(name = "posts")
-@Cacheable
 public class PostEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.PERSIST)

@@ -15,7 +15,6 @@ import javax.persistence.*;
 @Entity
 @SQLDelete(sql = "UPDATE evaluations SET is_deleted = 1 WHERE id=?")
 @DiscriminatorValue("comment")
-@Cacheable
 public class CommentEvaluationEntity extends EvaluationEntity {
 
     @Setter
