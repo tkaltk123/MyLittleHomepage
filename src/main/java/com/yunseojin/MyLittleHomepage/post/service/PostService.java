@@ -22,6 +22,8 @@ public interface PostService {
 
     Page<PostResponse> getPostList(Long boardId, int postCount, PostSearch postSearch);
 
+    Page<PostResponse> getPostListWithCursor(Long lastPostId, Long boardId, int postCount, PostSearch postSearch, boolean isAsc);
+
     List<PostResponse> getOrderedPostList(Long boardId, int postCount, PostOrderType postOrderType);
 
 }

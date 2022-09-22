@@ -20,6 +20,7 @@ public class PostResponse {
 
     private Long id;
     private Long boardId;
+    private String boardName;
     private Long writerId;
     private String writerName;
     private String title;

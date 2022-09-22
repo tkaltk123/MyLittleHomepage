@@ -14,6 +14,7 @@ public interface SimplePostMapper {
     SimplePostMapper INSTANCE = Mappers.getMapper(SimplePostMapper.class);
 
     @Mapping(target = "boardId", source = "board.id")
+    @Mapping(target = "boardName", source = "board.name")
     @Mapping(target = "hashtags", ignore = true)
     @Mapping(target = "content", ignore = true)
     @Mapping(target = "viewCount" ,source = "postCount.viewCount")

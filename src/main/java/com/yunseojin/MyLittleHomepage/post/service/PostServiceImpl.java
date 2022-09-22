@@ -96,6 +96,18 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public Page<PostResponse> getPostListWithCursor(Long lastPostId, Long boardId, int postCount, PostSearch postSearch, boolean isAsc) {
+
+        BoardEntity board = null;
+        if (boardId != null)
+            board = boardService.getBoardById(boardId);
+        var pageable = PageRequest.of(0, postCount);
+        var postPage = postRepository.getPostsWithCursor(lastPostId, board, pageable, postSearch, isAsc);
+
+        return postPage.map(SimplePostMapper.INSTANCE::toPostResponse);
+    }
+
+    @Override
     public List<PostResponse> getOrderedPostList(Long boardId, int postCount, PostOrderType postOrderType) {
 
         var board = boardService.getBoardById(boardId);

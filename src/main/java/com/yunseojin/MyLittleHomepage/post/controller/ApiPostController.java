@@ -3,6 +3,7 @@ package com.yunseojin.MyLittleHomepage.post.controller;
 import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
 import com.yunseojin.MyLittleHomepage.etc.annotation.MemberId;
 import com.yunseojin.MyLittleHomepage.etc.annotation.ValidationGroups;
+import com.yunseojin.MyLittleHomepage.etc.enums.PostSearchType;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
 import com.yunseojin.MyLittleHomepage.post.dto.PostSearch;
 import com.yunseojin.MyLittleHomepage.post.service.PostService;
@@ -60,9 +61,23 @@ public class ApiPostController {
     @ApiOperation(value = "게시글 목록 조회", notes = "게시판의 게시글을 조회합니다.")
     public ResponseEntity<?> getPosts(
             @PathVariable("board_id") Long boardId,
-            @RequestParam PostSearch postSearch) {
+            @RequestParam(defaultValue = "0", required = false) Integer page,
+            @RequestParam(defaultValue = "TITLE", required = false) PostSearchType postSearchType,
+            @RequestParam(required = false) String keyword) {
 
-        return new ResponseEntity<>(postService.getPostList(boardId, 20, postSearch), HttpStatus.OK);
+        return new ResponseEntity<>(postService.getPostList(boardId, 20, new PostSearch(page, postSearchType, keyword)), HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    @ApiOperation(value = "게시글 목록 조회", notes = "전체 게시판의 게시글을 조회합니다.")
+    public ResponseEntity<?> postFullSearch(
+            @RequestParam(required = false) Long postId,
+            @RequestParam(required = false) Long boardId,
+            @RequestParam(defaultValue = "TITLE", required = false) PostSearchType postSearchType,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "false", required = false) boolean isAsc) {
+
+        return new ResponseEntity<>(postService.getPostListWithCursor(postId, boardId, 20, new PostSearch(0, postSearchType, keyword), isAsc), HttpStatus.OK);
     }
 
     @Login
@@ -73,7 +88,7 @@ public class ApiPostController {
             @PathVariable(value = "board_id") Long boardId,
             @RequestBody @Validated(ValidationGroups.Create.class) PostRequest postRequest) {
 
-        return new ResponseEntity<>(postService.createPost(memberId,boardId, postRequest), HttpStatus.OK);
+        return new ResponseEntity<>(postService.createPost(memberId, boardId, postRequest), HttpStatus.OK);
     }
 
 

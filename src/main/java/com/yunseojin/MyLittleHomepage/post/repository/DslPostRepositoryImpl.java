@@ -1,6 +1,8 @@
 package com.yunseojin.MyLittleHomepage.post.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.StringExpressions;
+import com.querydsl.jpa.JPQLQuery;
 import com.yunseojin.MyLittleHomepage.board.entity.BoardEntity;
 import com.yunseojin.MyLittleHomepage.etc.enums.PostOrderType;
 import com.yunseojin.MyLittleHomepage.etc.enums.PostSearchType;
@@ -16,6 +18,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class DslPostRepositoryImpl extends QuerydslRepositorySupport implements DslPostRepository {
 
@@ -26,37 +29,37 @@ public class DslPostRepositoryImpl extends QuerydslRepositorySupport implements 
         super(PostEntity.class);
     }
 
+
     @Override
     public Page<PostEntity> getPosts(BoardEntity board, Pageable pageable, PostSearch postSearch) {
 
-        var condition = p.board.eq(board);
-        var keyword = postSearch.getKeyword();
+        var condition = createSearchCondition(board, postSearch);
 
-        if (keyword != null && !keyword.isBlank()) {
+        if (postSearch.getPostSearchType() == PostSearchType.TAG)
+            return getPostsByTag(condition, pageable);
 
-            var postSearchType = postSearch.getPostSearchType();
+        var content = getPostList(condition, pageable);
+        var countQuery = from(p).select(p).where(condition);
 
-            keyword = "%" + keyword + "%";
-            condition = condition.and(includeKeyword(keyword, postSearchType));
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
+    }
 
-            if (postSearchType == PostSearchType.TAG)
-                return getPostsByTag(condition, pageable);
-        }
+    @Override
+    public Page<PostEntity> getPostsWithCursor(Long lastPostId, BoardEntity board, Pageable pageable, PostSearch postSearch, boolean isAsc) {
 
-        var content = from(p)
-                .select(p)
+        var condition = createSearchCondition(board, postSearch);
+
+        var content = from(p).select(p)
                 .join(p.postCount).fetchJoin()
-                .where(condition)
-                .orderBy(p.id.desc())
-                .offset(pageable.getOffset())
+                .where(condition, customCursor(lastPostId, isAsc))
+                .orderBy(isAsc ? p.id.asc() : p.id.desc())
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        var countQuery = from(p)
-                .select(p)
-                .where(condition);
+        var countQuery = from(p).select(p).where(condition);
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
+
     }
 
     @Override
@@ -87,6 +90,52 @@ public class DslPostRepositoryImpl extends QuerydslRepositorySupport implements 
         }
 
         return query.limit(postCount).fetch();
+    }
+
+    private BooleanExpression createSearchCondition(BoardEntity board, PostSearch postSearch) {
+
+        BooleanExpression condition = null;
+
+        if (board != null)
+            condition = p.board.eq(board);
+
+        var keyword = postSearch.getKeyword();
+
+        if (keyword != null && !keyword.isBlank()) {
+
+            keyword = "%" + keyword + "%";
+            var searchCond = includeKeyword(keyword, postSearch.getPostSearchType());
+
+            if (condition == null)
+                return searchCond;
+
+            condition = condition.and(searchCond);
+        }
+
+        return condition;
+    }
+
+    private List<PostEntity> getPostList(BooleanExpression condition, Pageable pageable) {
+
+        return from(p)
+                .select(p)
+                .join(p.postCount).fetchJoin()
+                .where(condition)
+                .orderBy(p.id.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+    }
+
+    private BooleanExpression customCursor(Long postId, boolean isAsc) {
+
+        if (postId == null)
+            return null;
+
+        if (isAsc)
+            return p.id.gt(postId);
+        return p.id.lt(postId);
+
     }
 
     private BooleanExpression includeKeyword(String keyword, PostSearchType postSearchType) {

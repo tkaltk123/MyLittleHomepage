@@ -13,5 +13,7 @@ public interface DslPostRepository {
 
     Page<PostEntity> getPosts(BoardEntity board, Pageable pageable, PostSearch postSearch);
 
+    Page<PostEntity> getPostsWithCursor(Long lastPostId, BoardEntity board, Pageable pageable, PostSearch postSearch, boolean isAsc);
+
     List<PostEntity> getPostsOrderedBy(BoardEntity board, int postCount, PostOrderType postOrderType);
 }

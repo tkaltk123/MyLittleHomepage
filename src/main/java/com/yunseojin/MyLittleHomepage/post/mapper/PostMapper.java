@@ -13,6 +13,7 @@ public interface PostMapper {
     PostMapper INSTANCE = Mappers.getMapper(PostMapper.class);
 
     @Mapping(target = "boardId", source = "board.id")
+    @Mapping(target = "boardName", source = "board.name")
     @Mapping(target = "writerId", source = "writer.id")
     @Mapping(target = "hashtags", expression = "java(post.getStringHashtags())")
     @Mapping(target = "viewCount" ,source = "postCount.viewCount")
