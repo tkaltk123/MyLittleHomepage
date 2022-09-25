@@ -8,7 +8,9 @@ import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
 import com.yunseojin.MyLittleHomepage.etc.annotation.MemberToken;
 import com.yunseojin.MyLittleHomepage.etc.annotation.ValidationGroups;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberTokenDto;
+import com.yunseojin.MyLittleHomepage.post.dto.FullPostSearch;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
+import com.yunseojin.MyLittleHomepage.post.dto.PostSearch;
 import com.yunseojin.MyLittleHomepage.post.mapper.PostMapper;
 import com.yunseojin.MyLittleHomepage.post.service.PostService;
 import com.yunseojin.MyLittleHomepage.util.ModelUtil;
@@ -23,7 +25,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 @RequiredArgsConstructor
-@RequestMapping("/posts/{post_id}")
+@RequestMapping("/posts")
 @Controller
 public class PostController {
 
@@ -31,7 +33,7 @@ public class PostController {
     private final PostService postService;
     private final CommentService commentService;
 
-    @GetMapping("")
+    @GetMapping("/{post_id}")
     public String getPost(
             Model model,
             HttpServletRequest request,
@@ -49,7 +51,22 @@ public class PostController {
         return "/layout/post";
     }
 
-    @GetMapping("/modify")
+    @GetMapping("/search")
+    public String getPostInSearch(
+            Model model,
+            @MemberToken MemberTokenDto memberTokenDto,
+            @ModelAttribute(name = "fullPostSearch") FullPostSearch postSearch) {
+
+
+        var postPage = postService.getPostListWithCursor(null, 20, postSearch);
+
+        model.addAttribute("posts", postPage);
+        ModelUtil.setCommonAttr(model, memberTokenDto, boardService.getBoardList(), postSearch);
+
+        return "layout/search";
+    }
+
+    @GetMapping("/{post_id}/modify")
     public String postUpdateForm(
             Model model,
             @MemberToken MemberTokenDto memberTokenDto,
@@ -68,7 +85,7 @@ public class PostController {
     }
 
     @Login
-    @PostMapping("/modify")
+    @PostMapping("/{post_id}/modify")
     public String updatePost(
             @MemberToken MemberTokenDto memberTokenDto,
             @PathVariable(name = "post_id") Long postId,
@@ -80,7 +97,7 @@ public class PostController {
     }
 
     @Login
-    @PostMapping("/delete")
+    @PostMapping("/{post_id}/delete")
     public String deletePost(
             @MemberToken MemberTokenDto memberTokenDto,
             @PathVariable(name = "post_id") Long postId) {

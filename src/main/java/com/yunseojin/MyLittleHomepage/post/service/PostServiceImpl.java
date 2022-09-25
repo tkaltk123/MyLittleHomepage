@@ -8,6 +8,7 @@ import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
 import com.yunseojin.MyLittleHomepage.etc.service.RedisService;
 import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
 import com.yunseojin.MyLittleHomepage.member.service.InternalMemberService;
+import com.yunseojin.MyLittleHomepage.post.dto.FullPostSearch;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
 import com.yunseojin.MyLittleHomepage.post.dto.PostResponse;
 import com.yunseojin.MyLittleHomepage.post.dto.PostSearch;
@@ -96,13 +97,10 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Page<PostResponse> getPostListWithCursor(Long lastPostId, Long boardId, int postCount, PostSearch postSearch, boolean isAsc) {
+    public Page<PostResponse> getPostListWithCursor(Long lastPostId, int postCount, FullPostSearch postSearch) {
 
-        BoardEntity board = null;
-        if (boardId != null)
-            board = boardService.getBoardById(boardId);
         var pageable = PageRequest.of(0, postCount);
-        var postPage = postRepository.getPostsWithCursor(lastPostId, board, pageable, postSearch, isAsc);
+        var postPage = postRepository.getPostsWithCursor(lastPostId, pageable, postSearch);
 
         return postPage.map(SimplePostMapper.INSTANCE::toPostResponse);
     }

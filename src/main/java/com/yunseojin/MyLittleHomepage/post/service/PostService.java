@@ -1,6 +1,7 @@
 package com.yunseojin.MyLittleHomepage.post.service;
 
 import com.yunseojin.MyLittleHomepage.etc.enums.PostOrderType;
+import com.yunseojin.MyLittleHomepage.post.dto.FullPostSearch;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
 import com.yunseojin.MyLittleHomepage.post.dto.PostResponse;
 import com.yunseojin.MyLittleHomepage.post.dto.PostSearch;
@@ -22,7 +23,7 @@ public interface PostService {
 
     Page<PostResponse> getPostList(Long boardId, int postCount, PostSearch postSearch);
 
-    Page<PostResponse> getPostListWithCursor(Long lastPostId, Long boardId, int postCount, PostSearch postSearch, boolean isAsc);
+    Page<PostResponse> getPostListWithCursor(Long lastPostId, int postCount, FullPostSearch postSearch);
 
     List<PostResponse> getOrderedPostList(Long boardId, int postCount, PostOrderType postOrderType);
 

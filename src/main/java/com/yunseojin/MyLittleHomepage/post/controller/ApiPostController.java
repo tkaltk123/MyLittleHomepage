@@ -4,6 +4,7 @@ import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
 import com.yunseojin.MyLittleHomepage.etc.annotation.MemberId;
 import com.yunseojin.MyLittleHomepage.etc.annotation.ValidationGroups;
 import com.yunseojin.MyLittleHomepage.etc.enums.PostSearchType;
+import com.yunseojin.MyLittleHomepage.post.dto.FullPostSearch;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
 import com.yunseojin.MyLittleHomepage.post.dto.PostSearch;
 import com.yunseojin.MyLittleHomepage.post.service.PostService;
@@ -77,7 +78,7 @@ public class ApiPostController {
             @RequestParam(required = false) String keyword,
             @RequestParam(defaultValue = "false", required = false) boolean isAsc) {
 
-        return new ResponseEntity<>(postService.getPostListWithCursor(postId, boardId, 20, new PostSearch(0, postSearchType, keyword), isAsc), HttpStatus.OK);
+        return new ResponseEntity<>(postService.getPostListWithCursor(postId, 20, new FullPostSearch(postSearchType, keyword, boardId, isAsc)), HttpStatus.OK);
     }
 
     @Login

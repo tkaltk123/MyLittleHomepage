@@ -1,12 +1,11 @@
 package com.yunseojin.MyLittleHomepage.post.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.StringExpressions;
-import com.querydsl.jpa.JPQLQuery;
 import com.yunseojin.MyLittleHomepage.board.entity.BoardEntity;
 import com.yunseojin.MyLittleHomepage.etc.enums.PostOrderType;
 import com.yunseojin.MyLittleHomepage.etc.enums.PostSearchType;
 import com.yunseojin.MyLittleHomepage.hashtag.entity.QHashtagEntity;
+import com.yunseojin.MyLittleHomepage.post.dto.FullPostSearch;
 import com.yunseojin.MyLittleHomepage.post.dto.PostSearch;
 import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
 import com.yunseojin.MyLittleHomepage.post.entity.QPostEntity;
@@ -18,7 +17,6 @@ import org.springframework.data.support.PageableExecutionUtils;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.IntStream;
 
 public class DslPostRepositoryImpl extends QuerydslRepositorySupport implements DslPostRepository {
 
@@ -33,7 +31,7 @@ public class DslPostRepositoryImpl extends QuerydslRepositorySupport implements 
     @Override
     public Page<PostEntity> getPosts(BoardEntity board, Pageable pageable, PostSearch postSearch) {
 
-        var condition = createSearchCondition(board, postSearch);
+        var condition = createSearchCondition(board.getId(), postSearch);
 
         if (postSearch.getPostSearchType() == PostSearchType.TAG)
             return getPostsByTag(condition, pageable);
@@ -45,14 +43,14 @@ public class DslPostRepositoryImpl extends QuerydslRepositorySupport implements 
     }
 
     @Override
-    public Page<PostEntity> getPostsWithCursor(Long lastPostId, BoardEntity board, Pageable pageable, PostSearch postSearch, boolean isAsc) {
+    public Page<PostEntity> getPostsWithCursor(Long lastPostId, Pageable pageable, FullPostSearch postSearch) {
 
-        var condition = createSearchCondition(board, postSearch);
+        var condition = createSearchCondition(postSearch.getBoardId(), postSearch);
 
         var content = from(p).select(p)
                 .join(p.postCount).fetchJoin()
-                .where(condition, customCursor(lastPostId, isAsc))
-                .orderBy(isAsc ? p.id.asc() : p.id.desc())
+                .where(condition, customCursor(lastPostId, postSearch.getIsAsc()))
+                .orderBy(postSearch.getIsAsc() ? p.id.asc() : p.id.desc())
                 .limit(pageable.getPageSize())
                 .fetch();
 
@@ -92,12 +90,12 @@ public class DslPostRepositoryImpl extends QuerydslRepositorySupport implements 
         return query.limit(postCount).fetch();
     }
 
-    private BooleanExpression createSearchCondition(BoardEntity board, PostSearch postSearch) {
+    private BooleanExpression createSearchCondition(Long boardId, PostSearch postSearch) {
 
         BooleanExpression condition = null;
 
-        if (board != null)
-            condition = p.board.eq(board);
+        if (boardId != null)
+            condition = p.board.id.eq(boardId);
 
         var keyword = postSearch.getKeyword();
 

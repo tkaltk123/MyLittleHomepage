@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header"></head>
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!-- Sidebar -->
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- Topbar -->
+            <nav th:replace="fragments/bodyHeader :: bodyHeader"></nav>
+
+            <div class="container">
+                <table class="table table-striped text-center">
+                    <thead>
+                    <tr>
+                        <th class="col-1">번호</th>
+                        <th class="col-2">게시판</th>
+                        <th class="col-3">제목</th>
+                        <th class="col-1">작성자</th>
+                        <th class="col-1">조회수</th>
+                        <th class="col-1">좋아요</th>
+                        <th class="col-1">싫어요</th>
+                        <th class="col-1">작성일자</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="post : ${posts}" th:href="@{/posts/{postId}(postId=${post.id})}">
+                        <td th:text="${post.id}"></td>
+                        <td th:text="${post.boardName}"></td>
+                        <td>
+                            <a th:href="@{/posts/{postId}(postId=${post.id})}"
+                               th:text="${post.title}"></a>
+                            <span th:if="${post.commentCount} != 0"
+                                  th:text="${' [' + post.commentCount + ']'}"></span>
+                        </td>
+                        <td th:text="${post.writerName}"></td>
+                        <td th:text="${post.viewCount}"></td>
+                        <td th:text="${post.likeCount}"></td>
+                        <td th:text="${post.dislikeCount}"></td>
+                        <td th:text="${#dates.format(post.createdAt,'MM-dd HH:mm')}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <hr/>
+            </div>
+
+
+        </div>
+        <!-- End of Main Content -->
+
+        <!-- Footer -->
+        <footer th:replace="fragments/footer :: footer"></footer>
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+</body>
+
+</html>
