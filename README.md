@@ -8,11 +8,12 @@ tech stack
 - Spring boot 2.6.8
 - JPA & QueryDsl
 - Mysql 8.0.28
+- redis
+- jwt
 - flyway
 - tomcat
 - Jenkins 
-- AWS EC2
-- ~~AWS RDS~~
+- AWS
 - nginx
 - bootstrap
 - thymeleaf
@@ -21,4 +22,4 @@ tech stack
 - http://yunseojin.com/
 
 api 명세
-- http://api.yunseojin.com/swagger-ui/index.html
+- http://yunseojin.com/swagger-ui/index.html
