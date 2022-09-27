@@ -11,12 +11,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequiredArgsConstructor
+@ApiIgnore
 public class HomeController {
 
     private final BoardService boardService;

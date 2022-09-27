@@ -12,10 +12,12 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import springfox.documentation.annotations.ApiIgnore;
 
 @RequiredArgsConstructor
 @RequestMapping("/comments")
 @Controller
+@ApiIgnore
 public class CommentController {
 
     private final CommentService commentService;

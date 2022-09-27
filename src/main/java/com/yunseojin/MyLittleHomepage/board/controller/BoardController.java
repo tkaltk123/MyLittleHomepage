@@ -14,12 +14,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
 
 @RequiredArgsConstructor
 @RequestMapping("/boards/{board_id}")
 @Controller
+@ApiIgnore
 public class BoardController {
 
     private final BoardService boardService;

@@ -17,6 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @RequiredArgsConstructor
 @Controller
+@ApiIgnore
 public class MemberController {
 
     private final BoardService boardService;

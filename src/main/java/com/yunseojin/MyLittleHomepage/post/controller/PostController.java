@@ -19,12 +19,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
 
 @RequiredArgsConstructor
 @RequestMapping("/posts")
 @Controller
+@ApiIgnore
 public class PostController {
 
     private final BoardService boardService;

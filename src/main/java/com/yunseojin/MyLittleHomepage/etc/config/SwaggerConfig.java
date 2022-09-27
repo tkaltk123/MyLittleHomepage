@@ -42,8 +42,8 @@ public class SwaggerConfig {
     private ApiInfo apiInfo() {
 
         return new ApiInfoBuilder()
-                .title("JJBACSA API")
-                .description("JJBACSA API Docs")
+                .title("MyLittleHomepage API")
+                .description("MyLittleHomepage API Docs")
                 .build();
     }
 
