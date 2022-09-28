@@ -14,6 +14,8 @@ public interface CommentMapper {
 
     @Mapping(target = "postId", source = "post.id")
     @Mapping(target = "writerId", source = "writer.id")
+    @Mapping(target = "likeCount" ,source = "commentCount.likeCount")
+    @Mapping(target = "dislikeCount" ,source = "commentCount.dislikeCount")
     CommentResponse toCommentResponse(CommentEntity comment);
 
     CommentEntity toCommentEntity(CommentRequest comment);
