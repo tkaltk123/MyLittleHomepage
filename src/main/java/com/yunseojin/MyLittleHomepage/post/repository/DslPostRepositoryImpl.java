@@ -33,8 +33,8 @@ public class DslPostRepositoryImpl extends QuerydslRepositorySupport implements 
 
         var condition = createSearchCondition(board.getId(), postSearch);
 
-        if (postSearch.getPostSearchType() == PostSearchType.TAG)
-            return getPostsByTag(condition, pageable);
+//        if (postSearch.getPostSearchType() == PostSearchType.TAG)
+//            return getPostsByTag(condition, pageable);
 
         var content = getPostList(condition, pageable);
         var countQuery = from(p).select(p).where(condition);
@@ -149,8 +149,8 @@ public class DslPostRepositoryImpl extends QuerydslRepositorySupport implements 
             case WRITER:
                 return p.writerName.like(keyword);
 
-            case TAG:
-                return t.tag.like(keyword);
+//            case TAG:
+//                return t.tag.like(keyword);
 
             default:
                 return null;
