@@ -1,21 +1,17 @@
 package com.yunseojin.MyLittleHomepage.etc.service;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.stereotype.Service;
-
-import java.text.DateFormat;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class RedisService {
 
-    private final RedisTemplate<String, String> redisTemplate;
+    private final Map<String, String> redisTemplate = new HashMap<>();
 
     public String getRefreshToken(Long memberId) {
 
@@ -63,15 +59,15 @@ public class RedisService {
     }
 
     private void setValues(String key, String data, Duration duration) {
-        ValueOperations<String, String> values = redisTemplate.opsForValue();
-        values.set(key, data, duration);
+        //ValueOperations<String, String> values = redisTemplate.opsForValue();
+        redisTemplate.put(key, data);
     }
 
     private String getValues(String key) {
 
-        ValueOperations<String, String> values = redisTemplate.opsForValue();
+        //ValueOperations<String, String> values = redisTemplate.opsForValue();
 
-        return values.get(key);
+        return redisTemplate.get(key);
     }
 
     private String getRefreshKey(Long memberId) {

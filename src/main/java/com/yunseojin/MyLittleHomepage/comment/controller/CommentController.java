@@ -3,7 +3,6 @@ package com.yunseojin.MyLittleHomepage.comment.controller;
 import com.yunseojin.MyLittleHomepage.comment.dto.CommentRequest;
 import com.yunseojin.MyLittleHomepage.comment.service.CommentService;
 import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
-import com.yunseojin.MyLittleHomepage.etc.annotation.MemberToken;
 import com.yunseojin.MyLittleHomepage.etc.annotation.ValidationGroups;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberTokenDto;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +24,7 @@ public class CommentController {
     @Login
     @PostMapping("/posts/{post_id}")
     public String createComment(
-            @MemberToken MemberTokenDto memberTokenDto,
+            MemberTokenDto memberTokenDto,
             @PathVariable(name = "post_id") Long postId,
             @Validated(ValidationGroups.Create.class) CommentRequest commentRequest) {
 
@@ -36,7 +35,7 @@ public class CommentController {
     @Login
     @PostMapping("/modify")
     public String updateComment(
-            @MemberToken MemberTokenDto memberTokenDto,
+            MemberTokenDto memberTokenDto,
             @Validated(ValidationGroups.Update.class) CommentRequest commentRequest) {
 
         var comment = commentService.updateComment(memberTokenDto.getId(), commentRequest);
@@ -46,7 +45,7 @@ public class CommentController {
     @Login
     @PostMapping("/{comment_id}/delete")
     public String deleteComment(
-            @MemberToken MemberTokenDto memberTokenDto,
+            MemberTokenDto memberTokenDto,
             @PathVariable(name = "comment_id") Long commentId) {
 
         var comment = commentService.getComment(commentId);

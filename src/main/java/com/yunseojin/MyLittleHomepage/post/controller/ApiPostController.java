@@ -1,7 +1,6 @@
 package com.yunseojin.MyLittleHomepage.post.controller;
 
 import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
-import com.yunseojin.MyLittleHomepage.etc.annotation.MemberId;
 import com.yunseojin.MyLittleHomepage.etc.annotation.ValidationGroups;
 import com.yunseojin.MyLittleHomepage.etc.enums.PostSearchType;
 import com.yunseojin.MyLittleHomepage.post.dto.FullPostSearch;
@@ -9,13 +8,20 @@ import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
 import com.yunseojin.MyLittleHomepage.post.dto.PostSearch;
 import com.yunseojin.MyLittleHomepage.post.service.PostService;
 import io.swagger.annotations.ApiOperation;
+import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/posts")
@@ -39,7 +45,7 @@ public class ApiPostController {
     @DeleteMapping("/{post_id}")
     @ApiOperation(value = "게시글 삭제", notes = "게시글을 삭제합니다.")
     public ResponseEntity<?> delete(
-            @MemberId Long memberId,
+            Long memberId,
             @PathVariable("post_id") Long postId) {
 
         postService.deletePost(memberId, postId);
@@ -51,7 +57,7 @@ public class ApiPostController {
     @PatchMapping("/{post_id}")
     @ApiOperation(value = "게시글 수정", notes = "게시글을 수정합니다.")
     public ResponseEntity<?> update(
-            @MemberId Long memberId,
+            Long memberId,
             @PathVariable("post_id") Long postId,
             @RequestBody @Validated(ValidationGroups.Update.class) PostRequest postRequest) {
 
@@ -85,7 +91,7 @@ public class ApiPostController {
     @PostMapping("/boards/{board_id}")
     @ApiOperation(value = "게시글 작성", notes = "게시판에 게시글을 작성합니다.")
     public ResponseEntity<?> create(
-            @MemberId Long memberId,
+            Long memberId,
             @PathVariable(value = "board_id") Long boardId,
             @RequestBody @Validated(ValidationGroups.Create.class) PostRequest postRequest) {
 

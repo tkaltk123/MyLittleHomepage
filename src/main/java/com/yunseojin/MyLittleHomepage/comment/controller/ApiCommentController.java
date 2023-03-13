@@ -3,14 +3,21 @@ package com.yunseojin.MyLittleHomepage.comment.controller;
 import com.yunseojin.MyLittleHomepage.comment.dto.CommentRequest;
 import com.yunseojin.MyLittleHomepage.comment.service.CommentService;
 import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
-import com.yunseojin.MyLittleHomepage.etc.annotation.MemberId;
 import com.yunseojin.MyLittleHomepage.etc.annotation.ValidationGroups;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/comments")
@@ -32,7 +39,7 @@ public class ApiCommentController {
     @PostMapping("/posts/{post_id}")
     @ApiOperation(value = "댓글 작성", notes = "게시글에 댓글을 작성합니다.")
     public ResponseEntity<?> create(
-            @MemberId Long memberId,
+            Long memberId,
             @PathVariable(value = "post_id") Long postId,
             @RequestBody CommentRequest commentRequest) {
 
@@ -43,7 +50,7 @@ public class ApiCommentController {
     @DeleteMapping("/{comment_id}")
     @ApiOperation(value = "댓글 삭제", notes = "댓글을 삭제합니다.")
     public ResponseEntity<?> delete(
-            @MemberId Long memberId,
+            Long memberId,
             @PathVariable("comment_id") Long commentId) {
 
         commentService.deleteComment(memberId, commentId);
@@ -54,7 +61,7 @@ public class ApiCommentController {
     @PatchMapping("")
     @ApiOperation(value = "댓글 수정", notes = "댓글을 수정합니다.")
     public ResponseEntity<?> update(
-            @MemberId Long memberId,
+            Long memberId,
             @RequestBody @Validated(ValidationGroups.Update.class) CommentRequest commentRequest) {
 
         return new ResponseEntity<>(commentService.updateComment(memberId, commentRequest), HttpStatus.OK);

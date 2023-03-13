@@ -6,8 +6,6 @@ import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
 import com.yunseojin.MyLittleHomepage.etc.enums.PostOrderType;
 import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
 import com.yunseojin.MyLittleHomepage.etc.service.RedisService;
-import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
-import com.yunseojin.MyLittleHomepage.member.service.InternalMemberService;
 import com.yunseojin.MyLittleHomepage.post.dto.FullPostSearch;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
 import com.yunseojin.MyLittleHomepage.post.dto.PostResponse;
@@ -16,14 +14,15 @@ import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
 import com.yunseojin.MyLittleHomepage.post.mapper.PostMapper;
 import com.yunseojin.MyLittleHomepage.post.mapper.SimplePostMapper;
 import com.yunseojin.MyLittleHomepage.post.repository.PostRepository;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.model.Member;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.repository.MemberRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -33,7 +32,7 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
 
     private final RedisService redisService;
-    private final InternalMemberService memberService;
+    private final MemberRepository memberService;
     private final InternalBoardService boardService;
     private final InternalPostService postService;
 
@@ -42,7 +41,7 @@ public class PostServiceImpl implements PostService {
     public PostResponse createPost(Long memberId, Long boardId, PostRequest postRequest) {
 
         var board = boardService.getBoardById(boardId);
-        var writer = memberService.getMemberById(memberId);
+        var writer = memberService.getById(memberId);
         var post = createPost(writer, board, postRequest);
 
         return PostMapper.INSTANCE.toPostResponse(post);
@@ -52,7 +51,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostResponse updatePost(Long memberId, Long postId, PostRequest postRequest) {
 
-        var writer = memberService.getMemberById(memberId);
+        var writer = memberService.getById(memberId);
         var post = postService.getPostById(postId);
 
         checkPostWriter(post, writer);
@@ -65,7 +64,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public void deletePost(Long memberId, Long postId) {
 
-        var writer = memberService.getMemberById(memberId);
+        var writer = memberService.getById(memberId);
         var post = postService.getPostById(postId);
 
         checkPostWriter(post, writer);
@@ -115,13 +114,14 @@ public class PostServiceImpl implements PostService {
     }
 
     //게시글의 작성자가 입력한 회원이 맞는지 확인
-    private void checkPostWriter(PostEntity post, MemberEntity writer) {
+    private void checkPostWriter(PostEntity post, Member writer) {
 
-        if (post.getWriter() != writer)
+        if (post.getWriter() != writer) {
             throw new BadRequestException(ErrorMessage.NOT_WRITER_EXCEPTION);
+        }
     }
 
-    private PostEntity createPost(MemberEntity writer, BoardEntity board, PostRequest postRequest) {
+    private PostEntity createPost(Member writer, BoardEntity board, PostRequest postRequest) {
 
         var post = PostMapper.INSTANCE.toPostEntity(postRequest)
                 .toBuilder()

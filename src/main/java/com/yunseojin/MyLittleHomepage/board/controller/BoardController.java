@@ -2,7 +2,6 @@ package com.yunseojin.MyLittleHomepage.board.controller;
 
 import com.yunseojin.MyLittleHomepage.board.service.BoardService;
 import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
-import com.yunseojin.MyLittleHomepage.etc.annotation.MemberToken;
 import com.yunseojin.MyLittleHomepage.etc.annotation.ValidationGroups;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberTokenDto;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
@@ -13,10 +12,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import springfox.documentation.annotations.ApiIgnore;
-
-import javax.annotation.Resource;
 
 @RequiredArgsConstructor
 @RequestMapping("/boards/{board_id}")
@@ -30,7 +31,7 @@ public class BoardController {
     @GetMapping("")
     public String getBoard(
             Model model,
-            @MemberToken MemberTokenDto memberTokenDto,
+            MemberTokenDto memberTokenDto,
             @PathVariable(name = "board_id") Long boardId,
             @ModelAttribute(name = "postSearch") PostSearch postSearch) {
 
@@ -42,7 +43,7 @@ public class BoardController {
     @GetMapping("/write_post")
     public String postWriteForm(
             Model model,
-            @MemberToken MemberTokenDto memberTokenDto,
+            MemberTokenDto memberTokenDto,
             @PathVariable(name = "board_id") Long boardId) {
 
         if (!MemberTokenDto.isLoggedIn(memberTokenDto))
@@ -56,7 +57,7 @@ public class BoardController {
     @Login
     @PostMapping("/write_post")
     public String createPost(
-            @MemberToken MemberTokenDto memberTokenDto,
+            MemberTokenDto memberTokenDto,
             @PathVariable(name = "board_id") Long boardId,
             @Validated(ValidationGroups.Create.class) PostRequest postRequest) {
 

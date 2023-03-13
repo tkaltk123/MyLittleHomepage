@@ -8,10 +8,10 @@ import com.yunseojin.MyLittleHomepage.evaluation.entity.EvaluationEntity;
 import com.yunseojin.MyLittleHomepage.evaluation.entity.PostEvaluationEntity;
 import com.yunseojin.MyLittleHomepage.evaluation.repository.CommentEvaluationRepository;
 import com.yunseojin.MyLittleHomepage.evaluation.repository.PostEvaluationRepository;
-import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
-import com.yunseojin.MyLittleHomepage.member.service.InternalMemberService;
 import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
 import com.yunseojin.MyLittleHomepage.post.service.InternalPostService;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.model.Member;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ public class EvaluationServiceImpl implements EvaluationService {
     private final PostEvaluationRepository postEvaluationRepository;
     private final CommentEvaluationRepository commentEvaluationRepository;
 
-    private final InternalMemberService memberService;
+    private final MemberRepository memberService;
     private final InternalPostService postService;
     private final InternalCommentService commentService;
 
@@ -60,7 +60,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 
     private EvaluationType evaluatePost(Long memberId, Long postId, EvaluationType evaluationType) {
 
-        var member = memberService.getMemberById(memberId);
+        var member = memberService.getById(memberId);
         var post = postService.getPostById(postId);
         var optPostEvaluation = postEvaluationRepository.findByPostAndWriter(post, member);
 
@@ -73,7 +73,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 
     private EvaluationType evaluateComment(Long memberId, Long commentId, EvaluationType evaluationType) {
 
-        var member = memberService.getMemberById(memberId);
+        var member = memberService.getById(memberId);
         var comment = commentService.getCommentById(commentId);
         var optCommentEvaluation = commentEvaluationRepository.findByCommentAndWriter(comment, member);
 
@@ -84,7 +84,8 @@ public class EvaluationServiceImpl implements EvaluationService {
 
     }
 
-    private EvaluationType createPostEvaluation(MemberEntity member, PostEntity post, EvaluationType type) {
+    private EvaluationType createPostEvaluation(Member member, PostEntity post,
+            EvaluationType type) {
 
         var postEvaluation = PostEvaluationEntity.builder()
                 .evaluationType(type)
@@ -98,7 +99,8 @@ public class EvaluationServiceImpl implements EvaluationService {
         return type;
     }
 
-    private EvaluationType createCommentEvaluation(MemberEntity member, CommentEntity comment, EvaluationType type) {
+    private EvaluationType createCommentEvaluation(Member member, CommentEntity comment,
+            EvaluationType type) {
 
         var commentEvaluation = CommentEvaluationEntity.builder()
                 .evaluationType(type)

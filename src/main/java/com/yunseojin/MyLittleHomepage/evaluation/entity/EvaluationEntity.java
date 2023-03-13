@@ -2,14 +2,21 @@ package com.yunseojin.MyLittleHomepage.evaluation.entity;
 
 import com.yunseojin.MyLittleHomepage.etc.entity.BaseEntity;
 import com.yunseojin.MyLittleHomepage.etc.enums.EvaluationType;
-import com.yunseojin.MyLittleHomepage.member.entity.MemberEntity;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.model.Member;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Where;
-
-import javax.persistence.*;
 
 @Getter
 @Setter
@@ -27,5 +34,5 @@ public abstract class EvaluationEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "writer_id", nullable = false)
-    private MemberEntity writer;
+    private Member writer;
 }

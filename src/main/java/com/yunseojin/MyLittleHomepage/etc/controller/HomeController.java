@@ -1,7 +1,6 @@
 package com.yunseojin.MyLittleHomepage.etc.controller;
 
 import com.yunseojin.MyLittleHomepage.board.service.BoardService;
-import com.yunseojin.MyLittleHomepage.etc.annotation.MemberToken;
 import com.yunseojin.MyLittleHomepage.etc.enums.PostOrderType;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberTokenDto;
 import com.yunseojin.MyLittleHomepage.post.dto.PostSearch;
@@ -13,9 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import springfox.documentation.annotations.ApiIgnore;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-
 @Controller
 @RequiredArgsConstructor
 @ApiIgnore
@@ -26,7 +22,7 @@ public class HomeController {
 
     @GetMapping("")
     public String index(
-            @MemberToken MemberTokenDto memberTokenDto,
+            MemberTokenDto memberTokenDto,
             Model model) {
 
         setOrderedFreePosts(model);

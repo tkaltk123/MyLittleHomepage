@@ -21,16 +21,20 @@
                                     <h1 class="h4 text-gray-900 mb-4">Login</h1>
                                 </div>
                                 <form th:action="@{/login(referer=${referer})}" method="post"
-                                      th:object="${memberRequest}">
+                                      th:object="${memberCreateCommand}">
                                     <div class="form-group">
                                         <input type="text" class="form-control form-control-user"
-                                               th:field="*{loginId}" placeholder="Login Id" required>
+                                               th:field="*{loginId}" placeholder="Login Id"
+                                               required>
                                     </div>
                                     <div class="form-group">
-                                        <input type="password" class="form-control form-control-user"
-                                               th:field="*{password}" placeholder="Password" required>
+                                        <input type="password"
+                                               class="form-control form-control-user"
+                                               th:field="*{password}" placeholder="Password"
+                                               required>
                                     </div>
-                                    <div class="alert alert-danger" role="alert" th:if="${errorMessage}!=null">
+                                    <div class="alert alert-danger" role="alert"
+                                         th:if="${errorMessage}!=null">
                                         [[${errorMessage}]]
                                     </div>
                                     <button type="submit" class="btn btn-primary btn-user btn-block">

@@ -2,13 +2,20 @@ package com.yunseojin.MyLittleHomepage.member.controller;
 
 import com.yunseojin.MyLittleHomepage.board.service.BoardService;
 import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
-import com.yunseojin.MyLittleHomepage.etc.annotation.MemberToken;
 import com.yunseojin.MyLittleHomepage.etc.annotation.ValidationGroups;
-import com.yunseojin.MyLittleHomepage.member.dto.MemberRequest;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberTokenDto;
-import com.yunseojin.MyLittleHomepage.member.service.MemberService;
 import com.yunseojin.MyLittleHomepage.util.CookieUtil;
 import com.yunseojin.MyLittleHomepage.util.ModelUtil;
+import com.yunseojin.MyLittleHomepage.v2.config.web.resolver.LoginUser;
+import com.yunseojin.MyLittleHomepage.v2.contract.handler.ApplicationService;
+import com.yunseojin.MyLittleHomepage.v2.member.application.command.create.MemberCreateCommand;
+import com.yunseojin.MyLittleHomepage.v2.member.application.command.delete.MemberDeleteCommand;
+import com.yunseojin.MyLittleHomepage.v2.member.application.command.update.MemberUpdateCommand;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.model.Member;
+import java.util.Objects;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -19,17 +26,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import springfox.documentation.annotations.ApiIgnore;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 @RequiredArgsConstructor
 @Controller
 @ApiIgnore
 public class MemberController {
 
     private final BoardService boardService;
-    private final MemberService memberService;
+
+    private final ApplicationService applicationService;
 
     @Value("${jwt.access.name}")
     private String accessTokenName;
@@ -37,20 +41,21 @@ public class MemberController {
     @Value("${jwt.refresh.name}")
     private String refreshTokenName;
 
-    @Value("${jwt.refresh.remain}")
+    @Value("${jwt.refresh.expirationMilli}")
     private Integer refreshTokenRemainHour;
 
 
     @GetMapping("/login")
     public String loginFrom(
-            @MemberToken MemberTokenDto memberTokenDto,
+            @LoginUser Member member,
             Model model,
             HttpServletRequest request) {
 
-        if (MemberTokenDto.isLoggedIn(memberTokenDto))
+        if (Objects.isNull(member)) {
             return "redirect:/";
+        }
 
-        model.addAttribute("memberRequest", new MemberRequest());
+        model.addAttribute("command", new MemberCreateCommand());
         model.addAttribute("referer", request.getHeader("Referer"));
 
         return "layout/login";
@@ -59,13 +64,15 @@ public class MemberController {
     @Login(required = false)
     @PostMapping("/login")
     public String login(
-            MemberRequest memberRequest,
+            MemberCreateCommand command,
             @RequestParam(required = false, name = "referer", defaultValue = "/") String referer,
             HttpServletResponse response) {
 
-        var token = memberService.login(memberRequest);
-        response.addCookie(CookieUtil.createTokenCookie(accessTokenName, refreshTokenRemainHour, token.getAccessToken()));
-        response.addCookie(CookieUtil.createTokenCookie(refreshTokenName, refreshTokenRemainHour, token.getRefreshToken()));
+        var token = applicationService.executeCommand(command);
+        response.addCookie(CookieUtil.createTokenCookie(accessTokenName, refreshTokenRemainHour,
+                token.getAccessToken()));
+        response.addCookie(CookieUtil.createTokenCookie(refreshTokenName, refreshTokenRemainHour,
+                token.getRefreshToken()));
 
         return "redirect:" + referer;
     }
@@ -81,13 +88,14 @@ public class MemberController {
 
     @GetMapping("/register")
     public String registerForm(
-            @MemberToken MemberTokenDto memberTokenDto,
+            @LoginUser Member member,
             Model model) {
 
-        if (MemberTokenDto.isLoggedIn(memberTokenDto))
+        if (Objects.isNull(member)) {
             return "redirect:/";
+        }
 
-        model.addAttribute("memberRequest", new MemberRequest());
+        model.addAttribute("command", new MemberCreateCommand());
 
         return "layout/register";
     }
@@ -95,31 +103,40 @@ public class MemberController {
     @Login(required = false)
     @PostMapping("/register")
     public String register(
-            @Validated(ValidationGroups.Create.class) MemberRequest memberRequest,
+            @Validated(ValidationGroups.Create.class) MemberCreateCommand command,
             HttpServletResponse response) {
 
-        var token = memberService.register(memberRequest);
-        response.addCookie(CookieUtil.createTokenCookie(accessTokenName, refreshTokenRemainHour, token.getAccessToken()));
-        response.addCookie(CookieUtil.createTokenCookie(refreshTokenName, refreshTokenRemainHour, token.getRefreshToken()));
+        var token = applicationService.executeCommand(command);
+        response.addCookie(CookieUtil.createTokenCookie(accessTokenName, refreshTokenRemainHour,
+                token.getAccessToken()));
+        response.addCookie(CookieUtil.createTokenCookie(refreshTokenName, refreshTokenRemainHour,
+                token.getRefreshToken()));
 
         return "redirect:/";
     }
 
     @GetMapping("/modify")
     public String modifyForm(
-            @MemberToken MemberTokenDto memberTokenDto,
+            @LoginUser Member member,
             Model model) {
 
-        if (!MemberTokenDto.isLoggedIn(memberTokenDto))
+        if (Objects.isNull(member)) {
             return "redirect:/login";
+        }
 
-        var memberRequest = MemberRequest.builder()
-                .loginId(memberTokenDto.getLoginId())
-                .nickname(memberTokenDto.getNickname())
+        var command = MemberUpdateCommand.builder()
+                .username(member.getUsername())
+                .nickname(member.getNickname())
                 .build();
 
-        model.addAttribute("memberRequest", memberRequest);
-        ModelUtil.setCommonAttr(model, memberTokenDto, boardService.getBoardList());
+        model.addAttribute("command", command);
+        ModelUtil.setCommonAttr(model,
+                MemberTokenDto.builder()
+                        .id(member.getId())
+                        .loginId(member.getUsername())
+                        .nickname(member.getNickname())
+                        .build(),
+                boardService.getBoardList());
 
         return "/layout/modifyForm";
     }
@@ -127,12 +144,14 @@ public class MemberController {
     @Login
     @PostMapping("/modify")
     public String modify(
-            @MemberToken MemberTokenDto memberTokenDto,
-            @Validated(ValidationGroups.Update.class) MemberRequest memberRequest,
+            @LoginUser Member member,
+            @Validated(ValidationGroups.Update.class) MemberUpdateCommand command,
             HttpServletResponse response) {
 
-        var token = memberService.modify(memberTokenDto.getId(), memberRequest);
-        response.addCookie(CookieUtil.createTokenCookie(accessTokenName, refreshTokenRemainHour, token));
+        command.setMember(member);
+        var token = applicationService.executeCommand(command);
+        response.addCookie(
+                CookieUtil.createTokenCookie(accessTokenName, refreshTokenRemainHour, token));
 
         return "redirect:/";
     }
@@ -140,10 +159,11 @@ public class MemberController {
     @Login
     @PostMapping("/delete")
     public String delete(
-            @MemberToken MemberTokenDto memberTokenDto,
-            MemberRequest memberRequest) {
+            @LoginUser Member member,
+            MemberDeleteCommand command) {
 
-        memberService.delete(memberTokenDto.getId(), memberRequest);
+        command.setMember(member);
+        applicationService.executeCommand(command);
 
         return "redirect:/";
     }

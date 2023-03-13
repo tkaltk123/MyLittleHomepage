@@ -5,7 +5,6 @@ import com.yunseojin.MyLittleHomepage.comment.dto.CommentRequest;
 import com.yunseojin.MyLittleHomepage.comment.dto.CommentResponse;
 import com.yunseojin.MyLittleHomepage.comment.service.CommentService;
 import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
-import com.yunseojin.MyLittleHomepage.etc.annotation.MemberToken;
 import com.yunseojin.MyLittleHomepage.etc.annotation.ValidationGroups;
 import com.yunseojin.MyLittleHomepage.member.dto.MemberTokenDto;
 import com.yunseojin.MyLittleHomepage.post.dto.FullPostSearch;
@@ -13,15 +12,19 @@ import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
 import com.yunseojin.MyLittleHomepage.post.mapper.PostMapper;
 import com.yunseojin.MyLittleHomepage.post.service.PostService;
 import com.yunseojin.MyLittleHomepage.util.ModelUtil;
+import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import springfox.documentation.annotations.ApiIgnore;
-
-import javax.servlet.http.HttpServletRequest;
 
 @RequiredArgsConstructor
 @RequestMapping("/posts")
@@ -37,7 +40,7 @@ public class PostController {
     public String getPost(
             Model model,
             HttpServletRequest request,
-            @MemberToken MemberTokenDto memberTokenDto,
+            MemberTokenDto memberTokenDto,
             @PathVariable(name = "post_id") Long postId,
             @RequestParam(required = false, name = "page", defaultValue = "0") Integer page) {
 
@@ -54,7 +57,7 @@ public class PostController {
     @GetMapping("/search")
     public String getPostInSearch(
             Model model,
-            @MemberToken MemberTokenDto memberTokenDto,
+            MemberTokenDto memberTokenDto,
             @ModelAttribute(name = "fullPostSearch") FullPostSearch postSearch) {
 
 
@@ -69,7 +72,7 @@ public class PostController {
     @GetMapping("/{post_id}/modify")
     public String postUpdateForm(
             Model model,
-            @MemberToken MemberTokenDto memberTokenDto,
+            MemberTokenDto memberTokenDto,
             @PathVariable(name = "post_id") Long postId) {
 
         if (!MemberTokenDto.isLoggedIn(memberTokenDto))
@@ -87,7 +90,7 @@ public class PostController {
     @Login
     @PostMapping("/{post_id}/modify")
     public String updatePost(
-            @MemberToken MemberTokenDto memberTokenDto,
+            MemberTokenDto memberTokenDto,
             @PathVariable(name = "post_id") Long postId,
             @Validated(ValidationGroups.Update.class) PostRequest postRequest) {
 
@@ -99,7 +102,7 @@ public class PostController {
     @Login
     @PostMapping("/{post_id}/delete")
     public String deletePost(
-            @MemberToken MemberTokenDto memberTokenDto,
+            MemberTokenDto memberTokenDto,
             @PathVariable(name = "post_id") Long postId) {
 
         var boardId = postService.getPost(postId).getBoardId();
