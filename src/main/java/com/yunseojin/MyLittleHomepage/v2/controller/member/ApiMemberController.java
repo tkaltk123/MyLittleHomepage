@@ -6,12 +6,12 @@ import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
 import com.yunseojin.MyLittleHomepage.v2.auth.dto.Token;
 import com.yunseojin.MyLittleHomepage.v2.config.web.resolver.LoginUser;
 import com.yunseojin.MyLittleHomepage.v2.contract.application.service.ApplicationService;
+import com.yunseojin.MyLittleHomepage.v2.member.application.dto.command.CreateMemberCommand;
+import com.yunseojin.MyLittleHomepage.v2.member.application.dto.command.DeleteMemberCommand;
 import com.yunseojin.MyLittleHomepage.v2.member.application.dto.command.LoginCommand;
-import com.yunseojin.MyLittleHomepage.v2.member.application.dto.command.MemberCreateCommand;
-import com.yunseojin.MyLittleHomepage.v2.member.application.dto.command.MemberDeleteCommand;
-import com.yunseojin.MyLittleHomepage.v2.member.application.dto.command.MemberUpdateCommand;
 import com.yunseojin.MyLittleHomepage.v2.member.application.dto.command.RefreshCommand;
-import com.yunseojin.MyLittleHomepage.v2.member.application.dto.query.MemberGetQuery;
+import com.yunseojin.MyLittleHomepage.v2.member.application.dto.command.UpdateMemberCommand;
+import com.yunseojin.MyLittleHomepage.v2.member.application.dto.query.GetMemberQuery;
 import com.yunseojin.MyLittleHomepage.v2.member.application.dto.response.MemberResponse;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.model.Member;
 import io.swagger.annotations.ApiOperation;
@@ -42,7 +42,7 @@ public class ApiMemberController {
     @Login(required = false)
     @PostMapping("/register")
     @ApiOperation(value = "회원가입", notes = "회원 정보를 생성합니다.")
-    public ResponseEntity<Token> register(@RequestBody MemberCreateCommand command) {
+    public ResponseEntity<Token> register(@RequestBody CreateMemberCommand command) {
 
         return new ResponseEntity<>(applicationService.executeCommand(command), HttpStatus.OK);
     }
@@ -51,7 +51,7 @@ public class ApiMemberController {
     @ApiOperation(value = "정보 수정", notes = "회원 정보를 수정합니다.")
     public ResponseEntity<String> modify(
             @ApiIgnore @LoginUser Member member,
-            @RequestBody MemberUpdateCommand command) {
+            @RequestBody UpdateMemberCommand command) {
         command.setMember(member);
         return new ResponseEntity<>(applicationService.executeCommand(command), HttpStatus.OK);
     }
@@ -60,7 +60,7 @@ public class ApiMemberController {
     @ApiOperation(value = "회원 탈퇴", notes = "회원 정보를 삭제합니다")
     public ResponseEntity<Void> delete(
             @ApiIgnore @LoginUser Member member,
-            @RequestBody MemberDeleteCommand command) {
+            @RequestBody DeleteMemberCommand command) {
 
         command.setMember(member);
 
@@ -102,7 +102,7 @@ public class ApiMemberController {
 
     @GetMapping("/me")
     public ResponseEntity<MemberResponse> me(@ApiIgnore @LoginUser Member member) {
-        MemberGetQuery query = new MemberGetQuery();
+        GetMemberQuery query = new GetMemberQuery();
         query.setMember(member);
         return ResponseEntity.ok(applicationService.executeQuery(query));
     }

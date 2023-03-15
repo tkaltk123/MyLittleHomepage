@@ -1,7 +1,7 @@
 package com.yunseojin.MyLittleHomepage.v2.member.application.dto.command;
 
+import com.yunseojin.MyLittleHomepage.v2.contract.application.dto.Command;
 import com.yunseojin.MyLittleHomepage.v2.member.application.dto.MemberAuthOperation;
-import com.yunseojin.MyLittleHomepage.v2.member.application.dto.MemberCommand;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -9,11 +9,6 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @NoArgsConstructor
 @SuperBuilder
-public class MemberUpdateCommand extends MemberAuthOperation implements MemberCommand<String> {
+public class DeleteMemberCommand extends MemberAuthOperation implements Command<Void> {
 
-    private String username;
-
-    private String password;
-
-    private String nickname;
 }

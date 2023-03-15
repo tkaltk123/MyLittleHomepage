@@ -12,5 +12,5 @@ public interface MemberMapper {
     @Mapping(target = "role", ignore = true)
     Member from(MemberCommand command);
 
-    MemberResponse toDto(Member member);
+    MemberResponse toResponse(Member member);
 }

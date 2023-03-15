@@ -8,9 +8,9 @@ import com.yunseojin.MyLittleHomepage.util.ModelUtil;
 import com.yunseojin.MyLittleHomepage.v2.config.web.resolver.LoginUser;
 import com.yunseojin.MyLittleHomepage.v2.contract.application.service.ApplicationService;
 import com.yunseojin.MyLittleHomepage.v2.member.application.dto.MemberTokenDto;
-import com.yunseojin.MyLittleHomepage.v2.member.application.dto.command.MemberCreateCommand;
-import com.yunseojin.MyLittleHomepage.v2.member.application.dto.command.MemberDeleteCommand;
-import com.yunseojin.MyLittleHomepage.v2.member.application.dto.command.MemberUpdateCommand;
+import com.yunseojin.MyLittleHomepage.v2.member.application.dto.command.CreateMemberCommand;
+import com.yunseojin.MyLittleHomepage.v2.member.application.dto.command.DeleteMemberCommand;
+import com.yunseojin.MyLittleHomepage.v2.member.application.dto.command.UpdateMemberCommand;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.model.Member;
 import java.util.Objects;
 import javax.servlet.http.Cookie;
@@ -55,7 +55,7 @@ public class MemberController {
             return "redirect:/";
         }
 
-        model.addAttribute("command", new MemberCreateCommand());
+        model.addAttribute("command", new CreateMemberCommand());
         model.addAttribute("referer", request.getHeader("Referer"));
 
         return "layout/login";
@@ -64,7 +64,7 @@ public class MemberController {
     @Login(required = false)
     @PostMapping("/login")
     public String login(
-            MemberCreateCommand command,
+            CreateMemberCommand command,
             @RequestParam(required = false, name = "referer", defaultValue = "/") String referer,
             HttpServletResponse response) {
 
@@ -95,7 +95,7 @@ public class MemberController {
             return "redirect:/";
         }
 
-        model.addAttribute("command", new MemberCreateCommand());
+        model.addAttribute("command", new CreateMemberCommand());
 
         return "layout/register";
     }
@@ -103,7 +103,7 @@ public class MemberController {
     @Login(required = false)
     @PostMapping("/register")
     public String register(
-            @Validated(ValidationGroups.Create.class) MemberCreateCommand command,
+            @Validated(ValidationGroups.Create.class) CreateMemberCommand command,
             HttpServletResponse response) {
 
         var token = applicationService.executeCommand(command);
@@ -124,7 +124,7 @@ public class MemberController {
             return "redirect:/login";
         }
 
-        var command = MemberUpdateCommand.builder()
+        var command = UpdateMemberCommand.builder()
                 .username(member.getUsername())
                 .nickname(member.getNickname())
                 .build();
@@ -145,7 +145,7 @@ public class MemberController {
     @PostMapping("/modify")
     public String modify(
             @LoginUser Member member,
-            @Validated(ValidationGroups.Update.class) MemberUpdateCommand command,
+            @Validated(ValidationGroups.Update.class) UpdateMemberCommand command,
             HttpServletResponse response) {
 
         command.setMember(member);
@@ -160,7 +160,7 @@ public class MemberController {
     @PostMapping("/delete")
     public String delete(
             @LoginUser Member member,
-            MemberDeleteCommand command) {
+            DeleteMemberCommand command) {
 
         command.setMember(member);
         applicationService.executeCommand(command);

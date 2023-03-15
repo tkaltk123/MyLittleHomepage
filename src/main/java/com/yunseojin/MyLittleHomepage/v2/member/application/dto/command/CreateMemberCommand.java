@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberCreateCommand implements MemberCommand<Token> {
+public class CreateMemberCommand implements MemberCommand<Token> {
 
     private String username;
 
