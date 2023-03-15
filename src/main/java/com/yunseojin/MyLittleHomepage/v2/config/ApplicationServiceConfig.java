@@ -5,8 +5,8 @@ import an.awesome.pipelinr.Command.Handler;
 import an.awesome.pipelinr.CommandHandlers;
 import an.awesome.pipelinr.Pipeline;
 import an.awesome.pipelinr.Pipelinr;
-import com.yunseojin.MyLittleHomepage.v2.contract.application.command.CommandService;
-import com.yunseojin.MyLittleHomepage.v2.contract.application.query.QueryService;
+import com.yunseojin.MyLittleHomepage.v2.contract.application.service.CommandHandler;
+import com.yunseojin.MyLittleHomepage.v2.contract.application.service.QueryHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.annotation.Bean;
@@ -24,7 +24,7 @@ public class ApplicationServiceConfig {
 
     private CommandHandlers getCommandServices(ObjectProvider<Handler> handlers) {
         return () -> handlers.stream()
-                .filter(CommandService.class::isInstance);
+                .filter(CommandHandler.class::isInstance);
     }
 
     @Bean
@@ -34,6 +34,6 @@ public class ApplicationServiceConfig {
 
     private CommandHandlers getQueryServices(ObjectProvider<Handler> handlers) {
         return () -> handlers.stream()
-                .filter(QueryService.class::isInstance);
+                .filter(QueryHandler.class::isInstance);
     }
 }

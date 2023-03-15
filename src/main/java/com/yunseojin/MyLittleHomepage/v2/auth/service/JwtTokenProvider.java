@@ -55,11 +55,11 @@ public class JwtTokenProvider {
     private String createToken(UserDetails userDetails, String subject, long expirationMilli) {
         Claims claims = Jwts.claims();
         claims.put("username", userDetails.getUsername());
+        claims.setSubject(subject);
         Date now = new Date();
         Date validity = new Date(now.getTime() + expirationMilli);
 
         return Jwts.builder()
-                .setSubject(subject)
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(validity)

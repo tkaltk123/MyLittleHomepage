@@ -6,12 +6,12 @@ import com.yunseojin.MyLittleHomepage.comment.dto.CommentResponse;
 import com.yunseojin.MyLittleHomepage.comment.service.CommentService;
 import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
 import com.yunseojin.MyLittleHomepage.etc.annotation.ValidationGroups;
-import com.yunseojin.MyLittleHomepage.member.dto.MemberTokenDto;
 import com.yunseojin.MyLittleHomepage.post.dto.FullPostSearch;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
 import com.yunseojin.MyLittleHomepage.post.mapper.PostMapper;
 import com.yunseojin.MyLittleHomepage.post.service.PostService;
 import com.yunseojin.MyLittleHomepage.util.ModelUtil;
+import com.yunseojin.MyLittleHomepage.v2.member.application.dto.MemberTokenDto;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -60,7 +60,6 @@ public class PostController {
             MemberTokenDto memberTokenDto,
             @ModelAttribute(name = "fullPostSearch") FullPostSearch postSearch) {
 
-
         var postPage = postService.getPostListWithCursor(null, 20, postSearch);
 
         model.addAttribute("posts", postPage);
@@ -75,8 +74,9 @@ public class PostController {
             MemberTokenDto memberTokenDto,
             @PathVariable(name = "post_id") Long postId) {
 
-        if (!MemberTokenDto.isLoggedIn(memberTokenDto))
+        if (!MemberTokenDto.isLoggedIn(memberTokenDto)) {
             return "redirect:/login";
+        }
 
         var post = postService.getPost(postId);
         var postReq = PostMapper.INSTANCE.toPostRequest(post);

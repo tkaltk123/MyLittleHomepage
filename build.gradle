@@ -56,6 +56,8 @@ dependencies {
     //swagger
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
     implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+
+    runtimeOnly("io.netty:netty-resolver-dns-native-macos:4.1.77.Final:osx-aarch_64")
 }
 
 def querydslDir = "$buildDir/generated/querydsl"

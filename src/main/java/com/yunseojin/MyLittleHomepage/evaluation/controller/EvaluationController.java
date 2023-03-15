@@ -2,7 +2,7 @@ package com.yunseojin.MyLittleHomepage.evaluation.controller;
 
 import com.yunseojin.MyLittleHomepage.comment.service.CommentService;
 import com.yunseojin.MyLittleHomepage.evaluation.service.EvaluationService;
-import com.yunseojin.MyLittleHomepage.member.dto.MemberTokenDto;
+import com.yunseojin.MyLittleHomepage.v2.member.application.dto.MemberTokenDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;

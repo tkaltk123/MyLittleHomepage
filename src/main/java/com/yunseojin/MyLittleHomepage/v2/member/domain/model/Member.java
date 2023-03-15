@@ -34,9 +34,7 @@ public class Member extends BaseAggregateRoot<Member> implements UserDetails {
     @Column(name = "username", nullable = false, length = 20)
     private String username;
 
-    //    @NotNull
-//    @Size(min = 8, max = 20, message = "비밀번호는 8~20글자 입니다.")
-//    @Pattern(regexp = "[a-zA-Z0-9~!@#$%^&*()]+", message = "비밀번호는 알파벳, 숫자, 특수문자(~!@#$%^&*())만 사용할 수 있습니다.")
+
     @Column(name = "password", nullable = false)
     private String password;
 

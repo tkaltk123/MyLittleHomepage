@@ -3,11 +3,11 @@ package com.yunseojin.MyLittleHomepage.board.controller;
 import com.yunseojin.MyLittleHomepage.board.service.BoardService;
 import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
 import com.yunseojin.MyLittleHomepage.etc.annotation.ValidationGroups;
-import com.yunseojin.MyLittleHomepage.member.dto.MemberTokenDto;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
 import com.yunseojin.MyLittleHomepage.post.dto.PostSearch;
 import com.yunseojin.MyLittleHomepage.post.service.PostService;
 import com.yunseojin.MyLittleHomepage.util.ModelUtil;
+import com.yunseojin.MyLittleHomepage.v2.member.application.dto.MemberTokenDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -46,8 +46,9 @@ public class BoardController {
             MemberTokenDto memberTokenDto,
             @PathVariable(name = "board_id") Long boardId) {
 
-        if (!MemberTokenDto.isLoggedIn(memberTokenDto))
+        if (!MemberTokenDto.isLoggedIn(memberTokenDto)) {
             return "redirect:/login";
+        }
 
         model.addAttribute("postRequest", new PostRequest());
         ModelUtil.setCommonAttr(model, memberTokenDto, boardService.getBoardList());
