@@ -13,7 +13,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
@@ -21,7 +20,6 @@ import org.hibernate.annotations.Where;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @Entity
 @Where(clause = "is_deleted = 0")
 @SQLDelete(sql = "UPDATE members SET is_deleted = 1 WHERE id=?")
@@ -38,7 +36,6 @@ public class Member extends BaseAggregateRoot<Member> implements UserDetails {
     @Column(name = "password", nullable = false)
     private String password;
 
-
     @NotNull
     @Size(min = 2, max = 12, message = "닉네임은 2~12글자 입니다")
     @Pattern(regexp = "[a-zA-Z0-9가-힣_]+", message = "닉네임은 알파벳, 한글, 숫자, _만 사용할 수 있습니다.")
@@ -49,23 +46,25 @@ public class Member extends BaseAggregateRoot<Member> implements UserDetails {
     @Column(name = "role", nullable = false)
     private UserRole role;
 
-    public void onCreated() {
-        role = UserRole.NORMAL;
-        password = PasswordUtil.getHashedPassword(password);
+    public Member(MemberVo memberVo) {
+        this.username = memberVo.getUsername();
+        this.password = PasswordUtil.getHashedPassword(memberVo.getPassword());
+        this.nickname = memberVo.getNickname();
+        this.role = UserRole.NORMAL;
     }
 
-    public void update(Member newMember) {
+    public void update(MemberVo memberVo) {
 
-        if (newMember.getUsername() != null) {
-            username = newMember.getUsername();
+        if (memberVo.getUsername() != null) {
+            username = memberVo.getUsername();
         }
 
-        if (newMember.getNickname() != null) {
-            nickname = newMember.getNickname();
+        if (memberVo.getNickname() != null) {
+            nickname = memberVo.getNickname();
         }
 
-        if (newMember.getPassword() != null) {
-            password = PasswordUtil.getHashedPassword(newMember.getPassword());
+        if (memberVo.getPassword() != null) {
+            password = PasswordUtil.getHashedPassword(memberVo.getPassword());
         }
     }
 

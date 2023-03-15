@@ -8,7 +8,6 @@ import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
@@ -16,7 +15,6 @@ import org.hibernate.annotations.Where;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @Entity
 @Where(clause = "is_deleted = 0")
 @SQLDelete(sql = "UPDATE posts SET is_deleted = 1 WHERE id=?")
@@ -42,10 +40,24 @@ public class Post extends BaseAggregateRoot<Post> {
     @OneToOne(mappedBy = "post", optional = false, cascade = CascadeType.PERSIST)
     private PostCountV2 postCount;
 
-    public Post withPostCount() {
+    public Post(PostVo postVo) {
+        this.boardId = postVo.getBoardId();
+        this.writerId = postVo.getWriterId();
+        this.writerName = postVo.getWriterName();
+        this.title = postVo.getTitle();
+        this.content = postVo.getContent();
+        this.postCount = new PostCountV2();
+        this.postCount.setPost(this);
+    }
 
-        postCount = new PostCountV2();
-        postCount.setPost(this);
+    public Post update(PostVo postVo) {
+        if (!writerId.equals(postVo.getWriterId())) {
+            throw new RuntimeException();
+        }
+        this.writerName = postVo.getWriterName();
+        this.title = postVo.getTitle();
+        this.content = postVo.getContent();
+
         return this;
     }
 }

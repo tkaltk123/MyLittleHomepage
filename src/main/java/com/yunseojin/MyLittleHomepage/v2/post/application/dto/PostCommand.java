@@ -27,4 +27,8 @@ public abstract class PostCommand<A> extends AuthOperation implements Command<A>
     public Long getWriterId() {
         return member.getId();
     }
+
+    public String getWriterName() {
+        return member.getNickname();
+    }
 }

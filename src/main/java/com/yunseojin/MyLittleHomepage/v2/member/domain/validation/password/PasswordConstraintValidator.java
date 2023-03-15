@@ -1,6 +1,6 @@
 package com.yunseojin.MyLittleHomepage.v2.member.domain.validation.password;
 
-import com.yunseojin.MyLittleHomepage.v2.member.domain.model.Member;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.model.MemberVo;
 import java.util.Objects;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class PasswordConstraintValidator implements
-        ConstraintValidator<PasswordConstraint, Member> {
+        ConstraintValidator<PasswordConstraint, MemberVo> {
 
     private static final int MIN_LENGTH = 8;
 
@@ -18,7 +18,7 @@ public class PasswordConstraintValidator implements
 
 
     @Override
-    public boolean isValid(Member member, ConstraintValidatorContext context) {
+    public boolean isValid(MemberVo member, ConstraintValidatorContext context) {
         return isValidPassword(member.getPassword());
     }
 

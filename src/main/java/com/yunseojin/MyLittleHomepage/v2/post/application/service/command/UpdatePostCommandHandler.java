@@ -2,7 +2,7 @@ package com.yunseojin.MyLittleHomepage.v2.post.application.service.command;
 
 import com.yunseojin.MyLittleHomepage.v2.board.domain.repository.BoardRepositoryV2;
 import com.yunseojin.MyLittleHomepage.v2.contract.application.service.CommandHandler;
-import com.yunseojin.MyLittleHomepage.v2.post.application.dto.command.CreatePostCommand;
+import com.yunseojin.MyLittleHomepage.v2.post.application.dto.command.UpdatePostCommand;
 import com.yunseojin.MyLittleHomepage.v2.post.application.dto.response.PostResponse;
 import com.yunseojin.MyLittleHomepage.v2.post.application.mapper.PostMapperV2;
 import com.yunseojin.MyLittleHomepage.v2.post.domain.model.Post;
@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Service
 @RequiredArgsConstructor
-public class CreatePostCommandHandler implements CommandHandler<CreatePostCommand, PostResponse> {
+public class UpdatePostCommandHandler implements CommandHandler<UpdatePostCommand, PostResponse> {
 
     private final PostService service;
 
@@ -26,9 +26,9 @@ public class CreatePostCommandHandler implements CommandHandler<CreatePostComman
     private final PostMapperV2 mapper;
 
     @Override
-    public PostResponse handle(CreatePostCommand command) {
-        var post = service.create(mapper.from(command));
-        post = repository.save(post);
+    public PostResponse handle(UpdatePostCommand command) {
+        var post = repository.getById(command.getPostId());
+        post = repository.save(service.update(post, mapper.from(command)));
         return toResponse(post);
     }
 
