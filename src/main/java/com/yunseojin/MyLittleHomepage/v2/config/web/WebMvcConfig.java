@@ -1,7 +1,7 @@
 package com.yunseojin.MyLittleHomepage.v2.config.web;
 
-import com.yunseojin.MyLittleHomepage.v2.auth.service.AuthenticationPrincipal;
-import com.yunseojin.MyLittleHomepage.v2.auth.service.JwtTokenProvider;
+import auth.service.AuthenticationPrincipal;
+import auth.service.JwtTokenProvider;
 import com.yunseojin.MyLittleHomepage.v2.config.web.interceptor.JwtInterceptor;
 import com.yunseojin.MyLittleHomepage.v2.config.web.resolver.LoginUserArgumentResolver;
 import java.util.List;

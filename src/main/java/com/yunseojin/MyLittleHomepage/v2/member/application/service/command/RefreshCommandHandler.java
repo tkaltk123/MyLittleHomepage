@@ -1,6 +1,6 @@
 package com.yunseojin.MyLittleHomepage.v2.member.application.service.command;
 
-import com.yunseojin.MyLittleHomepage.v2.auth.service.JwtTokenProvider;
+import auth.service.JwtTokenProvider;
 import com.yunseojin.MyLittleHomepage.v2.contract.application.service.CommandHandler;
 import com.yunseojin.MyLittleHomepage.v2.member.application.dto.command.RefreshCommand;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,6 @@
 package com.yunseojin.MyLittleHomepage.v2.config.web.interceptor;
 
-import com.yunseojin.MyLittleHomepage.v2.auth.service.JwtTokenProvider;
+import auth.service.JwtTokenProvider;
 import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

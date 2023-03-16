@@ -1,4 +1,4 @@
-package com.yunseojin.MyLittleHomepage.v2.auth.exception;
+package auth.exception;
 
 import lombok.Getter;
 

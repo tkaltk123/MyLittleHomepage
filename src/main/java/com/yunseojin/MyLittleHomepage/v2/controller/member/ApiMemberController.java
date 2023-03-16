@@ -1,9 +1,9 @@
 package com.yunseojin.MyLittleHomepage.v2.controller.member;
 
+import auth.dto.Token;
 import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
 import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
 import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
-import com.yunseojin.MyLittleHomepage.v2.auth.dto.Token;
 import com.yunseojin.MyLittleHomepage.v2.config.web.resolver.LoginUser;
 import com.yunseojin.MyLittleHomepage.v2.contract.application.service.ApplicationService;
 import com.yunseojin.MyLittleHomepage.v2.member.application.dto.command.CreateMemberCommand;

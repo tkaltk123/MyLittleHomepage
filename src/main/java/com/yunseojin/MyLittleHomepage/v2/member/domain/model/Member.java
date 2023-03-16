@@ -1,9 +1,12 @@
 package com.yunseojin.MyLittleHomepage.v2.member.domain.model;
 
+import auth.domain.UserDetails;
+import auth.domain.UserRole;
 import com.yunseojin.MyLittleHomepage.util.PasswordUtil;
-import com.yunseojin.MyLittleHomepage.v2.auth.domain.UserDetails;
-import com.yunseojin.MyLittleHomepage.v2.auth.domain.UserRole;
 import com.yunseojin.MyLittleHomepage.v2.contract.domain.model.BaseAggregateRoot;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.event.MemberCreatedEvent;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.event.MemberDeletedEvent;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.event.MemberUpdatedEvent;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -51,21 +54,39 @@ public class Member extends BaseAggregateRoot<Member> implements UserDetails {
         this.password = PasswordUtil.getHashedPassword(memberVo.getPassword());
         this.nickname = memberVo.getNickname();
         this.role = UserRole.NORMAL;
+        registerEvent(new MemberCreatedEvent(this));
     }
 
     public void update(MemberVo memberVo) {
 
-        if (memberVo.getUsername() != null) {
-            username = memberVo.getUsername();
-        }
+        updateUsername(memberVo.getUsername());
+        updateNickname(memberVo.getNickname());
+        updatePassword(memberVo.getPassword());
+        registerEvent(new MemberUpdatedEvent(this));
+    }
 
-        if (memberVo.getNickname() != null) {
-            nickname = memberVo.getNickname();
+    private void updateUsername(String username) {
+        if (username != null) {
+            this.username = username;
         }
+    }
 
-        if (memberVo.getPassword() != null) {
-            password = PasswordUtil.getHashedPassword(memberVo.getPassword());
+    private void updateNickname(String nickname) {
+        if (nickname != null) {
+            this.nickname = nickname;
         }
+    }
+
+    private void updatePassword(String password) {
+        if (password != null) {
+            this.password = PasswordUtil.getHashedPassword(password);
+        }
+    }
+
+    @Override
+    public void delete() {
+        super.delete();
+        registerEvent(new MemberDeletedEvent(this));
     }
 
     @Override

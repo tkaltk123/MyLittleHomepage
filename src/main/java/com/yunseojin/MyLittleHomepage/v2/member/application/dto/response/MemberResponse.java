@@ -1,6 +1,6 @@
 package com.yunseojin.MyLittleHomepage.v2.member.application.dto.response;
 
-import com.yunseojin.MyLittleHomepage.v2.auth.domain.UserRole;
+import auth.domain.UserRole;
 import com.yunseojin.MyLittleHomepage.v2.contract.application.dto.BaseResponse;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

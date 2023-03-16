@@ -1,6 +1,6 @@
 package com.yunseojin.MyLittleHomepage.v2.member.application.dto.command;
 
-import com.yunseojin.MyLittleHomepage.v2.auth.dto.Token;
+import auth.dto.Token;
 import com.yunseojin.MyLittleHomepage.v2.member.application.dto.MemberCommand;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

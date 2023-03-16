@@ -1,4 +1,4 @@
-package com.yunseojin.MyLittleHomepage.v2.auth.dto;
+package auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

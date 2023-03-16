@@ -1,4 +1,4 @@
-package com.yunseojin.MyLittleHomepage.v2.auth.domain;
+package auth.domain;
 
 public interface UserDetails {
 

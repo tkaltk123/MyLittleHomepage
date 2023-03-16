@@ -1,6 +1,6 @@
 package com.yunseojin.MyLittleHomepage.v2.config.web.resolver;
 
-import com.yunseojin.MyLittleHomepage.v2.auth.domain.UserDetails;
+import auth.domain.UserDetails;
 import java.util.List;
 import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;

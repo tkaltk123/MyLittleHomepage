@@ -1,9 +1,9 @@
-package com.yunseojin.MyLittleHomepage.v2.auth.service;
+package auth.service;
 
-import com.yunseojin.MyLittleHomepage.v2.auth.domain.UserDetails;
-import com.yunseojin.MyLittleHomepage.v2.auth.dto.Token;
-import com.yunseojin.MyLittleHomepage.v2.auth.exception.ErrorMessage;
-import com.yunseojin.MyLittleHomepage.v2.auth.exception.UnauthorizedException;
+import auth.domain.UserDetails;
+import auth.dto.Token;
+import auth.exception.ErrorMessage;
+import auth.exception.UnauthorizedException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;

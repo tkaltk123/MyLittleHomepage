@@ -1,7 +1,7 @@
-package com.yunseojin.MyLittleHomepage.v2.member.domain.service;
+package com.yunseojin.MyLittleHomepage.v2.infrastructure.auth;
 
-import com.yunseojin.MyLittleHomepage.v2.auth.domain.UserDetails;
-import com.yunseojin.MyLittleHomepage.v2.auth.service.AuthenticationPrincipal;
+import auth.domain.UserDetails;
+import auth.service.AuthenticationPrincipal;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.exception.MemberErrorMessage;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.exception.MemberException;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.repository.MemberRepository;
