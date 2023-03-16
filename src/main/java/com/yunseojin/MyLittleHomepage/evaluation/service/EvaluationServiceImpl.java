@@ -10,7 +10,7 @@ import com.yunseojin.MyLittleHomepage.evaluation.repository.CommentEvaluationRep
 import com.yunseojin.MyLittleHomepage.evaluation.repository.PostEvaluationRepository;
 import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
 import com.yunseojin.MyLittleHomepage.post.service.InternalPostService;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.model.Member;
+import com.yunseojin.MyLittleHomepage.v2.member.Member;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -64,23 +64,28 @@ public class EvaluationServiceImpl implements EvaluationService {
         var post = postService.getPostById(postId);
         var optPostEvaluation = postEvaluationRepository.findByPostAndWriter(post, member);
 
-        if (optPostEvaluation.isEmpty())
+        if (optPostEvaluation.isEmpty()) {
             return createPostEvaluation(member, post, evaluationType);
+        }
 
         return evaluateOrCancel(post.getId(), postService, optPostEvaluation.get(), evaluationType);
 
     }
 
-    private EvaluationType evaluateComment(Long memberId, Long commentId, EvaluationType evaluationType) {
+    private EvaluationType evaluateComment(Long memberId, Long commentId,
+            EvaluationType evaluationType) {
 
         var member = memberService.getById(memberId);
         var comment = commentService.getCommentById(commentId);
-        var optCommentEvaluation = commentEvaluationRepository.findByCommentAndWriter(comment, member);
+        var optCommentEvaluation = commentEvaluationRepository.findByCommentAndWriter(comment,
+                member);
 
-        if (optCommentEvaluation.isEmpty())
+        if (optCommentEvaluation.isEmpty()) {
             return createCommentEvaluation(member, comment, evaluationType);
+        }
 
-        return evaluateOrCancel(comment.getId(), commentService, optCommentEvaluation.get(), evaluationType);
+        return evaluateOrCancel(comment.getId(), commentService, optCommentEvaluation.get(),
+                evaluationType);
 
     }
 
@@ -114,7 +119,8 @@ public class EvaluationServiceImpl implements EvaluationService {
         return type;
     }
 
-    private EvaluationType evaluateOrCancel(Long evaluableId, EvaluableService evaluableService, EvaluationEntity evaluation, EvaluationType evaluationType) {
+    private EvaluationType evaluateOrCancel(Long evaluableId, EvaluableService evaluableService,
+            EvaluationEntity evaluation, EvaluationType evaluationType) {
 
         var evaluatedType = evaluation.getEvaluationType();
 
@@ -126,25 +132,27 @@ public class EvaluationServiceImpl implements EvaluationService {
             return EvaluationType.NONE;
         }
 
-        if (evaluatedType != EvaluationType.NONE)
+        if (evaluatedType != EvaluationType.NONE) {
             decreaseEvaluation(evaluableId, evaluableService, evaluationType.opposite());
+        }
 
         evaluation.setEvaluationType(evaluationType);
         increaseEvaluation(evaluableId, evaluableService, evaluationType);
         return evaluationType;
     }
 
-    private void increaseEvaluation(Long evaluableId, EvaluableService evaluableService, EvaluationType type) {
+    private void increaseEvaluation(Long evaluableId, EvaluableService evaluableService,
+            EvaluationType type) {
 
         switch (type) {
 
             case LIKE:
-                log.debug("increase like:"+evaluableId);
+                log.debug("increase like:" + evaluableId);
                 evaluableService.increaseLikeCount(evaluableId);
                 break;
 
             case DISLIKE:
-                log.debug("increase dislike:"+evaluableId);
+                log.debug("increase dislike:" + evaluableId);
                 evaluableService.increaseDislikeCount(evaluableId);
 
             default:
@@ -152,17 +160,18 @@ public class EvaluationServiceImpl implements EvaluationService {
         }
     }
 
-    private void decreaseEvaluation(Long evaluableId, EvaluableService evaluableService, EvaluationType type) {
+    private void decreaseEvaluation(Long evaluableId, EvaluableService evaluableService,
+            EvaluationType type) {
 
         switch (type) {
 
             case LIKE:
-                log.debug("decrease like:"+evaluableId);
+                log.debug("decrease like:" + evaluableId);
                 evaluableService.decreaseLikeCount(evaluableId);
                 break;
 
             case DISLIKE:
-                log.debug("decrease dislike:"+evaluableId);
+                log.debug("decrease dislike:" + evaluableId);
                 evaluableService.decreaseDislikeCount(evaluableId);
 
             default:

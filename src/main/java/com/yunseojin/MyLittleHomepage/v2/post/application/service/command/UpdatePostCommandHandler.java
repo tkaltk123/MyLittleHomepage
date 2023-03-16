@@ -5,9 +5,9 @@ import com.yunseojin.MyLittleHomepage.v2.contract.application.service.CommandHan
 import com.yunseojin.MyLittleHomepage.v2.post.application.dto.command.UpdatePostCommand;
 import com.yunseojin.MyLittleHomepage.v2.post.application.dto.response.PostResponse;
 import com.yunseojin.MyLittleHomepage.v2.post.application.mapper.PostMapperV2;
-import com.yunseojin.MyLittleHomepage.v2.post.domain.model.Post;
+import com.yunseojin.MyLittleHomepage.v2.post.domain.Post;
+import com.yunseojin.MyLittleHomepage.v2.post.domain.PostService;
 import com.yunseojin.MyLittleHomepage.v2.post.domain.repository.PostRepositoryV2;
-import com.yunseojin.MyLittleHomepage.v2.post.domain.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

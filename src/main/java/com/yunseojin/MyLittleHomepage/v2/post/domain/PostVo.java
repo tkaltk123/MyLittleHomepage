@@ -1,4 +1,4 @@
-package com.yunseojin.MyLittleHomepage.v2.post.domain.model;
+package com.yunseojin.MyLittleHomepage.v2.post.domain;
 
 import com.yunseojin.MyLittleHomepage.v2.contract.domain.validation.Create;
 import javax.validation.constraints.NotNull;

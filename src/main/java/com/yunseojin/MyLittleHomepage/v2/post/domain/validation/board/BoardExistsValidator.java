@@ -1,7 +1,7 @@
 package com.yunseojin.MyLittleHomepage.v2.post.domain.validation.board;
 
 import com.yunseojin.MyLittleHomepage.v2.board.domain.repository.BoardRepositoryV2;
-import com.yunseojin.MyLittleHomepage.v2.post.domain.model.Post;
+import com.yunseojin.MyLittleHomepage.v2.post.domain.Post;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import lombok.RequiredArgsConstructor;

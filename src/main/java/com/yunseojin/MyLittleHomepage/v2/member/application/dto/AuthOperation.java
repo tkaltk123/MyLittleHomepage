@@ -1,7 +1,7 @@
 package com.yunseojin.MyLittleHomepage.v2.member.application.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.model.Member;
+import com.yunseojin.MyLittleHomepage.v2.member.Member;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

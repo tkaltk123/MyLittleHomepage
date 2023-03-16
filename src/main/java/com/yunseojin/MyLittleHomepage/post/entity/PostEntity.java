@@ -4,7 +4,7 @@ import com.yunseojin.MyLittleHomepage.board.entity.BoardEntity;
 import com.yunseojin.MyLittleHomepage.etc.entity.BaseEntity;
 import com.yunseojin.MyLittleHomepage.hashtag.entity.HashtagEntity;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.model.Member;
+import com.yunseojin.MyLittleHomepage.v2.member.Member;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -91,15 +91,17 @@ public class PostEntity extends BaseEntity {
     }
 
     private void updateHashTag(String[] hashTags) {
-        if (hashTags == null)
+        if (hashTags == null) {
             return;
+        }
         var newTags = Arrays.stream(hashTags).collect(Collectors.toSet());
         for (var hashTag : List.copyOf(hashtags)) {
             var tag = hashTag.getTag();
-            if (newTags.contains(tag))
+            if (newTags.contains(tag)) {
                 newTags.remove(tag);
-            else
+            } else {
                 hashtags.remove(hashTag);
+            }
         }
         for (var tag : newTags) {
             hashtags.add(toHashTag(tag));

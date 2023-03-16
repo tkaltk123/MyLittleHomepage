@@ -1,11 +1,9 @@
-package com.yunseojin.MyLittleHomepage.v2.member.domain.service;
+package com.yunseojin.MyLittleHomepage.v2.member;
 
 import com.yunseojin.MyLittleHomepage.v2.contract.domain.validation.Create;
 import com.yunseojin.MyLittleHomepage.v2.contract.domain.validation.Update;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.exception.MemberErrorMessage;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.exception.MemberException;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.model.Member;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.model.MemberVo;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.validation.nickname.UniqueNickname;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.validation.username.UniqueUsername;
 import javax.validation.Valid;

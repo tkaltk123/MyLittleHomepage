@@ -1,6 +1,6 @@
 package com.yunseojin.MyLittleHomepage.v2.member.domain.validation.username;
 
-import com.yunseojin.MyLittleHomepage.v2.member.domain.model.Member;
+import com.yunseojin.MyLittleHomepage.v2.member.Member;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.repository.MemberRepository;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

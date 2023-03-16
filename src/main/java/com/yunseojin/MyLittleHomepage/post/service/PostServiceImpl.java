@@ -14,7 +14,7 @@ import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
 import com.yunseojin.MyLittleHomepage.post.mapper.PostMapper;
 import com.yunseojin.MyLittleHomepage.post.mapper.SimplePostMapper;
 import com.yunseojin.MyLittleHomepage.post.repository.PostRepository;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.model.Member;
+import com.yunseojin.MyLittleHomepage.v2.member.Member;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.repository.MemberRepository;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -81,8 +81,9 @@ public class PostServiceImpl implements PostService {
     @Override
     public void viewPost(String ip, Long postId) {
 
-        if (redisService.viewPost(ip, postId))
+        if (redisService.viewPost(ip, postId)) {
             postService.increaseViewCount(postId);
+        }
     }
 
     @Override
@@ -96,7 +97,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Page<PostResponse> getPostListWithCursor(Long lastPostId, int postCount, FullPostSearch postSearch) {
+    public Page<PostResponse> getPostListWithCursor(Long lastPostId, int postCount,
+            FullPostSearch postSearch) {
 
         var pageable = PageRequest.of(0, postCount);
         var postPage = postRepository.getPostsWithCursor(lastPostId, pageable, postSearch);
@@ -105,12 +107,14 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostResponse> getOrderedPostList(Long boardId, int postCount, PostOrderType postOrderType) {
+    public List<PostResponse> getOrderedPostList(Long boardId, int postCount,
+            PostOrderType postOrderType) {
 
         var board = boardService.getBoardById(boardId);
         var postPage = postRepository.getPostsOrderedBy(board, postCount, postOrderType);
 
-        return postPage.stream().map(SimplePostMapper.INSTANCE::toPostResponse).collect(Collectors.toList());
+        return postPage.stream().map(SimplePostMapper.INSTANCE::toPostResponse)
+                .collect(Collectors.toList());
     }
 
     //게시글의 작성자가 입력한 회원이 맞는지 확인
@@ -131,11 +135,13 @@ public class PostServiceImpl implements PostService {
                 .build()
                 .withPostCount();
 
-        if (postRequest.getHashTags() != null)
+        if (postRequest.getHashTags() != null) {
             post.setHashtags(postRequest.getHashTags());
+        }
 
-        if (!redisService.createPost(writer.getId()))
+        if (!redisService.createPost(writer.getId())) {
             throw new BadRequestException(ErrorMessage.POST_REPEAT_EXCEPTION);
+        }
 
         post = postRepository.save(post);
         boardService.increasePostCount(board);

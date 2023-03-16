@@ -21,7 +21,8 @@ import org.springframework.data.domain.AbstractAggregateRoot;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @MappedSuperclass
-public abstract class BaseAggregateRoot<A extends BaseAggregateRoot<A>> extends AbstractAggregateRoot<A> {
+public abstract class BaseAggregateRoot<A extends BaseAggregateRoot<A>> extends
+        AbstractAggregateRoot<A> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,7 +43,7 @@ public abstract class BaseAggregateRoot<A extends BaseAggregateRoot<A>> extends 
     @Column(name = "is_deleted")
     protected int isDeleted = 0;
 
-    public void delete(){
+    protected void delete() {
         this.isDeleted = 1;
     }
 }

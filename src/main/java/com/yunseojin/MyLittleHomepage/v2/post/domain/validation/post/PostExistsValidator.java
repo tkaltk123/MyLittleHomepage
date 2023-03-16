@@ -1,6 +1,6 @@
 package com.yunseojin.MyLittleHomepage.v2.post.domain.validation.post;
 
-import com.yunseojin.MyLittleHomepage.v2.post.domain.model.Post;
+import com.yunseojin.MyLittleHomepage.v2.post.domain.Post;
 import com.yunseojin.MyLittleHomepage.v2.post.domain.repository.PostRepositoryV2;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

@@ -2,11 +2,11 @@ package com.yunseojin.MyLittleHomepage.v2.member.application.service.command;
 
 import auth.service.JwtTokenProvider;
 import com.yunseojin.MyLittleHomepage.v2.contract.application.service.CommandHandler;
+import com.yunseojin.MyLittleHomepage.v2.member.Member;
+import com.yunseojin.MyLittleHomepage.v2.member.MemberService;
 import com.yunseojin.MyLittleHomepage.v2.member.application.dto.command.UpdateMemberCommand;
 import com.yunseojin.MyLittleHomepage.v2.member.application.mapper.MemberMapper;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.model.Member;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.repository.MemberRepository;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

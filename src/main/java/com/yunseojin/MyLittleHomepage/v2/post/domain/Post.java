@@ -1,4 +1,4 @@
-package com.yunseojin.MyLittleHomepage.v2.post.domain.model;
+package com.yunseojin.MyLittleHomepage.v2.post.domain;
 
 import com.yunseojin.MyLittleHomepage.v2.contract.domain.model.BaseAggregateRoot;
 import com.yunseojin.MyLittleHomepage.v2.post.domain.event.PostCreatedEvent;
@@ -44,7 +44,7 @@ public class Post extends BaseAggregateRoot<Post> {
     @OneToOne(mappedBy = "post", optional = false, cascade = CascadeType.PERSIST)
     private PostCountV2 postCount;
 
-    public Post(PostVo postVo) {
+    protected Post(PostVo postVo) {
         this.boardId = postVo.getBoardId();
         this.writerId = postVo.getWriterId();
         this.writerName = postVo.getWriterName();
@@ -55,10 +55,7 @@ public class Post extends BaseAggregateRoot<Post> {
         this.registerEvent(new PostCreatedEvent(this));
     }
 
-    public Post update(PostVo postVo) {
-        /*if (!writerId.equals(postVo.getWriterId())) {
-            throw new RuntimeException();
-        }*/
+    protected Post update(PostVo postVo) {
         this.writerName = postVo.getWriterName();
         updateTitle(postVo.getTitle());
         updateContent(postVo.getContent());
@@ -79,7 +76,7 @@ public class Post extends BaseAggregateRoot<Post> {
     }
 
     @Override
-    public void delete() {
+    protected void delete() {
         super.delete();
         this.registerEvent(new PostDeletedEvent(this));
     }

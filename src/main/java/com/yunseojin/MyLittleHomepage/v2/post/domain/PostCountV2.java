@@ -1,4 +1,4 @@
-package com.yunseojin.MyLittleHomepage.v2.post.domain.model;
+package com.yunseojin.MyLittleHomepage.v2.post.domain;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;

@@ -2,8 +2,8 @@ package com.yunseojin.MyLittleHomepage.v2.post.application.mapper;
 
 import com.yunseojin.MyLittleHomepage.v2.post.application.dto.PostCommand;
 import com.yunseojin.MyLittleHomepage.v2.post.application.dto.response.PostResponse;
-import com.yunseojin.MyLittleHomepage.v2.post.domain.model.Post;
-import com.yunseojin.MyLittleHomepage.v2.post.domain.model.PostVo;
+import com.yunseojin.MyLittleHomepage.v2.post.domain.Post;
+import com.yunseojin.MyLittleHomepage.v2.post.domain.PostVo;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "Spring")

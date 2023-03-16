@@ -10,7 +10,7 @@ import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
 import com.yunseojin.MyLittleHomepage.etc.service.RedisService;
 import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
 import com.yunseojin.MyLittleHomepage.post.service.InternalPostService;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.model.Member;
+import com.yunseojin.MyLittleHomepage.v2.member.Member;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -34,7 +34,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional
     @Override
-    public CommentResponse createComment(Long memberId, Long postId, CommentRequest commentRequest) {
+    public CommentResponse createComment(Long memberId, Long postId,
+            CommentRequest commentRequest) {
 
         var writer = memberService.getById(memberId);
         var post = postService.getPostById(postId);
@@ -80,8 +81,9 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Page<CommentResponse> getCommentList(Long postId, Integer page) {
 
-        if (page < 0)
+        if (page < 0) {
             throw new BadRequestException(ErrorMessage.PAGE_OUT_OF_RANGE_EXCEPTION);
+        }
 
         var post = postService.getPostById(postId);
         var pageable = PageRequest.of(page, 20);
@@ -92,13 +94,15 @@ public class CommentServiceImpl implements CommentService {
 
     private CommentEntity getParent(Long parentId) {
 
-        if (parentId == null)
+        if (parentId == null) {
             return null;
+        }
 
         var parent = commentService.getCommentById(parentId);
 
-        if (parent.getParent() != null)
+        if (parent.getParent() != null) {
             throw new BadRequestException(ErrorMessage.COMMENT_PARENT_EXCEPTION);
+        }
 
         return parent;
     }
@@ -117,8 +121,9 @@ public class CommentServiceImpl implements CommentService {
 
         comment.setParent(parent);
 
-        if (!redisService.createComment(writer.getId()))
+        if (!redisService.createComment(writer.getId())) {
             throw new BadRequestException(ErrorMessage.COMMENT_REPEAT_EXCEPTION);
+        }
 
         comment = commentRepository.save(comment);
         postService.increaseCommentCount(post.getId());

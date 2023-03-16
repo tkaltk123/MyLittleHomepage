@@ -6,6 +6,7 @@ import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
 import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
 import com.yunseojin.MyLittleHomepage.v2.config.web.resolver.LoginUser;
 import com.yunseojin.MyLittleHomepage.v2.contract.application.service.ApplicationService;
+import com.yunseojin.MyLittleHomepage.v2.member.Member;
 import com.yunseojin.MyLittleHomepage.v2.member.application.dto.command.CreateMemberCommand;
 import com.yunseojin.MyLittleHomepage.v2.member.application.dto.command.DeleteMemberCommand;
 import com.yunseojin.MyLittleHomepage.v2.member.application.dto.command.LoginCommand;
@@ -13,7 +14,6 @@ import com.yunseojin.MyLittleHomepage.v2.member.application.dto.command.RefreshC
 import com.yunseojin.MyLittleHomepage.v2.member.application.dto.command.UpdateMemberCommand;
 import com.yunseojin.MyLittleHomepage.v2.member.application.dto.query.GetMemberQuery;
 import com.yunseojin.MyLittleHomepage.v2.member.application.dto.response.MemberResponse;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.model.Member;
 import io.swagger.annotations.ApiOperation;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

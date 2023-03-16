@@ -1,4 +1,4 @@
-package com.yunseojin.MyLittleHomepage.v2.member.domain.model;
+package com.yunseojin.MyLittleHomepage.v2.member;
 
 import auth.domain.UserDetails;
 import auth.domain.UserRole;
@@ -40,7 +40,7 @@ public class Member extends BaseAggregateRoot<Member> implements UserDetails {
     @Column(name = "role", nullable = false)
     private UserRole role;
 
-    public Member(MemberVo memberVo) {
+    protected Member(MemberVo memberVo) {
         this.username = memberVo.getUsername();
         this.password = PasswordUtil.getHashedPassword(memberVo.getPassword());
         this.nickname = memberVo.getNickname();
@@ -48,7 +48,7 @@ public class Member extends BaseAggregateRoot<Member> implements UserDetails {
         registerEvent(new MemberCreatedEvent(this));
     }
 
-    public void update(MemberVo memberVo) {
+    protected void update(MemberVo memberVo) {
 
         updateUsername(memberVo.getUsername());
         updateNickname(memberVo.getNickname());
@@ -75,7 +75,7 @@ public class Member extends BaseAggregateRoot<Member> implements UserDetails {
     }
 
     @Override
-    public void delete() {
+    protected void delete() {
         super.delete();
         registerEvent(new MemberDeletedEvent(this));
     }

@@ -1,7 +1,7 @@
 package com.yunseojin.MyLittleHomepage.v2.board.application.mapper;
 
 import com.yunseojin.MyLittleHomepage.v2.board.application.dto.response.BoardResponse;
-import com.yunseojin.MyLittleHomepage.v2.board.domain.model.Board;
+import com.yunseojin.MyLittleHomepage.v2.board.domain.Board;
 import java.util.List;
 import org.mapstruct.Mapper;
 

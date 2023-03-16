@@ -1,4 +1,4 @@
-package com.yunseojin.MyLittleHomepage.v2.board.domain.model;
+package com.yunseojin.MyLittleHomepage.v2.board.domain;
 
 
 import com.yunseojin.MyLittleHomepage.v2.contract.domain.model.BaseAggregateRoot;

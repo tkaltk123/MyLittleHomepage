@@ -1,12 +1,10 @@
-package com.yunseojin.MyLittleHomepage.v2.post.domain.service;
+package com.yunseojin.MyLittleHomepage.v2.post.domain;
 
 import com.yunseojin.MyLittleHomepage.v2.contract.domain.validation.Create;
 import com.yunseojin.MyLittleHomepage.v2.contract.domain.validation.Update;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.model.Member;
+import com.yunseojin.MyLittleHomepage.v2.member.Member;
 import com.yunseojin.MyLittleHomepage.v2.post.domain.exception.PostErrorMessage;
 import com.yunseojin.MyLittleHomepage.v2.post.domain.exception.PostException;
-import com.yunseojin.MyLittleHomepage.v2.post.domain.model.Post;
-import com.yunseojin.MyLittleHomepage.v2.post.domain.model.PostVo;
 import com.yunseojin.MyLittleHomepage.v2.post.domain.validation.board.BoardExists;
 import com.yunseojin.MyLittleHomepage.v2.post.domain.validation.post.PostExists;
 import java.util.Objects;

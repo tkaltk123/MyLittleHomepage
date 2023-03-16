@@ -3,7 +3,7 @@ package com.yunseojin.MyLittleHomepage.comment.entity;
 import com.yunseojin.MyLittleHomepage.comment.dto.CommentRequest;
 import com.yunseojin.MyLittleHomepage.etc.entity.BaseEntity;
 import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.model.Member;
+import com.yunseojin.MyLittleHomepage.v2.member.Member;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -72,8 +72,9 @@ public class CommentEntity extends BaseEntity {
 
     public void setParent(CommentEntity parent) {
 
-        if (this.parent != null)
+        if (this.parent != null) {
             this.parent.getChildren().remove(this);
+        }
 
         this.parent = parent;
 
