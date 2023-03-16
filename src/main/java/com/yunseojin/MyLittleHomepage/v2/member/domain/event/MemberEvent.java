@@ -1,15 +1,14 @@
 package com.yunseojin.MyLittleHomepage.v2.member.domain.event;
 
 import com.yunseojin.MyLittleHomepage.v2.contract.domain.event.DomainEvent;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.model.Member;
 import lombok.Getter;
 
 @Getter
-public abstract class MemberEvent implements DomainEvent<Member> {
+public abstract class MemberEvent implements DomainEvent {
 
-    protected final Member aggregate;
+    protected final Object payload;
 
-    protected MemberEvent(Member member) {
-        this.aggregate = member;
+    protected MemberEvent(Object payload) {
+        this.payload = payload;
     }
 }

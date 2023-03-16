@@ -1,15 +1,14 @@
 package com.yunseojin.MyLittleHomepage.v2.post.domain.event;
 
 import com.yunseojin.MyLittleHomepage.v2.contract.domain.event.DomainEvent;
-import com.yunseojin.MyLittleHomepage.v2.post.domain.model.Post;
 import lombok.Getter;
 
 @Getter
-public abstract class PostEvent implements DomainEvent<Post> {
+public abstract class PostEvent implements DomainEvent {
 
-    protected final Post aggregate;
+    protected final Object payload;
 
-    protected PostEvent(Post post) {
-        this.aggregate = post;
+    protected PostEvent(Object payload) {
+        this.payload = payload;
     }
 }

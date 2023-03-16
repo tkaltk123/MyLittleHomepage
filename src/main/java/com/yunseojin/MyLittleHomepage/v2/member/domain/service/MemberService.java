@@ -1,12 +1,14 @@
 package com.yunseojin.MyLittleHomepage.v2.member.domain.service;
 
+import com.yunseojin.MyLittleHomepage.v2.contract.domain.validation.Create;
+import com.yunseojin.MyLittleHomepage.v2.contract.domain.validation.Update;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.exception.MemberErrorMessage;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.exception.MemberException;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.model.Member;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.model.MemberVo;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.validation.nickname.UniqueNickname;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.validation.password.PasswordConstraint;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.validation.username.UniqueUsername;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,13 +23,15 @@ public class MemberService {
 
     @UniqueUsername
     @UniqueNickname
-    public Member create(@PasswordConstraint MemberVo memberVo) {
+    @Validated(Create.class)
+    public Member create(@Valid MemberVo memberVo) {
         return new Member(memberVo);
     }
 
     @UniqueUsername
     @UniqueNickname
-    public Member update(Member member, @PasswordConstraint MemberVo memberVo,
+    @Validated(Update.class)
+    public Member update(Member member, @Valid MemberVo memberVo,
             String currentPassword) {
         validatePassword(member, currentPassword);
         member.update(memberVo);

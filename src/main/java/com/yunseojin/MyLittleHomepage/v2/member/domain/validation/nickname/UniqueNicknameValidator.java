@@ -2,7 +2,6 @@ package com.yunseojin.MyLittleHomepage.v2.member.domain.validation.nickname;
 
 import com.yunseojin.MyLittleHomepage.v2.member.domain.model.Member;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.repository.MemberRepository;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.validation.nickname.UniqueNickname;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import lombok.RequiredArgsConstructor;
