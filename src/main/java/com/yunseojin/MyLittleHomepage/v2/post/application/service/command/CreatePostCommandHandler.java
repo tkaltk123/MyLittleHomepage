@@ -6,6 +6,7 @@ import com.yunseojin.MyLittleHomepage.v2.post.application.dto.command.CreatePost
 import com.yunseojin.MyLittleHomepage.v2.post.application.dto.response.PostResponse;
 import com.yunseojin.MyLittleHomepage.v2.post.application.mapper.PostMapperV2;
 import com.yunseojin.MyLittleHomepage.v2.post.domain.model.Post;
+import com.yunseojin.MyLittleHomepage.v2.post.domain.model.PostVo;
 import com.yunseojin.MyLittleHomepage.v2.post.domain.repository.PostRepositoryV2;
 import com.yunseojin.MyLittleHomepage.v2.post.domain.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,8 @@ public class CreatePostCommandHandler implements CommandHandler<CreatePostComman
 
     @Override
     public PostResponse handle(CreatePostCommand command) {
-        var post = service.create(mapper.from(command));
+        PostVo from = mapper.from(command);
+        var post = service.create(from);
         post = repository.save(post);
         return toResponse(post);
     }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.yunseojin.MyLittleHomepage.v2.contract.application.dto.Command;
 import com.yunseojin.MyLittleHomepage.v2.member.application.dto.AuthOperation;
 import io.swagger.v3.oas.annotations.Hidden;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,10 +26,18 @@ public abstract class PostCommand<A> extends AuthOperation implements Command<A>
     private String content;
 
     public Long getWriterId() {
+
+        if (Objects.isNull(member)) {
+            return null;
+        }
         return member.getId();
     }
 
     public String getWriterName() {
+
+        if (Objects.isNull(member)) {
+            return null;
+        }
         return member.getNickname();
     }
 }

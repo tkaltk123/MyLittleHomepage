@@ -1,6 +1,10 @@
 package com.yunseojin.MyLittleHomepage.v2.post.domain.model;
 
 import com.yunseojin.MyLittleHomepage.v2.contract.domain.model.BaseAggregateRoot;
+import com.yunseojin.MyLittleHomepage.v2.post.domain.event.PostCreatedEvent;
+import com.yunseojin.MyLittleHomepage.v2.post.domain.event.PostDeletedEvent;
+import com.yunseojin.MyLittleHomepage.v2.post.domain.event.PostUpdatedEvent;
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -48,16 +52,35 @@ public class Post extends BaseAggregateRoot<Post> {
         this.content = postVo.getContent();
         this.postCount = new PostCountV2();
         this.postCount.setPost(this);
+        this.registerEvent(new PostCreatedEvent(this));
     }
 
     public Post update(PostVo postVo) {
-        if (!writerId.equals(postVo.getWriterId())) {
+        /*if (!writerId.equals(postVo.getWriterId())) {
             throw new RuntimeException();
-        }
+        }*/
         this.writerName = postVo.getWriterName();
-        this.title = postVo.getTitle();
-        this.content = postVo.getContent();
-
+        updateTitle(postVo.getTitle());
+        updateContent(postVo.getContent());
+        this.registerEvent(new PostUpdatedEvent(this));
         return this;
+    }
+
+    private void updateTitle(String title) {
+        if (Objects.nonNull(title)) {
+            this.title = title;
+        }
+    }
+
+    private void updateContent(String content) {
+        if (Objects.nonNull(content)) {
+            this.content = content;
+        }
+    }
+
+    @Override
+    public void delete() {
+        super.delete();
+        this.registerEvent(new PostDeletedEvent(this));
     }
 }

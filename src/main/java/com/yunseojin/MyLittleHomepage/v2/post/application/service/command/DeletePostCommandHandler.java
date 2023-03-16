@@ -20,7 +20,7 @@ public class DeletePostCommandHandler implements CommandHandler<DeletePostComman
     @Override
     public Void handle(DeletePostCommand command) {
         var post = repository.getById(command.getPostId());
-        service.delete(post);
+        service.delete(post, command.getMember());
         repository.delete(post);
         return null;
     }

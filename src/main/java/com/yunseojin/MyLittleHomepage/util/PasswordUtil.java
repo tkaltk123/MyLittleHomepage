@@ -18,7 +18,6 @@ public class PasswordUtil {
     }
 
     public static boolean equals(String password, String dbPassword) {
-
         return password != null && BCrypt.checkpw(password, dbPassword);
     }
 }

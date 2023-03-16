@@ -82,7 +82,7 @@ public class Member extends BaseAggregateRoot<Member> implements UserDetails {
 
     @Override
     public boolean isWrongPassword(String password) {
-        return PasswordUtil.equals(password, this.password);
+        return !PasswordUtil.equals(password, this.password);
     }
 
     @Override

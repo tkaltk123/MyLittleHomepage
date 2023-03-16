@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/v2/posts")
@@ -46,7 +47,7 @@ public class ApiPostControllerV2 {
     @DeleteMapping("/{post_id}")
     @ApiOperation(value = "게시글 삭제", notes = "게시글을 삭제합니다.")
     public ResponseEntity<Void> delete(
-            @LoginUser Member member,
+            @ApiIgnore @LoginUser Member member,
             @PathVariable("post_id") Long postId) {
 
         var command = new DeletePostCommand();
@@ -60,7 +61,7 @@ public class ApiPostControllerV2 {
     @PatchMapping("/{post_id}")
     @ApiOperation(value = "게시글 수정", notes = "게시글을 수정합니다.")
     public ResponseEntity<PostResponse> update(
-            @LoginUser Member member,
+            @ApiIgnore @LoginUser Member member,
             @PathVariable("post_id") Long postId,
             @RequestBody UpdatePostCommand command) {
 
@@ -93,7 +94,7 @@ public class ApiPostControllerV2 {
     @PostMapping("/boards/{board_id}")
     @ApiOperation(value = "게시글 작성", notes = "게시판에 게시글을 작성합니다.")
     public ResponseEntity<PostResponse> create(
-            @LoginUser Member member,
+            @ApiIgnore @LoginUser Member member,
             @PathVariable(value = "board_id") Long boardId,
             @RequestBody CreatePostCommand command) {
 
