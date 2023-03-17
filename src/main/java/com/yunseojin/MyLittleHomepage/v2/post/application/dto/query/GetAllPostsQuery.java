@@ -19,10 +19,10 @@ public class GetAllPostsQuery implements PostSearchQuery {
     @Setter
     private Long boardId;
 
-    private Integer page;
+    private Integer page = 0;
 
-    private PostSearchType postSearchType;
+    private PostSearchType postSearchType = PostSearchType.TITLE;
 
-    private String keyword;
+    private String keyword = "";
 
 }

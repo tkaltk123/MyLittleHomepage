@@ -13,7 +13,7 @@ import com.yunseojin.MyLittleHomepage.v2.member.application.dto.command.RefreshC
 import com.yunseojin.MyLittleHomepage.v2.member.application.dto.command.UpdateMemberCommand;
 import com.yunseojin.MyLittleHomepage.v2.member.application.dto.query.GetMemberQuery;
 import com.yunseojin.MyLittleHomepage.v2.member.application.dto.response.MemberResponse;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.Member;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.query.entity.QueriedMember;
 import io.swagger.annotations.ApiOperation;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -50,19 +50,19 @@ public class ApiMemberController {
     @PatchMapping("/modify")
     @ApiOperation(value = "정보 수정", notes = "회원 정보를 수정합니다.")
     public ResponseEntity<String> modify(
-            @ApiIgnore @LoginUser Member member,
+            @ApiIgnore @LoginUser QueriedMember member,
             @RequestBody UpdateMemberCommand command) {
-        command.setMember(member);
+        command.setMemberId(member.getId());
         return new ResponseEntity<>(applicationService.executeCommand(command), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete")
     @ApiOperation(value = "회원 탈퇴", notes = "회원 정보를 삭제합니다")
     public ResponseEntity<Void> delete(
-            @ApiIgnore @LoginUser Member member,
+            @ApiIgnore @LoginUser QueriedMember member,
             @RequestBody DeleteMemberCommand command) {
 
-        command.setMember(member);
+        command.setMemberId(member.getId());
 
         return new ResponseEntity<>(applicationService.executeCommand(command), HttpStatus.OK);
     }
@@ -101,7 +101,7 @@ public class ApiMemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<MemberResponse> me(@ApiIgnore @LoginUser Member member) {
+    public ResponseEntity<MemberResponse> me(@ApiIgnore @LoginUser QueriedMember member) {
         GetMemberQuery query = new GetMemberQuery();
         query.setMember(member);
         return ResponseEntity.ok(applicationService.executeQuery(query));

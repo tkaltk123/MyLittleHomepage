@@ -2,9 +2,8 @@ package com.yunseojin.MyLittleHomepage.v2.member.application.service.command;
 
 import com.yunseojin.MyLittleHomepage.v2.contract.application.service.CommandHandler;
 import com.yunseojin.MyLittleHomepage.v2.member.application.dto.command.DeleteMemberCommand;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.Member;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.MemberService;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.repository.MemberRepository;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.command.aggregate.MemberService;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.command.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +19,7 @@ public class DeleteMemberCommandHandler implements CommandHandler<DeleteMemberCo
 
     @Override
     public Void handle(DeleteMemberCommand command) {
-        Member member = command.getMember();
+        var member = repository.getById(command.getMemberId());
         service.delete(member, command.getCurrentPassword());
         repository.delete(member);
         return null;

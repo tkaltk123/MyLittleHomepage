@@ -5,9 +5,9 @@ import auth.service.JwtTokenProvider;
 import com.yunseojin.MyLittleHomepage.v2.contract.application.service.CommandHandler;
 import com.yunseojin.MyLittleHomepage.v2.member.application.dto.command.CreateMemberCommand;
 import com.yunseojin.MyLittleHomepage.v2.member.application.mapper.MemberMapper;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.Member;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.MemberService;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.repository.MemberRepository;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.command.aggregate.Member;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.command.aggregate.MemberService;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.command.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,12 +27,12 @@ public class CreateMemberCommandHandler implements CommandHandler<CreateMemberCo
 
     @Override
     public Token handle(CreateMemberCommand command) {
-        var member = repository.save(createMember(command));
-        var token = tokenProvider.createToken(member);
-        return new Token(token.getAccessToken(), token.getRefreshToken());
+        var member = createMember(command);
+        return tokenProvider.createToken(member);
     }
 
     private Member createMember(CreateMemberCommand command) {
-        return service.create(mapper.from(command));
+        var member = service.create(mapper.from(command));
+        return repository.save(member);
     }
 }

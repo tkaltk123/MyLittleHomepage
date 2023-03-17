@@ -15,10 +15,10 @@ public class GetPostSearchQuery implements PostSearchQuery {
 
     private Long boardId;
 
-    private PostSearchType postSearchType;
+    private PostSearchType postSearchType = PostSearchType.TITLE;
 
-    private String keyword;
+    private String keyword = "";
 
-    private Boolean isAsc;
+    private Boolean isAsc = false;
 
 }

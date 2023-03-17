@@ -4,7 +4,7 @@ import com.yunseojin.MyLittleHomepage.board.entity.BoardEntity;
 import com.yunseojin.MyLittleHomepage.etc.entity.BaseEntity;
 import com.yunseojin.MyLittleHomepage.hashtag.entity.HashtagEntity;
 import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.Member;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.command.aggregate.Member;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

@@ -17,7 +17,6 @@ public class LoginCommandHandler implements CommandHandler<LoginCommand, Token> 
 
     @Override
     public Token handle(LoginCommand command) {
-        var token = tokenProvider.login(command.getUsername(), command.getPassword());
-        return new Token(token.getAccessToken(), token.getRefreshToken());
+        return tokenProvider.login(command.getUsername(), command.getPassword());
     }
 }

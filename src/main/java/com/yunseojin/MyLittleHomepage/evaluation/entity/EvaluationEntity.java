@@ -2,7 +2,7 @@ package com.yunseojin.MyLittleHomepage.evaluation.entity;
 
 import com.yunseojin.MyLittleHomepage.etc.entity.BaseEntity;
 import com.yunseojin.MyLittleHomepage.etc.enums.EvaluationType;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.Member;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.command.aggregate.Member;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;

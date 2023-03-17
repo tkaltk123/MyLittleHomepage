@@ -3,8 +3,8 @@ package com.yunseojin.MyLittleHomepage.v2.post.application.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.yunseojin.MyLittleHomepage.v2.contract.application.dto.Command;
 import com.yunseojin.MyLittleHomepage.v2.member.application.dto.AuthOperation;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.query.entity.QueriedMember;
 import io.swagger.v3.oas.annotations.Hidden;
-import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,23 +21,22 @@ public abstract class PostCommand<A> extends AuthOperation implements Command<A>
     @Setter
     private Long boardId;
 
+    @JsonIgnore
+    @Hidden
+    @Setter
+    private String writerName;
+
     private String title;
 
     private String content;
 
     public Long getWriterId() {
 
-        if (Objects.isNull(member)) {
-            return null;
-        }
-        return member.getId();
+        return getMemberId();
     }
 
-    public String getWriterName() {
-
-        if (Objects.isNull(member)) {
-            return null;
-        }
-        return member.getNickname();
+    public void setMember(QueriedMember member) {
+        setMemberId(member.getId());
+        setWriterName(member.getNickname());
     }
 }

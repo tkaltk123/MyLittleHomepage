@@ -3,7 +3,7 @@ package com.yunseojin.MyLittleHomepage.v2.controller.post;
 import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
 import com.yunseojin.MyLittleHomepage.v2.config.web.resolver.LoginUser;
 import com.yunseojin.MyLittleHomepage.v2.contract.application.service.ApplicationService;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.Member;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.query.entity.QueriedMember;
 import com.yunseojin.MyLittleHomepage.v2.post.application.dto.command.CreatePostCommand;
 import com.yunseojin.MyLittleHomepage.v2.post.application.dto.command.DeletePostCommand;
 import com.yunseojin.MyLittleHomepage.v2.post.application.dto.command.UpdatePostCommand;
@@ -47,11 +47,11 @@ public class ApiPostControllerV2 {
     @DeleteMapping("/{post_id}")
     @ApiOperation(value = "게시글 삭제", notes = "게시글을 삭제합니다.")
     public ResponseEntity<Void> delete(
-            @ApiIgnore @LoginUser Member member,
+            @ApiIgnore @LoginUser QueriedMember member,
             @PathVariable("post_id") Long postId) {
 
         var command = new DeletePostCommand();
-        command.setMember(member);
+        command.setMemberId(member.getId());
         command.setPostId(postId);
 
         return ResponseEntity.ok(applicationService.executeCommand(command));
@@ -61,7 +61,7 @@ public class ApiPostControllerV2 {
     @PatchMapping("/{post_id}")
     @ApiOperation(value = "게시글 수정", notes = "게시글을 수정합니다.")
     public ResponseEntity<PostResponse> update(
-            @ApiIgnore @LoginUser Member member,
+            @ApiIgnore @LoginUser QueriedMember member,
             @PathVariable("post_id") Long postId,
             @RequestBody UpdatePostCommand command) {
 
@@ -94,7 +94,7 @@ public class ApiPostControllerV2 {
     @PostMapping("/boards/{board_id}")
     @ApiOperation(value = "게시글 작성", notes = "게시판에 게시글을 작성합니다.")
     public ResponseEntity<PostResponse> create(
-            @ApiIgnore @LoginUser Member member,
+            @ApiIgnore @LoginUser QueriedMember member,
             @PathVariable(value = "board_id") Long boardId,
             @RequestBody CreatePostCommand command) {
 

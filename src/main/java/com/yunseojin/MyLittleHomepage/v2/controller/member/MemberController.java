@@ -11,7 +11,7 @@ import com.yunseojin.MyLittleHomepage.v2.member.application.dto.MemberTokenDto;
 import com.yunseojin.MyLittleHomepage.v2.member.application.dto.command.CreateMemberCommand;
 import com.yunseojin.MyLittleHomepage.v2.member.application.dto.command.DeleteMemberCommand;
 import com.yunseojin.MyLittleHomepage.v2.member.application.dto.command.UpdateMemberCommand;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.Member;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.query.entity.QueriedMember;
 import java.util.Objects;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -47,7 +47,7 @@ public class MemberController {
 
     @GetMapping("/login")
     public String loginFrom(
-            @LoginUser Member member,
+            @LoginUser QueriedMember member,
             Model model,
             HttpServletRequest request) {
 
@@ -88,7 +88,7 @@ public class MemberController {
 
     @GetMapping("/register")
     public String registerForm(
-            @LoginUser Member member,
+            @LoginUser QueriedMember member,
             Model model) {
 
         if (Objects.isNull(member)) {
@@ -117,7 +117,7 @@ public class MemberController {
 
     @GetMapping("/modify")
     public String modifyForm(
-            @LoginUser Member member,
+            @LoginUser QueriedMember member,
             Model model) {
 
         if (Objects.isNull(member)) {
@@ -144,11 +144,11 @@ public class MemberController {
     @Login
     @PostMapping("/modify")
     public String modify(
-            @LoginUser Member member,
+            @LoginUser QueriedMember member,
             @Validated(ValidationGroups.Update.class) UpdateMemberCommand command,
             HttpServletResponse response) {
 
-        command.setMember(member);
+        command.setMemberId(member.getId());
         var token = applicationService.executeCommand(command);
         response.addCookie(
                 CookieUtil.createTokenCookie(accessTokenName, refreshTokenRemainHour, token));
@@ -159,10 +159,10 @@ public class MemberController {
     @Login
     @PostMapping("/delete")
     public String delete(
-            @LoginUser Member member,
+            @LoginUser QueriedMember member,
             DeleteMemberCommand command) {
 
-        command.setMember(member);
+        command.setMemberId(member.getId());
         applicationService.executeCommand(command);
 
         return "redirect:/";
