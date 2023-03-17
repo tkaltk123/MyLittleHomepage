@@ -1,4 +1,4 @@
-package com.yunseojin.MyLittleHomepage.v2.contract.domain.model;
+package com.yunseojin.MyLittleHomepage.v2.contract.domain;
 
 import java.util.Date;
 import javax.persistence.Basic;

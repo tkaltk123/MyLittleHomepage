@@ -1,7 +1,7 @@
 package com.yunseojin.MyLittleHomepage.v2.board.domain;
 
 
-import com.yunseojin.MyLittleHomepage.v2.contract.domain.model.BaseAggregateRoot;
+import com.yunseojin.MyLittleHomepage.v2.contract.domain.BaseAggregateRoot;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;

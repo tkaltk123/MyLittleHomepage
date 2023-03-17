@@ -10,7 +10,7 @@ import com.yunseojin.MyLittleHomepage.evaluation.repository.CommentEvaluationRep
 import com.yunseojin.MyLittleHomepage.evaluation.repository.PostEvaluationRepository;
 import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
 import com.yunseojin.MyLittleHomepage.post.service.InternalPostService;
-import com.yunseojin.MyLittleHomepage.v2.member.Member;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.Member;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

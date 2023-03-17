@@ -1,4 +1,4 @@
-package com.yunseojin.MyLittleHomepage.v2.member;
+package com.yunseojin.MyLittleHomepage.v2.member.domain;
 
 import com.yunseojin.MyLittleHomepage.v2.contract.domain.validation.Create;
 import com.yunseojin.MyLittleHomepage.v2.contract.domain.validation.Update;

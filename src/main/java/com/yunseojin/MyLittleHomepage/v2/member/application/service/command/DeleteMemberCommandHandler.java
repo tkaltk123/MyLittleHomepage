@@ -1,9 +1,9 @@
 package com.yunseojin.MyLittleHomepage.v2.member.application.service.command;
 
 import com.yunseojin.MyLittleHomepage.v2.contract.application.service.CommandHandler;
-import com.yunseojin.MyLittleHomepage.v2.member.Member;
-import com.yunseojin.MyLittleHomepage.v2.member.MemberService;
 import com.yunseojin.MyLittleHomepage.v2.member.application.dto.command.DeleteMemberCommand;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.Member;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.MemberService;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

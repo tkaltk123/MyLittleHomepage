@@ -2,7 +2,7 @@ package com.yunseojin.MyLittleHomepage.v2.post.domain;
 
 import com.yunseojin.MyLittleHomepage.v2.contract.domain.validation.Create;
 import com.yunseojin.MyLittleHomepage.v2.contract.domain.validation.Update;
-import com.yunseojin.MyLittleHomepage.v2.member.Member;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.Member;
 import com.yunseojin.MyLittleHomepage.v2.post.domain.exception.PostErrorMessage;
 import com.yunseojin.MyLittleHomepage.v2.post.domain.exception.PostException;
 import com.yunseojin.MyLittleHomepage.v2.post.domain.validation.board.BoardExists;

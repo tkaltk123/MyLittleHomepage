@@ -3,7 +3,7 @@ package com.yunseojin.MyLittleHomepage.v2.controller.post;
 import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
 import com.yunseojin.MyLittleHomepage.v2.config.web.resolver.LoginUser;
 import com.yunseojin.MyLittleHomepage.v2.contract.application.service.ApplicationService;
-import com.yunseojin.MyLittleHomepage.v2.member.Member;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.Member;
 import com.yunseojin.MyLittleHomepage.v2.post.application.dto.command.CreatePostCommand;
 import com.yunseojin.MyLittleHomepage.v2.post.application.dto.command.DeletePostCommand;
 import com.yunseojin.MyLittleHomepage.v2.post.application.dto.command.UpdatePostCommand;

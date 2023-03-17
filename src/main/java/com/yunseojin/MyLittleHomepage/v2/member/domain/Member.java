@@ -1,9 +1,9 @@
-package com.yunseojin.MyLittleHomepage.v2.member;
+package com.yunseojin.MyLittleHomepage.v2.member.domain;
 
 import auth.domain.UserDetails;
 import auth.domain.UserRole;
 import com.yunseojin.MyLittleHomepage.util.PasswordUtil;
-import com.yunseojin.MyLittleHomepage.v2.contract.domain.model.BaseAggregateRoot;
+import com.yunseojin.MyLittleHomepage.v2.contract.domain.BaseAggregateRoot;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.event.MemberCreatedEvent;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.event.MemberDeletedEvent;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.event.MemberUpdatedEvent;

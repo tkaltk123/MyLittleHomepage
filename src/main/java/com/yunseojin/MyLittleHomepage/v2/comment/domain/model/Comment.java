@@ -1,6 +1,6 @@
 package com.yunseojin.MyLittleHomepage.v2.comment.domain.model;
 
-import com.yunseojin.MyLittleHomepage.v2.contract.domain.model.BaseAggregateRoot;
+import com.yunseojin.MyLittleHomepage.v2.contract.domain.BaseAggregateRoot;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;

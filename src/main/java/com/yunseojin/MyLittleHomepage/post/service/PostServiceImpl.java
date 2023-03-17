@@ -14,7 +14,7 @@ import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
 import com.yunseojin.MyLittleHomepage.post.mapper.PostMapper;
 import com.yunseojin.MyLittleHomepage.post.mapper.SimplePostMapper;
 import com.yunseojin.MyLittleHomepage.post.repository.PostRepository;
-import com.yunseojin.MyLittleHomepage.v2.member.Member;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.Member;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.repository.MemberRepository;
 import java.util.List;
 import java.util.stream.Collectors;
