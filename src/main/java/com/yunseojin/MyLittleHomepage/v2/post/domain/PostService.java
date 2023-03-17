@@ -7,6 +7,7 @@ import com.yunseojin.MyLittleHomepage.v2.post.domain.exception.PostErrorMessage;
 import com.yunseojin.MyLittleHomepage.v2.post.domain.exception.PostException;
 import com.yunseojin.MyLittleHomepage.v2.post.domain.validation.board.BoardExists;
 import com.yunseojin.MyLittleHomepage.v2.post.domain.validation.post.PostExists;
+import com.yunseojin.MyLittleHomepage.v2.post.domain.vo.PostVo;
 import java.util.Objects;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;

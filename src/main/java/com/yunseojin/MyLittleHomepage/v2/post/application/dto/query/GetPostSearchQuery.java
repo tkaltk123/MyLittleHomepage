@@ -1,17 +1,15 @@
 package com.yunseojin.MyLittleHomepage.v2.post.application.dto.query;
 
 import com.yunseojin.MyLittleHomepage.etc.enums.PostSearchType;
-import com.yunseojin.MyLittleHomepage.v2.contract.application.dto.Query;
-import com.yunseojin.MyLittleHomepage.v2.post.application.dto.response.PostResponse;
+import com.yunseojin.MyLittleHomepage.v2.post.application.dto.PostSearchQuery;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.domain.Page;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetPostSearchQuery implements Query<Page<PostResponse>> {
+public class GetPostSearchQuery implements PostSearchQuery {
 
     private Long postId;
 

@@ -4,6 +4,7 @@ import com.yunseojin.MyLittleHomepage.v2.contract.domain.BaseAggregateRoot;
 import com.yunseojin.MyLittleHomepage.v2.post.domain.event.PostCreatedEvent;
 import com.yunseojin.MyLittleHomepage.v2.post.domain.event.PostDeletedEvent;
 import com.yunseojin.MyLittleHomepage.v2.post.domain.event.PostUpdatedEvent;
+import com.yunseojin.MyLittleHomepage.v2.post.domain.vo.PostVo;
 import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;

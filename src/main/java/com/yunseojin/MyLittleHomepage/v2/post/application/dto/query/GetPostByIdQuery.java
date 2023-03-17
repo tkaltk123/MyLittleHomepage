@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.yunseojin.MyLittleHomepage.v2.contract.application.dto.Query;
 import com.yunseojin.MyLittleHomepage.v2.post.application.dto.response.PostResponse;
 import io.swagger.v3.oas.annotations.Hidden;
+import lombok.Getter;
 import lombok.Setter;
 
+@Getter
 public class GetPostByIdQuery implements Query<PostResponse> {
 
 
