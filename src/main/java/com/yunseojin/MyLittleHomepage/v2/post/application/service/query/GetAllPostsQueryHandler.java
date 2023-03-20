@@ -4,7 +4,7 @@ import com.yunseojin.MyLittleHomepage.v2.contract.application.service.QueryHandl
 import com.yunseojin.MyLittleHomepage.v2.post.application.dto.query.GetAllPostsQuery;
 import com.yunseojin.MyLittleHomepage.v2.post.application.dto.response.PostResponse;
 import com.yunseojin.MyLittleHomepage.v2.post.application.mapper.QueriedPostMapper;
-import com.yunseojin.MyLittleHomepage.v2.post.domain.query.repository.SearchedPostRepository;
+import com.yunseojin.MyLittleHomepage.v2.post.domain.query.repository.QueriedPostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class GetAllPostsQueryHandler implements QueryHandler<GetAllPostsQuery, Page<PostResponse>> {
 
-    private final SearchedPostRepository repository;
+    private final QueriedPostRepository repository;
 
     private final QueriedPostMapper mapper;
 

@@ -1,6 +1,6 @@
 package com.yunseojin.MyLittleHomepage.v2.member.domain.command.exception;
 
-import com.yunseojin.MyLittleHomepage.v2.contract.domain.exception.ErrorMessage;
+import com.yunseojin.MyLittleHomepage.v2.contract.domain.command.exception.ErrorMessage;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 

@@ -1,6 +1,6 @@
 package com.yunseojin.MyLittleHomepage.v2.post.domain.command.aggregete;
 
-import com.yunseojin.MyLittleHomepage.v2.contract.domain.BaseAggregateRoot;
+import com.yunseojin.MyLittleHomepage.v2.contract.domain.command.aggregate.BaseAggregateRoot;
 import com.yunseojin.MyLittleHomepage.v2.post.domain.command.event.PostCreatedEvent;
 import com.yunseojin.MyLittleHomepage.v2.post.domain.command.event.PostDeletedEvent;
 import com.yunseojin.MyLittleHomepage.v2.post.domain.command.event.PostUpdatedEvent;

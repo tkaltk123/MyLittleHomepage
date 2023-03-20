@@ -1,4 +1,4 @@
-package com.yunseojin.MyLittleHomepage.v2.comment.domain.model;
+package com.yunseojin.MyLittleHomepage.v2.comment.domain.query.entity;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -9,29 +9,25 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "comment_counts")
-public class CommentCountV2 {
+@Table(name = "post_counts")
+public class QueriedCommentCount {
 
     @Id
     private Long id;
 
     @MapsId
-    @Setter
     @OneToOne
-    private Comment comment;
+    private QueriedComment comment;
 
     @Basic
-    @Setter
     @Column(name = "like_count", nullable = false)
     private Integer likeCount = 0;
 
     @Basic
-    @Setter
     @Column(name = "dislike_count", nullable = false)
     private Integer dislikeCount = 0;
 }

@@ -3,7 +3,7 @@ package com.yunseojin.MyLittleHomepage.v2.member.domain.query.entity;
 import auth.domain.UserDetails;
 import auth.domain.UserRole;
 import com.yunseojin.MyLittleHomepage.util.PasswordUtil;
-import com.yunseojin.MyLittleHomepage.v2.contract.domain.BaseEntity;
+import com.yunseojin.MyLittleHomepage.v2.contract.domain.query.entity.BaseEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;

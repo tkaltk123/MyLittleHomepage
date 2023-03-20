@@ -1,4 +1,4 @@
-package com.yunseojin.MyLittleHomepage.v2.contract.domain.exception;
+package com.yunseojin.MyLittleHomepage.v2.contract.domain.command.exception;
 
 import org.springframework.http.HttpStatus;
 

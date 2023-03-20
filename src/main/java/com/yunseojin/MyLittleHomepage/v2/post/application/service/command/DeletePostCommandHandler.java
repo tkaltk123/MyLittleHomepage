@@ -1,7 +1,6 @@
 package com.yunseojin.MyLittleHomepage.v2.post.application.service.command;
 
 import com.yunseojin.MyLittleHomepage.v2.contract.application.service.CommandHandler;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.command.repository.MemberRepository;
 import com.yunseojin.MyLittleHomepage.v2.post.application.dto.command.DeletePostCommand;
 import com.yunseojin.MyLittleHomepage.v2.post.domain.command.aggregete.PostService;
 import com.yunseojin.MyLittleHomepage.v2.post.domain.command.repository.PostRepositoryV2;
@@ -17,13 +16,11 @@ public class DeletePostCommandHandler implements CommandHandler<DeletePostComman
     private final PostService service;
 
     private final PostRepositoryV2 repository;
-    private final MemberRepository memberRepository;
 
     @Override
     public Void handle(DeletePostCommand command) {
         var post = repository.getById(command.getPostId());
-        var member = memberRepository.getById(command.getMemberId());
-        service.delete(post, member);
+        service.delete(post, command.getMemberId());
         repository.delete(post);
         return null;
     }

@@ -20,12 +20,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
 
-public class DslSearchedPostRepositoryImpl extends QuerydslRepositorySupport implements
-        DslSearchedPostRepository {
+public class DslQueriedPostRepositoryImpl extends QuerydslRepositorySupport implements
+        DslQueriedPostRepository {
 
     private static final QQueriedPost p = QQueriedPost.queriedPost;
 
-    public DslSearchedPostRepositoryImpl() {
+    public DslQueriedPostRepositoryImpl() {
         super(QueriedPost.class);
     }
 
@@ -36,7 +36,6 @@ public class DslSearchedPostRepositoryImpl extends QuerydslRepositorySupport imp
         BooleanExpression condition = getCondition(postSearchVo);
         var content = getPostList(condition, false, pageable);
         var countQuery = from(p).select(p).where(condition);
-
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
     }
 

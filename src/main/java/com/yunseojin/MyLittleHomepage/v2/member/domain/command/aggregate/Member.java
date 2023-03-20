@@ -3,7 +3,7 @@ package com.yunseojin.MyLittleHomepage.v2.member.domain.command.aggregate;
 import auth.domain.UserDetails;
 import auth.domain.UserRole;
 import com.yunseojin.MyLittleHomepage.util.PasswordUtil;
-import com.yunseojin.MyLittleHomepage.v2.contract.domain.BaseAggregateRoot;
+import com.yunseojin.MyLittleHomepage.v2.contract.domain.command.aggregate.BaseAggregateRoot;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.command.event.MemberCreatedEvent;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.command.event.MemberDeletedEvent;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.command.event.MemberUpdatedEvent;

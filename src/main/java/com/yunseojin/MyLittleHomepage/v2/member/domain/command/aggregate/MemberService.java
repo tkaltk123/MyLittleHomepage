@@ -1,7 +1,7 @@
 package com.yunseojin.MyLittleHomepage.v2.member.domain.command.aggregate;
 
-import com.yunseojin.MyLittleHomepage.v2.contract.domain.validation.Create;
-import com.yunseojin.MyLittleHomepage.v2.contract.domain.validation.Update;
+import com.yunseojin.MyLittleHomepage.v2.contract.domain.command.validation.Create;
+import com.yunseojin.MyLittleHomepage.v2.contract.domain.command.validation.Update;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.command.exception.MemberErrorMessage;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.command.exception.MemberException;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.command.validation.nickname.UniqueNickname;

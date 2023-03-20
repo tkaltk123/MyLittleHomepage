@@ -1,4 +1,4 @@
-package com.yunseojin.MyLittleHomepage.v2.contract.domain;
+package com.yunseojin.MyLittleHomepage.v2.contract.domain.query.entity;
 
 import java.util.Date;
 import javax.persistence.Basic;

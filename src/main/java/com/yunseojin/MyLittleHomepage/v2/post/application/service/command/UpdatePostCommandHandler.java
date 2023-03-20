@@ -28,8 +28,8 @@ public class UpdatePostCommandHandler implements CommandHandler<UpdatePostComman
     @Override
     public PostResponse handle(UpdatePostCommand command) {
         var post = repository.getById(command.getPostId());
-        post = repository.save(service.update(post, mapper.from(command)));
-        return toResponse(post);
+        post = service.update(post, mapper.from(command));
+        return toResponse(repository.save(post));
     }
 
     private PostResponse toResponse(Post post) {

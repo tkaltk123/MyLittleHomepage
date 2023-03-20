@@ -8,7 +8,6 @@ import com.yunseojin.MyLittleHomepage.v2.post.application.mapper.PostMapperV2;
 import com.yunseojin.MyLittleHomepage.v2.post.domain.command.aggregete.Post;
 import com.yunseojin.MyLittleHomepage.v2.post.domain.command.aggregete.PostService;
 import com.yunseojin.MyLittleHomepage.v2.post.domain.command.repository.PostRepositoryV2;
-import com.yunseojin.MyLittleHomepage.v2.post.domain.command.vo.PostVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,10 +27,8 @@ public class CreatePostCommandHandler implements CommandHandler<CreatePostComman
 
     @Override
     public PostResponse handle(CreatePostCommand command) {
-        PostVo from = mapper.from(command);
-        var post = service.create(from);
-        post = repository.save(post);
-        return toResponse(post);
+        var post = service.create(mapper.from(command));
+        return toResponse(repository.save(post));
     }
 
     private PostResponse toResponse(Post post) {

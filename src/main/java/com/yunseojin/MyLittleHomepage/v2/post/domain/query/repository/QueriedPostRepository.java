@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface SearchedPostRepository extends JpaRepository<QueriedPost, Long>,
-        DslSearchedPostRepository {
+public interface QueriedPostRepository extends JpaRepository<QueriedPost, Long>,
+        DslQueriedPostRepository {
 
 }

@@ -1,8 +1,7 @@
 package com.yunseojin.MyLittleHomepage.v2.post.domain.command.aggregete;
 
-import com.yunseojin.MyLittleHomepage.v2.contract.domain.validation.Create;
-import com.yunseojin.MyLittleHomepage.v2.contract.domain.validation.Update;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.command.aggregate.Member;
+import com.yunseojin.MyLittleHomepage.v2.contract.domain.command.validation.Create;
+import com.yunseojin.MyLittleHomepage.v2.contract.domain.command.validation.Update;
 import com.yunseojin.MyLittleHomepage.v2.post.domain.command.exception.PostErrorMessage;
 import com.yunseojin.MyLittleHomepage.v2.post.domain.command.exception.PostException;
 import com.yunseojin.MyLittleHomepage.v2.post.domain.command.validation.board.BoardExists;
@@ -12,11 +11,9 @@ import java.util.Objects;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
-@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -42,9 +39,9 @@ public class PostService {
         }
     }
 
-    public void delete(@PostExists Post post, Member member) {
+    public void delete(@PostExists Post post, Long memberId) {
 
-        validateWriter(post.getWriterId(), member.getId());
+        validateWriter(post.getWriterId(), memberId);
         post.delete();
     }
 }
