@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetPostSearchQuery implements PostSearchQuery {
+public class GetPostsBySearchQuery implements PostSearchQuery {
 
     private Long postId;
 

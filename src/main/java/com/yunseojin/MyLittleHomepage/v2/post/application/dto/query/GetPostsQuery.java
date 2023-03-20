@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetAllPostsQuery implements PostSearchQuery {
+public class GetPostsQuery implements PostSearchQuery {
 
     @JsonIgnore
     @Hidden

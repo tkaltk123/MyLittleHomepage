@@ -7,9 +7,9 @@ import com.yunseojin.MyLittleHomepage.v2.member.domain.query.entity.QueriedMembe
 import com.yunseojin.MyLittleHomepage.v2.post.application.dto.command.CreatePostCommand;
 import com.yunseojin.MyLittleHomepage.v2.post.application.dto.command.DeletePostCommand;
 import com.yunseojin.MyLittleHomepage.v2.post.application.dto.command.UpdatePostCommand;
-import com.yunseojin.MyLittleHomepage.v2.post.application.dto.query.GetAllPostsQuery;
 import com.yunseojin.MyLittleHomepage.v2.post.application.dto.query.GetPostByIdQuery;
-import com.yunseojin.MyLittleHomepage.v2.post.application.dto.query.GetPostSearchQuery;
+import com.yunseojin.MyLittleHomepage.v2.post.application.dto.query.GetPostsBySearchQuery;
+import com.yunseojin.MyLittleHomepage.v2.post.application.dto.query.GetPostsQuery;
 import com.yunseojin.MyLittleHomepage.v2.post.application.dto.response.PostResponse;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -75,7 +75,7 @@ public class ApiPostControllerV2 {
     @ApiOperation(value = "게시글 목록 조회", notes = "게시판의 게시글을 조회합니다.")
     public ResponseEntity<Page<PostResponse>> getPosts(
             @PathVariable("board_id") Long boardId,
-            @ModelAttribute GetAllPostsQuery query) {
+            @ModelAttribute GetPostsQuery query) {
 
         query.setBoardId(boardId);
 
@@ -84,8 +84,8 @@ public class ApiPostControllerV2 {
 
     @GetMapping("/search")
     @ApiOperation(value = "게시글 목록 조회", notes = "전체 게시판의 게시글을 조회합니다.")
-    public ResponseEntity<Page<PostResponse>> postFullSearch(
-            @ModelAttribute GetPostSearchQuery query) {
+    public ResponseEntity<Page<PostResponse>> getPostsBySearch(
+            @ModelAttribute GetPostsBySearchQuery query) {
 
         return ResponseEntity.ok(applicationService.executeQuery(query));
     }

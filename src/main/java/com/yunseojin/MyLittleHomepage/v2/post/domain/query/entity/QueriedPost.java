@@ -1,7 +1,7 @@
 package com.yunseojin.MyLittleHomepage.v2.post.domain.query.entity;
 
-import com.yunseojin.MyLittleHomepage.etc.entity.BaseEntity;
 import com.yunseojin.MyLittleHomepage.v2.board.domain.query.entity.QueriedBoard;
+import com.yunseojin.MyLittleHomepage.v2.contract.domain.query.entity.BaseEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;

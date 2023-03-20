@@ -1,15 +1,12 @@
 package com.yunseojin.MyLittleHomepage.v2.comment.domain.query.entity;
 
-import com.yunseojin.MyLittleHomepage.comment.entity.CommentEntity;
-import com.yunseojin.MyLittleHomepage.etc.entity.BaseEntity;
-import com.yunseojin.MyLittleHomepage.v2.post.domain.query.entity.QueriedPost;
+import com.yunseojin.MyLittleHomepage.v2.contract.domain.query.entity.BaseEntity;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
@@ -29,9 +26,8 @@ import org.hibernate.annotations.Where;
 @Table(name = "posts")
 public class QueriedComment extends BaseEntity {
 
-    @ManyToOne
-    @JoinColumn(name = "post_id", nullable = false)
-    private QueriedPost post;
+    @Column(name = "post_id", nullable = false)
+    private Long postId;
 
     @Column(name = "writer_id", nullable = false)
     private Long writerId;
@@ -53,5 +49,5 @@ public class QueriedComment extends BaseEntity {
     @OrderBy("id asc")
     @OneToMany
     @JoinColumn(name = "parent_id")
-    private final List<CommentEntity> children = new ArrayList<>();
+    private final List<QueriedComment> children = new ArrayList<>();
 }
