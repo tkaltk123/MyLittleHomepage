@@ -2,13 +2,15 @@ package com.yunseojin.MyLittleHomepage.v2.member.application.dto.command;
 
 import com.yunseojin.MyLittleHomepage.v2.member.application.dto.MemberAuthOperation;
 import com.yunseojin.MyLittleHomepage.v2.member.application.dto.MemberCommand;
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
-@Getter
+@EqualsAndHashCode(callSuper = true)
+@Data
 @NoArgsConstructor
-@SuperBuilder
+@AllArgsConstructor
 public class UpdateMemberCommand extends MemberAuthOperation implements MemberCommand<String> {
 
     private String username;

@@ -3,10 +3,10 @@ package com.yunseojin.MyLittleHomepage.v2.post.application.dto.query;
 import com.yunseojin.MyLittleHomepage.etc.enums.PostSearchType;
 import com.yunseojin.MyLittleHomepage.v2.post.application.dto.PostSearchQuery;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class GetPostsBySearchQuery implements PostSearchQuery {

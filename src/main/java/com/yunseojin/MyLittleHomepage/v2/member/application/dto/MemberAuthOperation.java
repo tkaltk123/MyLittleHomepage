@@ -1,13 +1,13 @@
 package com.yunseojin.MyLittleHomepage.v2.member.application.dto;
 
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 
-@Getter
+@Data
 @NoArgsConstructor
-@SuperBuilder
+@AllArgsConstructor
 public abstract class MemberAuthOperation extends AuthOperation {
 
     private String currentPassword;

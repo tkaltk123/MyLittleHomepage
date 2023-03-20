@@ -123,11 +123,10 @@ public class MemberController {
         if (Objects.isNull(member)) {
             return "redirect:/login";
         }
+        var command = new UpdateMemberCommand();
 
-        var command = UpdateMemberCommand.builder()
-                .username(member.getUsername())
-                .nickname(member.getNickname())
-                .build();
+        command.setUsername(member.getUsername());
+        command.setNickname(member.getNickname());
 
         model.addAttribute("command", command);
         ModelUtil.setCommonAttr(model,
