@@ -37,8 +37,13 @@ public abstract class BaseEntity {
     @LastModifiedDate
     protected Date updatedAt;
 
+    @Getter(AccessLevel.NONE)
     @Basic(optional = false)
     @Column(name = "is_deleted")
     protected int isDeleted = 0;
+
+    public boolean isDeleted() {
+        return isDeleted == 1;
+    }
 }
 

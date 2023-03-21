@@ -1,10 +1,8 @@
-package auth.dto;
+package com.yunseojin.MyLittleHomepage.v2.auth.domain.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
-@AllArgsConstructor
+@Data
 public class Token {
 
     private final String accessToken;

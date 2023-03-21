@@ -1,8 +1,8 @@
 package com.yunseojin.MyLittleHomepage.v2.member.application.service.command;
 
-import auth.service.JwtTokenProvider;
 import com.yunseojin.MyLittleHomepage.v2.contract.application.service.CommandHandler;
 import com.yunseojin.MyLittleHomepage.v2.member.application.dto.command.UpdateMemberCommand;
+import com.yunseojin.MyLittleHomepage.v2.member.application.dto.response.MemberResponse;
 import com.yunseojin.MyLittleHomepage.v2.member.application.mapper.MemberMapper;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.command.aggregate.Member;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.command.aggregate.MemberService;
@@ -14,7 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Service
 @RequiredArgsConstructor
-public class UpdateMemberCommandHandler implements CommandHandler<UpdateMemberCommand, String> {
+public class UpdateMemberCommandHandler implements
+        CommandHandler<UpdateMemberCommand, MemberResponse> {
 
     private final MemberService service;
 
@@ -22,13 +23,10 @@ public class UpdateMemberCommandHandler implements CommandHandler<UpdateMemberCo
 
     private final MemberMapper mapper;
 
-    private final JwtTokenProvider jwtTokenProvider;
-
     @Override
-    public String handle(UpdateMemberCommand command) {
+    public MemberResponse handle(UpdateMemberCommand command) {
         var member = updateMember(command);
-        var token = jwtTokenProvider.createToken(member);
-        return token.getAccessToken();
+        return mapper.toResponse(member);
     }
 
     private Member updateMember(UpdateMemberCommand command) {

@@ -1,9 +1,7 @@
 package com.yunseojin.MyLittleHomepage.v2.member.domain.query.entity;
 
-import auth.domain.UserDetails;
-import auth.domain.UserRole;
-import com.yunseojin.MyLittleHomepage.util.PasswordUtil;
 import com.yunseojin.MyLittleHomepage.v2.contract.domain.query.entity.BaseEntity;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.command.vo.MemberAuthority;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -21,7 +19,7 @@ import org.hibernate.annotations.Where;
 @Where(clause = "is_deleted = 0")
 @SQLDelete(sql = "")
 @Table(name = "members")
-public class QueriedMember extends BaseEntity implements UserDetails {
+public class QueriedMember extends BaseEntity {
 
     @Column(name = "username", nullable = false, length = 20)
     private String username;
@@ -35,15 +33,5 @@ public class QueriedMember extends BaseEntity implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
-    private UserRole role;
-
-    @Override
-    public boolean isWrongPassword(String password) {
-        return !PasswordUtil.equals(password, this.password);
-    }
-
-    @Override
-    public boolean isNotAdmin() {
-        return role != UserRole.ADMIN;
-    }
+    private MemberAuthority role;
 }

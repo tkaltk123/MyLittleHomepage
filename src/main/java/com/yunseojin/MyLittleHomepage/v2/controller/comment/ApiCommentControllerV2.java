@@ -7,9 +7,7 @@ import com.yunseojin.MyLittleHomepage.v2.comment.application.dto.command.UpdateC
 import com.yunseojin.MyLittleHomepage.v2.comment.application.dto.query.GetCommentsQuery;
 import com.yunseojin.MyLittleHomepage.v2.comment.application.dto.response.CommentResponse;
 import com.yunseojin.MyLittleHomepage.v2.comment.application.dto.response.CommentResponseWithChildren;
-import com.yunseojin.MyLittleHomepage.v2.config.web.resolver.LoginUser;
 import com.yunseojin.MyLittleHomepage.v2.contract.application.service.ApplicationService;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.query.entity.QueriedMember;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,7 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import springfox.documentation.annotations.ApiIgnore;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/v2/comments")
@@ -47,11 +44,9 @@ public class ApiCommentControllerV2 {
     @PostMapping("/posts/{post_id}")
     @ApiOperation(value = "댓글 작성", notes = "게시글에 댓글을 작성합니다.")
     public ResponseEntity<CommentResponse> create(
-            @ApiIgnore @LoginUser QueriedMember member,
             @PathVariable(value = "post_id") Long postId,
             @RequestBody CreateCommentCommand command) {
 
-        command.setMember(member);
         command.setPostId(postId);
 
         return ResponseEntity.ok(applicationService.executeCommand(command));
@@ -61,11 +56,9 @@ public class ApiCommentControllerV2 {
     @DeleteMapping("/{comment_id}")
     @ApiOperation(value = "댓글 삭제", notes = "댓글을 삭제합니다.")
     public ResponseEntity<Void> delete(
-            @ApiIgnore @LoginUser QueriedMember member,
             @PathVariable("comment_id") Long commentId) {
 
         var command = new DeleteCommentCommand(commentId);
-        command.setMemberId(member.getId());
 
         return ResponseEntity.ok(applicationService.executeCommand(command));
     }
@@ -74,11 +67,9 @@ public class ApiCommentControllerV2 {
     @PatchMapping("/{comment_id}")
     @ApiOperation(value = "댓글 수정", notes = "댓글을 수정합니다.")
     public ResponseEntity<CommentResponse> update(
-            @ApiIgnore @LoginUser QueriedMember member,
             @PathVariable("comment_id") Long commentId,
             @RequestBody UpdateCommentCommand command) {
 
-        command.setMember(member);
         command.setCommentId(commentId);
 
         return ResponseEntity.ok(applicationService.executeCommand(command));

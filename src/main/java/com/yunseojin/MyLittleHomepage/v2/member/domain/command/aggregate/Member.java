@@ -1,12 +1,11 @@
 package com.yunseojin.MyLittleHomepage.v2.member.domain.command.aggregate;
 
-import auth.domain.UserDetails;
-import auth.domain.UserRole;
 import com.yunseojin.MyLittleHomepage.util.PasswordUtil;
 import com.yunseojin.MyLittleHomepage.v2.contract.domain.command.aggregate.BaseAggregateRoot;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.command.event.MemberCreatedEvent;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.command.event.MemberDeletedEvent;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.command.event.MemberUpdatedEvent;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.command.vo.MemberAuthority;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.command.vo.MemberVo;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,7 +24,7 @@ import org.hibernate.annotations.Where;
 @Where(clause = "is_deleted = 0")
 @SQLDelete(sql = "UPDATE members SET is_deleted = 1 WHERE id=?")
 @Table(name = "members")
-public class Member extends BaseAggregateRoot<Member> implements UserDetails {
+public class Member extends BaseAggregateRoot<Member> {
 
     @Column(name = "username", nullable = false, length = 20)
     private String username;
@@ -39,13 +38,13 @@ public class Member extends BaseAggregateRoot<Member> implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
-    private UserRole role;
+    private MemberAuthority role;
 
     protected Member(MemberVo memberVo) {
         this.username = memberVo.getUsername();
         this.password = PasswordUtil.getHashedPassword(memberVo.getPassword());
         this.nickname = memberVo.getNickname();
-        this.role = UserRole.NORMAL;
+        this.role = MemberAuthority.NORMAL;
         registerEvent(new MemberCreatedEvent(this));
     }
 
@@ -81,13 +80,7 @@ public class Member extends BaseAggregateRoot<Member> implements UserDetails {
         registerEvent(new MemberDeletedEvent(this));
     }
 
-    @Override
     public boolean isWrongPassword(String password) {
         return !PasswordUtil.equals(password, this.password);
-    }
-
-    @Override
-    public boolean isNotAdmin() {
-        return role != UserRole.ADMIN;
     }
 }

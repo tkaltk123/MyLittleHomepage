@@ -1,9 +1,8 @@
 package com.yunseojin.MyLittleHomepage.v2.member.application.service.command;
 
-import auth.dto.Token;
-import auth.service.JwtTokenProvider;
 import com.yunseojin.MyLittleHomepage.v2.contract.application.service.CommandHandler;
 import com.yunseojin.MyLittleHomepage.v2.member.application.dto.command.CreateMemberCommand;
+import com.yunseojin.MyLittleHomepage.v2.member.application.dto.response.MemberResponse;
 import com.yunseojin.MyLittleHomepage.v2.member.application.mapper.MemberMapper;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.command.aggregate.Member;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.command.aggregate.MemberService;
@@ -15,7 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Service
 @RequiredArgsConstructor
-public class CreateMemberCommandHandler implements CommandHandler<CreateMemberCommand, Token> {
+public class CreateMemberCommandHandler implements
+        CommandHandler<CreateMemberCommand, MemberResponse> {
 
     private final MemberService service;
 
@@ -23,16 +23,15 @@ public class CreateMemberCommandHandler implements CommandHandler<CreateMemberCo
 
     private final MemberMapper mapper;
 
-    private final JwtTokenProvider tokenProvider;
-
     @Override
-    public Token handle(CreateMemberCommand command) {
+    public MemberResponse handle(CreateMemberCommand command) {
         var member = createMember(command);
-        return tokenProvider.createToken(member);
+        return mapper.toResponse(member);
     }
 
     private Member createMember(CreateMemberCommand command) {
         var member = service.create(mapper.from(command));
         return repository.save(member);
     }
+
 }
