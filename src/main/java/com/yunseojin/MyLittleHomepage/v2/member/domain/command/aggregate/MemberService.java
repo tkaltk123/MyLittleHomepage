@@ -1,9 +1,10 @@
 package com.yunseojin.MyLittleHomepage.v2.member.domain.command.aggregate;
 
-import com.yunseojin.MyLittleHomepage.v2.member.domain.command.exception.MemberErrorMessage;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.command.exception.MemberException;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.command.validation.password.HasValidPassword;
+import com.yunseojin.MyLittleHomepage.v2.contract.domain.command.validation.Create;
+import com.yunseojin.MyLittleHomepage.v2.contract.domain.command.validation.Update;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.command.validation.MemberValidator;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.query.entity.QueriedMember;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -13,22 +14,28 @@ import org.springframework.validation.annotation.Validated;
 @RequiredArgsConstructor
 public class MemberService {
 
+    private final MemberValidator validator;
 
-    public Member create(@HasValidPassword QueriedMember memberInfo) {
+    @Validated(Create.class)
+    public Member create(@Valid QueriedMember memberInfo) {
+        validator.validateUsername(memberInfo, null);
+        validator.validateNickname(memberInfo, null);
         return new Member(memberInfo);
     }
 
     public void validatePassword(QueriedMember member, String currentPassword) {
-        if (member.isWrongPassword(currentPassword)) {
-            throw new MemberException(MemberErrorMessage.INCORRECT_PASSWORD_EXCEPTION);
-        }
+        validator.validatePassword(member, currentPassword);
     }
 
-    public Member update(Member member, @HasValidPassword QueriedMember memberInfo) {
+    @Validated(Update.class)
+    public Member update(Member member, @Valid QueriedMember memberInfo) {
+        validator.validateUsername(memberInfo, member.getUsername());
+        validator.validateNickname(memberInfo, member.getNickname());
         return member.update(memberInfo);
     }
 
     public void delete(Member member) {
         member.delete();
     }
+
 }
