@@ -1,8 +1,8 @@
 package com.yunseojin.MyLittleHomepage.v2.post.domain.query.repository;
 
 import com.yunseojin.MyLittleHomepage.v2.post.domain.query.entity.QueriedPost;
-import com.yunseojin.MyLittleHomepage.v2.post.domain.query.vo.PostOrderType;
-import com.yunseojin.MyLittleHomepage.v2.post.domain.query.vo.PostSearchVo;
+import com.yunseojin.MyLittleHomepage.v2.post.domain.vo.PostOrderType;
+import com.yunseojin.MyLittleHomepage.v2.post.domain.vo.PostSearchVo;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

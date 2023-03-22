@@ -1,4 +1,4 @@
-package com.yunseojin.MyLittleHomepage.v2.post.domain.query.vo;
+package com.yunseojin.MyLittleHomepage.v2.post.domain.vo;
 
 import lombok.Value;
 

@@ -4,7 +4,7 @@ import com.yunseojin.MyLittleHomepage.v2.contract.domain.command.aggregate.BaseA
 import com.yunseojin.MyLittleHomepage.v2.post.domain.command.event.PostCreatedEvent;
 import com.yunseojin.MyLittleHomepage.v2.post.domain.command.event.PostDeletedEvent;
 import com.yunseojin.MyLittleHomepage.v2.post.domain.command.event.PostUpdatedEvent;
-import com.yunseojin.MyLittleHomepage.v2.post.domain.command.vo.PostVo;
+import com.yunseojin.MyLittleHomepage.v2.post.domain.query.entity.QueriedPost;
 import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -17,6 +17,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -45,22 +48,21 @@ public class Post extends BaseAggregateRoot<Post> {
     @OneToOne(mappedBy = "post", optional = false, cascade = CascadeType.PERSIST)
     private PostCountV2 postCount;
 
-    protected Post(PostVo postVo) {
-        this.boardId = postVo.getBoardId();
-        this.writerId = postVo.getWriterId();
-        this.writerName = postVo.getWriterName();
-        this.title = postVo.getTitle();
-        this.content = postVo.getContent();
-        this.postCount = new PostCountV2();
-        this.postCount.setPost(this);
-        this.registerEvent(new PostCreatedEvent(this));
+    protected Post(QueriedPost postInfo) {
+        this.boardId = postInfo.getBoardId();
+        this.writerId = postInfo.getWriterId();
+        this.writerName = postInfo.getWriterName();
+        this.title = postInfo.getTitle();
+        this.content = postInfo.getContent();
+        this.postCount = new PostCountV2(this);
+        this.registerEvent(new PostCreatedEvent(readOnly()));
     }
 
-    protected Post update(PostVo postVo) {
-        this.writerName = postVo.getWriterName();
-        updateTitle(postVo.getTitle());
-        updateContent(postVo.getContent());
-        this.registerEvent(new PostUpdatedEvent(this));
+    protected Post update(QueriedPost postInfo) {
+        this.writerName = postInfo.getWriterName();
+        updateTitle(postInfo.getTitle());
+        updateContent(postInfo.getContent());
+        this.registerEvent(new PostUpdatedEvent(readOnly()));
         return this;
     }
 
@@ -79,6 +81,19 @@ public class Post extends BaseAggregateRoot<Post> {
     @Override
     protected void delete() {
         super.delete();
-        this.registerEvent(new PostDeletedEvent(this));
+        this.registerEvent(new PostDeletedEvent(readOnly()));
+    }
+
+    public QueriedPost readOnly() {
+        return PostConverter.INSTANCE.readOnly(this);
+    }
+
+    @Mapper
+    interface PostConverter {
+
+        PostConverter INSTANCE = Mappers.getMapper(PostConverter.class);
+
+        @Mapping(target = "board.id", source = "boardId")
+        QueriedPost readOnly(Post post);
     }
 }

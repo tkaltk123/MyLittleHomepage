@@ -2,13 +2,10 @@ package com.yunseojin.MyLittleHomepage.v2.post.domain.command.aggregete;
 
 import com.yunseojin.MyLittleHomepage.v2.contract.domain.command.validation.Create;
 import com.yunseojin.MyLittleHomepage.v2.contract.domain.command.validation.Update;
-import com.yunseojin.MyLittleHomepage.v2.post.domain.command.exception.PostErrorMessage;
-import com.yunseojin.MyLittleHomepage.v2.post.domain.command.exception.PostException;
-import com.yunseojin.MyLittleHomepage.v2.post.domain.command.validation.board.BoardExists;
-import com.yunseojin.MyLittleHomepage.v2.post.domain.command.validation.post.PostExists;
-import com.yunseojin.MyLittleHomepage.v2.post.domain.command.vo.PostVo;
-import java.util.Objects;
+import com.yunseojin.MyLittleHomepage.v2.post.domain.command.validation.PostValidator;
+import com.yunseojin.MyLittleHomepage.v2.post.domain.query.entity.QueriedPost;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -18,30 +15,24 @@ import org.springframework.validation.annotation.Validated;
 @RequiredArgsConstructor
 public class PostService {
 
-    @BoardExists
+    private final PostValidator validator;
+
     @Validated(Create.class)
-    public Post create(@Valid PostVo postvo) {
-        return new Post(postvo);
+    public Post create(@Valid QueriedPost postInfo) {
+        validator.validateBoard(postInfo);
+        return new Post(postInfo);
     }
 
     @Validated(Update.class)
-    public Post update(@PostExists Post post, @Valid PostVo postVo) {
+    public Post update(@NotNull Post post, @Valid QueriedPost postInfo) {
 
-        validateWriter(post.getWriterId(), postVo.getWriterId());
-        post.update(postVo);
-        return post;
+        validator.validateWriter(post.getWriterId(), postInfo.getWriterId());
+        return post.update(postInfo);
     }
 
-    private void validateWriter(Long writerId, Long memberId) {
+    public void delete(@NotNull Post post, Long memberId) {
 
-        if (!Objects.equals(writerId, memberId)) {
-            throw new PostException(PostErrorMessage.NOT_WRITER_EXCEPTION);
-        }
-    }
-
-    public void delete(@PostExists Post post, Long memberId) {
-
-        validateWriter(post.getWriterId(), memberId);
+        validator.validateWriter(post.getWriterId(), memberId);
         post.delete();
     }
 }

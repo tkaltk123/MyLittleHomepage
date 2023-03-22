@@ -4,24 +4,22 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.MapsId;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Entity
 @Table(name = "post_counts")
 public class QueriedPostCount {
 
     @Id
+    @Column(name = "post_id")
     private Long id;
-
-    @MapsId
-    @OneToOne
-    private QueriedPost post;
 
     @Basic
     @Column(name = "view_count", nullable = false)

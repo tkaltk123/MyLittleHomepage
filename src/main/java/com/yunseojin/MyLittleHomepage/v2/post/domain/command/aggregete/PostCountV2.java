@@ -41,4 +41,8 @@ public class PostCountV2 {
     @Basic
     @Column(name = "dislike_count", nullable = false)
     private Integer dislikeCount = 0;
+
+    public PostCountV2(Post post) {
+        this.post = post;
+    }
 }
