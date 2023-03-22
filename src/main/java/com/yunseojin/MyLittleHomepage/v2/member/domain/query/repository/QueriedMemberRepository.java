@@ -1,17 +1,15 @@
 package com.yunseojin.MyLittleHomepage.v2.member.domain.query.repository;
 
+import com.yunseojin.MyLittleHomepage.v2.contract.domain.query.repository.ReadOnlyRepository;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.query.entity.QueriedMember;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import org.springframework.validation.annotation.Validated;
 
-@Validated
 @Repository
-public interface QueriedMemberRepository extends JpaRepository<QueriedMember, Long> {
+public interface QueriedMemberRepository extends ReadOnlyRepository<QueriedMember> {
 
     QueriedMember getByUsername(String username);
 
-    boolean existsByUsernameAndIdIsNot(String username, Long id);
+    boolean existsByUsername(String username);
 
-    boolean existsByNicknameAndIdIsNot(String nickname, Long id);
+    boolean existsByNickname(String nickname);
 }

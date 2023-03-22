@@ -1,7 +1,7 @@
 package com.yunseojin.MyLittleHomepage.v2.member.application.dto.response;
 
 import com.yunseojin.MyLittleHomepage.v2.contract.application.dto.BaseResponse;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.command.vo.MemberAuthority;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.vo.MemberAuthority;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

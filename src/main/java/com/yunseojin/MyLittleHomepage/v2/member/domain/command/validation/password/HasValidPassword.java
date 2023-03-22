@@ -1,4 +1,4 @@
-package com.yunseojin.MyLittleHomepage.v2.member.domain.command.validation.nickname;
+package com.yunseojin.MyLittleHomepage.v2.member.domain.command.validation.password;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.PARAMETER;
@@ -10,13 +10,13 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-@Constraint(validatedBy = UniqueNicknameValidator.class)
+@Constraint(validatedBy = HasValidPasswordValidator.class)
 @Target({FIELD, PARAMETER})
 @Retention(RUNTIME)
 @Documented
-public @interface UniqueNickname {
+public @interface HasValidPassword {
 
-    String message() default "닉네임은 중복될 수 없습니다.";
+    String message() default "";
 
     Class<?>[] groups() default {};
 

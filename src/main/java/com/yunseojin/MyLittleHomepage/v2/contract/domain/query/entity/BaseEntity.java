@@ -10,15 +10,16 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@SuperBuilder
 @MappedSuperclass
 public abstract class BaseEntity {
 
@@ -37,9 +38,9 @@ public abstract class BaseEntity {
     @LastModifiedDate
     protected Date updatedAt;
 
-    @Getter(AccessLevel.NONE)
     @Basic(optional = false)
     @Column(name = "is_deleted")
+    @Builder.Default
     protected int isDeleted = 0;
 
     public boolean isDeleted() {

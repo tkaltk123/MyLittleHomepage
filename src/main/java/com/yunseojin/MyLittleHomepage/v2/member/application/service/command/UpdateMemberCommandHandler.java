@@ -4,9 +4,9 @@ import com.yunseojin.MyLittleHomepage.v2.contract.application.service.CommandHan
 import com.yunseojin.MyLittleHomepage.v2.member.application.dto.command.UpdateMemberCommand;
 import com.yunseojin.MyLittleHomepage.v2.member.application.dto.response.MemberResponse;
 import com.yunseojin.MyLittleHomepage.v2.member.application.mapper.MemberMapper;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.command.aggregate.Member;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.command.aggregate.MemberService;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.command.repository.MemberRepository;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.query.entity.QueriedMember;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,15 +25,16 @@ public class UpdateMemberCommandHandler implements
 
     @Override
     public MemberResponse handle(UpdateMemberCommand command) {
-        var member = updateMember(command);
-        return mapper.toResponse(member);
+        var member = command.getMember();
+        service.validatePassword(member, command.getCurrentPassword());
+
+        return mapper.toResponse(updateMember(member.getId(), mapper.from(command)));
     }
 
-    private Member updateMember(UpdateMemberCommand command) {
-        var member = service.update(
-                repository.getById(command.getMemberId()),
-                mapper.from(command),
-                command.getCurrentPassword());
-        return repository.save(member);
+    private QueriedMember updateMember(Long memberId, QueriedMember memberInfo) {
+        var member = repository.getById(memberId);
+        member = repository.save(service.update(member, memberInfo));
+
+        return member.readOnly();
     }
 }

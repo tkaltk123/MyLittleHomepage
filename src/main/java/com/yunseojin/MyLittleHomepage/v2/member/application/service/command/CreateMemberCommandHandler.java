@@ -26,7 +26,7 @@ public class CreateMemberCommandHandler implements
     @Override
     public MemberResponse handle(CreateMemberCommand command) {
         var member = createMember(command);
-        return mapper.toResponse(member);
+        return mapper.toResponse(member.readOnly());
     }
 
     private Member createMember(CreateMemberCommand command) {

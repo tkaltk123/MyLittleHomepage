@@ -1,13 +1,9 @@
 package com.yunseojin.MyLittleHomepage.v2.member.domain.command.aggregate;
 
-import com.yunseojin.MyLittleHomepage.v2.contract.domain.command.validation.Create;
-import com.yunseojin.MyLittleHomepage.v2.contract.domain.command.validation.Update;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.command.exception.MemberErrorMessage;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.command.exception.MemberException;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.command.validation.nickname.UniqueNickname;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.command.validation.username.UniqueUsername;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.command.vo.MemberVo;
-import javax.validation.Valid;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.command.validation.password.HasValidPassword;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.query.entity.QueriedMember;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,31 +16,21 @@ import org.springframework.validation.annotation.Validated;
 public class MemberService {
 
 
-    @UniqueUsername
-    @UniqueNickname
-    @Validated(Create.class)
-    public Member create(@Valid MemberVo memberVo) {
-        return new Member(memberVo);
+    public Member create(@HasValidPassword QueriedMember memberInfo) {
+        return new Member(memberInfo);
     }
 
-    @UniqueUsername
-    @UniqueNickname
-    @Validated(Update.class)
-    public Member update(Member member, @Valid MemberVo memberVo,
-            String currentPassword) {
-        validatePassword(member, currentPassword);
-        member.update(memberVo);
-        return member;
-    }
-
-    private void validatePassword(Member member, String currentPassword) {
+    public void validatePassword(QueriedMember member, String currentPassword) {
         if (member.isWrongPassword(currentPassword)) {
             throw new MemberException(MemberErrorMessage.INCORRECT_PASSWORD_EXCEPTION);
         }
     }
 
-    public void delete(Member member, String currentPassword) {
-        validatePassword(member, currentPassword);
+    public Member update(Member member, @HasValidPassword QueriedMember memberInfo) {
+        return member.update(memberInfo);
+    }
+
+    public void delete(Member member) {
         member.delete();
     }
 }

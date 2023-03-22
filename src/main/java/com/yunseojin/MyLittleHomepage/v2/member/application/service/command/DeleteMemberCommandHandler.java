@@ -19,8 +19,15 @@ public class DeleteMemberCommandHandler implements CommandHandler<DeleteMemberCo
 
     @Override
     public Void handle(DeleteMemberCommand command) {
-        var member = repository.getById(command.getMemberId());
-        service.delete(member, command.getCurrentPassword());
+        var member = command.getMember();
+        service.validatePassword(member, command.getCurrentPassword());
+
+        return deleteMember(member.getId());
+    }
+
+    private Void deleteMember(Long memberId) {
+        var member = repository.getById(memberId);
+        service.delete(member);
         repository.delete(member);
         return null;
     }

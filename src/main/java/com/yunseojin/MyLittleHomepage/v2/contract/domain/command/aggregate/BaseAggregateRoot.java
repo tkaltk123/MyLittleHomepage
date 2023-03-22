@@ -39,7 +39,6 @@ public abstract class BaseAggregateRoot<A extends BaseAggregateRoot<A>> extends
     @LastModifiedDate
     protected Date updatedAt;
 
-    @Getter(AccessLevel.NONE)
     @Basic(optional = false)
     @Column(name = "is_deleted")
     protected int isDeleted = 0;
