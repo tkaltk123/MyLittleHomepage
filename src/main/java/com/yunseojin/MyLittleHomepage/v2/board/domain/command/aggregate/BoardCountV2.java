@@ -13,7 +13,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 @Getter
 @Setter(AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -32,4 +31,9 @@ public class BoardCountV2 {
     @Basic
     @Column(name = "post_count", nullable = false)
     private Integer postCount = 0;
+
+    public BoardCountV2(Board board) {
+        this.board = board;
+    }
 }
+

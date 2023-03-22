@@ -4,7 +4,6 @@ package com.yunseojin.MyLittleHomepage.v2.board.domain.command.aggregate;
 import com.yunseojin.MyLittleHomepage.v2.board.domain.command.event.BoardCreatedEvent;
 import com.yunseojin.MyLittleHomepage.v2.board.domain.command.event.BoardDeletedEvent;
 import com.yunseojin.MyLittleHomepage.v2.board.domain.command.event.BoardUpdatedEvent;
-import com.yunseojin.MyLittleHomepage.v2.board.domain.command.validation.name.UniqueName;
 import com.yunseojin.MyLittleHomepage.v2.board.domain.query.entity.QueriedBoard;
 import com.yunseojin.MyLittleHomepage.v2.contract.domain.command.aggregate.BaseAggregateRoot;
 import javax.persistence.CascadeType;
@@ -12,8 +11,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,9 +27,6 @@ import org.mapstruct.factory.Mappers;
 @Table(name = "boards")
 public class Board extends BaseAggregateRoot<Board> {
 
-    @NotNull
-    @UniqueName
-    @Size(min = 2, max = 50, message = "게시판 이름은 2~50글자 입니다.")
     @Column(name = "NAME", nullable = false, length = 50)
     private String name;
 
@@ -41,13 +35,8 @@ public class Board extends BaseAggregateRoot<Board> {
 
     protected Board(QueriedBoard boardInfo) {
         this.name = boardInfo.getName();
-        setBoardCount(new BoardCountV2());
+        this.boardCount = new BoardCountV2(this);
         registerEvent(new BoardCreatedEvent(readOnly()));
-    }
-
-    private void setBoardCount(BoardCountV2 boardCount) {
-        this.boardCount = boardCount;
-        this.boardCount.setBoard(this);
     }
 
     protected Board update(QueriedBoard boardInfo) {

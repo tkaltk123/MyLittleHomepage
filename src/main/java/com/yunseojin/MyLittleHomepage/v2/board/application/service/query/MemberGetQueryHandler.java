@@ -2,7 +2,7 @@ package com.yunseojin.MyLittleHomepage.v2.board.application.service.query;
 
 import com.yunseojin.MyLittleHomepage.v2.board.application.dto.query.GetAllBoardQuery;
 import com.yunseojin.MyLittleHomepage.v2.board.application.dto.response.BoardResponse;
-import com.yunseojin.MyLittleHomepage.v2.board.application.mapper.BoardMapper;
+import com.yunseojin.MyLittleHomepage.v2.board.application.mapper.BoardMapperV2;
 import com.yunseojin.MyLittleHomepage.v2.board.domain.query.repository.QueriedBoardRepository;
 import com.yunseojin.MyLittleHomepage.v2.contract.application.service.QueryHandler;
 import java.util.List;
@@ -17,7 +17,7 @@ public class MemberGetQueryHandler implements QueryHandler<GetAllBoardQuery, Lis
 
     private final QueriedBoardRepository repository;
 
-    private final BoardMapper mapper;
+    private final BoardMapperV2 mapper;
 
     @Override
     public List<BoardResponse> handle(GetAllBoardQuery command) {

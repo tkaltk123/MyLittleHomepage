@@ -6,7 +6,7 @@ import java.util.List;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "Spring")
-public interface BoardMapper {
+public interface BoardMapperV2 {
 
     List<BoardResponse> toResponses(List<QueriedBoard> boards);
 }
