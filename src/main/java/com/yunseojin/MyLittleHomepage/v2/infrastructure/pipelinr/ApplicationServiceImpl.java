@@ -1,8 +1,9 @@
-package com.yunseojin.MyLittleHomepage.v2.contract.application.service;
+package com.yunseojin.MyLittleHomepage.v2.infrastructure.pipelinr;
 
 import an.awesome.pipelinr.Pipeline;
 import com.yunseojin.MyLittleHomepage.v2.contract.application.dto.Command;
 import com.yunseojin.MyLittleHomepage.v2.contract.application.dto.Query;
+import com.yunseojin.MyLittleHomepage.v2.contract.application.service.ApplicationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

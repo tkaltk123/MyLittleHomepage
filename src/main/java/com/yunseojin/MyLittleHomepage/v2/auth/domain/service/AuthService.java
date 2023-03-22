@@ -1,6 +1,6 @@
 package com.yunseojin.MyLittleHomepage.v2.auth.domain.service;
 
-import com.yunseojin.MyLittleHomepage.v2.auth.domain.model.Token;
+import com.yunseojin.MyLittleHomepage.v2.auth.domain.vo.Token;
 import org.springframework.security.core.Authentication;
 
 

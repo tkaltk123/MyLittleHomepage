@@ -1,4 +1,4 @@
-package com.yunseojin.MyLittleHomepage.v2.auth.domain.model;
+package com.yunseojin.MyLittleHomepage.v2.auth.domain.vo;
 
 import lombok.Data;
 

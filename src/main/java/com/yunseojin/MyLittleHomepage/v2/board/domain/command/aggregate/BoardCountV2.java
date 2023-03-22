@@ -16,9 +16,9 @@ import lombok.Setter;
 
 @Getter
 @Setter(AccessLevel.PROTECTED)
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "BOARD_COUNTS")
+@Table(name = "board_counts")
 public class BoardCountV2 {
 
     @Id

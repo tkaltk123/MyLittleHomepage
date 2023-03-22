@@ -1,16 +1,24 @@
 package com.yunseojin.MyLittleHomepage.v2.board.domain.command.aggregate;
 
-import com.yunseojin.MyLittleHomepage.v2.board.domain.command.repository.BoardRepositoryV2;
+import com.yunseojin.MyLittleHomepage.v2.board.domain.query.entity.QueriedBoard;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
-@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class BoardService {
 
-    private final BoardRepositoryV2 repository;
+    public Board create(QueriedBoard boardInfo) {
+        return new Board(boardInfo);
+    }
+
+    public Board update(Board board, QueriedBoard boardInfo) {
+        return board.update(boardInfo);
+    }
+
+    public void delete(Board board) {
+        board.delete();
+    }
 }

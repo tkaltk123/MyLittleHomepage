@@ -8,12 +8,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Entity
 @Table(name = "BOARD_COUNTS")
 public class QueriedBoardCount {
@@ -28,5 +31,5 @@ public class QueriedBoardCount {
 
     @Basic
     @Column(name = "post_count", nullable = false)
-    private Integer postCount = 0;
+    private Integer postCount;
 }

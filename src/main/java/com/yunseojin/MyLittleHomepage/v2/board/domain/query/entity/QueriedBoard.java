@@ -9,17 +9,15 @@ import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.SQLDelete;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Where;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@SuperBuilder
 @Entity
-@SQLDelete(sql = "")
 @Where(clause = "is_deleted = 0")
 @Table(name = "boards")
 public class QueriedBoard extends BaseEntity {

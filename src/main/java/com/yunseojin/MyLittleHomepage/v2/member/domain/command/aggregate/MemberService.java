@@ -6,11 +6,9 @@ import com.yunseojin.MyLittleHomepage.v2.member.domain.command.validation.passwo
 import com.yunseojin.MyLittleHomepage.v2.member.domain.query.entity.QueriedMember;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
-@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class MemberService {
