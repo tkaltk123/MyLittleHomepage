@@ -2,7 +2,7 @@ package com.yunseojin.MyLittleHomepage.v2.comment.application.service.query;
 
 import com.yunseojin.MyLittleHomepage.v2.comment.application.dto.query.GetCommentsQuery;
 import com.yunseojin.MyLittleHomepage.v2.comment.application.dto.response.CommentResponseWithChildren;
-import com.yunseojin.MyLittleHomepage.v2.comment.application.mapper.QueriedCommentMapper;
+import com.yunseojin.MyLittleHomepage.v2.comment.application.mapper.CommentMapperV2;
 import com.yunseojin.MyLittleHomepage.v2.comment.domain.query.repository.QueriedCommentRepository;
 import com.yunseojin.MyLittleHomepage.v2.contract.application.service.QueryHandler;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class GetCommentsQueryHandler implements
 
     private final QueriedCommentRepository repository;
 
-    private final QueriedCommentMapper mapper;
+    private final CommentMapperV2 mapper;
 
     @Override
     public Page<CommentResponseWithChildren> handle(GetCommentsQuery query) {

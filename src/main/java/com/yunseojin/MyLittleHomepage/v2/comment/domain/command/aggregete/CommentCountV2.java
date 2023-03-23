@@ -33,4 +33,8 @@ public class CommentCountV2 {
     @Basic
     @Column(name = "dislike_count", nullable = false)
     private Integer dislikeCount = 0;
+
+    public CommentCountV2(Comment comment) {
+        this.comment = comment;
+    }
 }

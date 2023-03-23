@@ -4,7 +4,7 @@ import com.yunseojin.MyLittleHomepage.comment.entity.CommentEntity;
 import com.yunseojin.MyLittleHomepage.v2.comment.domain.command.event.CommentCreatedEvent;
 import com.yunseojin.MyLittleHomepage.v2.comment.domain.command.event.CommentDeletedEvent;
 import com.yunseojin.MyLittleHomepage.v2.comment.domain.command.event.CommentUpdatedEvent;
-import com.yunseojin.MyLittleHomepage.v2.comment.domain.command.vo.CommentVo;
+import com.yunseojin.MyLittleHomepage.v2.comment.domain.query.entity.QueriedComment;
 import com.yunseojin.MyLittleHomepage.v2.contract.domain.command.aggregate.BaseAggregateRoot;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +24,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -32,7 +34,6 @@ import org.hibernate.annotations.Where;
 @Where(clause = "is_deleted = 0")
 @Table(name = "comments")
 public class Comment extends BaseAggregateRoot<Comment> {
-
 
     @Column(name = "post_id", nullable = false)
     private Long postId;
@@ -61,21 +62,20 @@ public class Comment extends BaseAggregateRoot<Comment> {
     @JoinColumn(name = "parent_id")
     private final List<CommentEntity> children = new ArrayList<>();
 
-    protected Comment(CommentVo commentVo) {
-        this.postId = commentVo.getPostId();
-        this.writerId = commentVo.getWriterId();
-        this.writerName = commentVo.getWriterName();
-        this.parentId = commentVo.getParentId();
-        this.content = commentVo.getContent();
-        this.commentCount = new CommentCountV2();
-        this.commentCount.setComment(this);
-        this.registerEvent(new CommentCreatedEvent(this));
+    protected Comment(QueriedComment commentInfo) {
+        this.postId = commentInfo.getPostId();
+        this.writerId = commentInfo.getWriterId();
+        this.writerName = commentInfo.getWriterName();
+        this.parentId = commentInfo.getParentId();
+        this.content = commentInfo.getContent();
+        this.commentCount = new CommentCountV2(this);
+        this.registerEvent(new CommentCreatedEvent(readOnly()));
     }
 
-    protected Comment update(CommentVo postVo) {
-        this.writerName = postVo.getWriterName();
-        updateContent(postVo.getContent());
-        this.registerEvent(new CommentUpdatedEvent(this));
+    protected Comment update(QueriedComment commentInfo) {
+        this.writerName = commentInfo.getWriterName();
+        updateContent(commentInfo.getContent());
+        this.registerEvent(new CommentUpdatedEvent(readOnly()));
         return this;
     }
 
@@ -88,6 +88,18 @@ public class Comment extends BaseAggregateRoot<Comment> {
     @Override
     protected void delete() {
         super.delete();
-        this.registerEvent(new CommentDeletedEvent(this));
+        this.registerEvent(new CommentDeletedEvent(readOnly()));
+    }
+
+    public QueriedComment readOnly() {
+        return CommentConverter.INSTANCE.readOnly(this);
+    }
+
+    @Mapper
+    interface CommentConverter {
+
+        CommentConverter INSTANCE = Mappers.getMapper(CommentConverter.class);
+
+        QueriedComment readOnly(Comment comment);
     }
 }

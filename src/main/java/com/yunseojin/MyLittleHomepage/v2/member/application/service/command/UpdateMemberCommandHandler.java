@@ -4,6 +4,7 @@ import com.yunseojin.MyLittleHomepage.v2.contract.application.service.CommandHan
 import com.yunseojin.MyLittleHomepage.v2.member.application.dto.command.UpdateMemberCommand;
 import com.yunseojin.MyLittleHomepage.v2.member.application.dto.response.MemberResponse;
 import com.yunseojin.MyLittleHomepage.v2.member.application.mapper.MemberMapper;
+import com.yunseojin.MyLittleHomepage.v2.member.domain.command.aggregate.Member;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.command.aggregate.MemberService;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.command.repository.MemberRepository;
 import com.yunseojin.MyLittleHomepage.v2.member.domain.query.entity.QueriedMember;
@@ -31,10 +32,9 @@ public class UpdateMemberCommandHandler implements
         return mapper.toResponse(updateMember(member.getId(), mapper.from(command)));
     }
 
-    private QueriedMember updateMember(Long memberId, QueriedMember memberInfo) {
+    private Member updateMember(Long memberId, QueriedMember memberInfo) {
         var member = repository.getById(memberId);
-        member = repository.save(service.update(member, memberInfo));
 
-        return member.readOnly();
+        return repository.save(service.update(member, memberInfo));
     }
 }
