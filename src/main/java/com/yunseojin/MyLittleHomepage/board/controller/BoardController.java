@@ -7,7 +7,7 @@ import com.yunseojin.MyLittleHomepage.post.dto.PostRequest;
 import com.yunseojin.MyLittleHomepage.post.dto.PostSearch;
 import com.yunseojin.MyLittleHomepage.post.service.PostService;
 import com.yunseojin.MyLittleHomepage.util.ModelUtil;
-import com.yunseojin.MyLittleHomepage.v2.member.application.dto.MemberTokenDto;
+import com.yunseojin.MyLittleHomepage.v2.application.member.dto.MemberTokenDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

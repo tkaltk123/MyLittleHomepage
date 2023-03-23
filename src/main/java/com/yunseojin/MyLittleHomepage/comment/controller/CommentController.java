@@ -4,7 +4,7 @@ import com.yunseojin.MyLittleHomepage.comment.dto.CommentRequest;
 import com.yunseojin.MyLittleHomepage.comment.service.CommentService;
 import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
 import com.yunseojin.MyLittleHomepage.etc.annotation.ValidationGroups;
-import com.yunseojin.MyLittleHomepage.v2.member.application.dto.MemberTokenDto;
+import com.yunseojin.MyLittleHomepage.v2.application.member.dto.MemberTokenDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;

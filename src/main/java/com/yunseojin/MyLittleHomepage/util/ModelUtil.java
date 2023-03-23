@@ -2,7 +2,7 @@ package com.yunseojin.MyLittleHomepage.util;
 
 import com.yunseojin.MyLittleHomepage.board.dto.BoardResponse;
 import com.yunseojin.MyLittleHomepage.post.dto.FullPostSearch;
-import com.yunseojin.MyLittleHomepage.v2.member.application.dto.MemberTokenDto;
+import com.yunseojin.MyLittleHomepage.v2.application.member.dto.MemberTokenDto;
 import java.util.List;
 import org.springframework.ui.Model;
 

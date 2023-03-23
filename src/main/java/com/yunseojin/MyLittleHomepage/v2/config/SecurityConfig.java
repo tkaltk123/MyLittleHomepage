@@ -1,6 +1,6 @@
 package com.yunseojin.MyLittleHomepage.v2.config;
 
-import com.yunseojin.MyLittleHomepage.v2.auth.domain.service.AuthService;
+import com.yunseojin.MyLittleHomepage.v2.domain.auth.service.AuthService;
 import com.yunseojin.MyLittleHomepage.v2.config.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

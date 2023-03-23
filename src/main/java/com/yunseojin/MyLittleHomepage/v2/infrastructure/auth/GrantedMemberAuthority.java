@@ -1,6 +1,6 @@
 package com.yunseojin.MyLittleHomepage.v2.infrastructure.auth;
 
-import com.yunseojin.MyLittleHomepage.v2.member.domain.vo.MemberAuthority;
+import com.yunseojin.MyLittleHomepage.v2.domain.member.vo.MemberAuthority;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;

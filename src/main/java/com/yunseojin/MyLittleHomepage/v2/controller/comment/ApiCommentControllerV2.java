@@ -1,13 +1,13 @@
 package com.yunseojin.MyLittleHomepage.v2.controller.comment;
 
 import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
-import com.yunseojin.MyLittleHomepage.v2.comment.application.dto.command.CreateCommentCommand;
-import com.yunseojin.MyLittleHomepage.v2.comment.application.dto.command.DeleteCommentCommand;
-import com.yunseojin.MyLittleHomepage.v2.comment.application.dto.command.UpdateCommentCommand;
-import com.yunseojin.MyLittleHomepage.v2.comment.application.dto.query.GetCommentsQuery;
-import com.yunseojin.MyLittleHomepage.v2.comment.application.dto.response.CommentResponse;
-import com.yunseojin.MyLittleHomepage.v2.comment.application.dto.response.CommentResponseWithChildren;
-import com.yunseojin.MyLittleHomepage.v2.contract.application.service.ApplicationService;
+import com.yunseojin.MyLittleHomepage.v2.application.comment.dto.command.CreateCommentCommand;
+import com.yunseojin.MyLittleHomepage.v2.application.comment.dto.command.DeleteCommentCommand;
+import com.yunseojin.MyLittleHomepage.v2.application.comment.dto.command.UpdateCommentCommand;
+import com.yunseojin.MyLittleHomepage.v2.application.comment.dto.query.GetCommentsQuery;
+import com.yunseojin.MyLittleHomepage.v2.application.comment.dto.response.CommentResponse;
+import com.yunseojin.MyLittleHomepage.v2.application.comment.dto.response.CommentResponseWithChildren;
+import com.yunseojin.MyLittleHomepage.v2.application.contract.service.ApplicationService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

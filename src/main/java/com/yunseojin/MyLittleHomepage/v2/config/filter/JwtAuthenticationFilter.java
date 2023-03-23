@@ -1,6 +1,6 @@
 package com.yunseojin.MyLittleHomepage.v2.config.filter;
 
-import com.yunseojin.MyLittleHomepage.v2.auth.domain.service.AuthService;
+import com.yunseojin.MyLittleHomepage.v2.domain.auth.service.AuthService;
 import java.io.IOException;
 import java.util.Objects;
 import javax.servlet.FilterChain;

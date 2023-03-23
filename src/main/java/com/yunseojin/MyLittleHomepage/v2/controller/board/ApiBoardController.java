@@ -1,8 +1,8 @@
 package com.yunseojin.MyLittleHomepage.v2.controller.board;
 
-import com.yunseojin.MyLittleHomepage.v2.board.application.dto.query.GetAllBoardQuery;
-import com.yunseojin.MyLittleHomepage.v2.board.application.dto.response.BoardResponse;
-import com.yunseojin.MyLittleHomepage.v2.contract.application.service.ApplicationService;
+import com.yunseojin.MyLittleHomepage.v2.application.board.dto.query.GetAllBoardQuery;
+import com.yunseojin.MyLittleHomepage.v2.application.board.dto.response.BoardResponse;
+import com.yunseojin.MyLittleHomepage.v2.application.contract.service.ApplicationService;
 import io.swagger.annotations.ApiOperation;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

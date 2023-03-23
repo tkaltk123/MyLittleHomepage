@@ -1,14 +1,14 @@
 package com.yunseojin.MyLittleHomepage.v2.controller.post;
 
 import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
-import com.yunseojin.MyLittleHomepage.v2.contract.application.service.ApplicationService;
-import com.yunseojin.MyLittleHomepage.v2.post.application.dto.command.CreatePostCommand;
-import com.yunseojin.MyLittleHomepage.v2.post.application.dto.command.DeletePostCommand;
-import com.yunseojin.MyLittleHomepage.v2.post.application.dto.command.UpdatePostCommand;
-import com.yunseojin.MyLittleHomepage.v2.post.application.dto.query.GetPostByIdQuery;
-import com.yunseojin.MyLittleHomepage.v2.post.application.dto.query.GetPostsBySearchQuery;
-import com.yunseojin.MyLittleHomepage.v2.post.application.dto.query.GetPostsQuery;
-import com.yunseojin.MyLittleHomepage.v2.post.application.dto.response.PostResponse;
+import com.yunseojin.MyLittleHomepage.v2.application.contract.service.ApplicationService;
+import com.yunseojin.MyLittleHomepage.v2.application.post.dto.command.CreatePostCommand;
+import com.yunseojin.MyLittleHomepage.v2.application.post.dto.command.DeletePostCommand;
+import com.yunseojin.MyLittleHomepage.v2.application.post.dto.command.UpdatePostCommand;
+import com.yunseojin.MyLittleHomepage.v2.application.post.dto.query.GetPostByIdQuery;
+import com.yunseojin.MyLittleHomepage.v2.application.post.dto.query.GetPostsBySearchQuery;
+import com.yunseojin.MyLittleHomepage.v2.application.post.dto.query.GetPostsQuery;
+import com.yunseojin.MyLittleHomepage.v2.application.post.dto.response.PostResponse;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

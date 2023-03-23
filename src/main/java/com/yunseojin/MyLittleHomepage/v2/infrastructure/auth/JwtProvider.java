@@ -1,10 +1,10 @@
 package com.yunseojin.MyLittleHomepage.v2.infrastructure.auth;
 
 import com.yunseojin.MyLittleHomepage.util.PasswordUtil;
-import com.yunseojin.MyLittleHomepage.v2.auth.domain.service.AuthService;
-import com.yunseojin.MyLittleHomepage.v2.auth.domain.vo.Token;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.query.entity.QueriedMember;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.query.repository.QueriedMemberRepository;
+import com.yunseojin.MyLittleHomepage.v2.domain.auth.service.AuthService;
+import com.yunseojin.MyLittleHomepage.v2.domain.auth.vo.Token;
+import com.yunseojin.MyLittleHomepage.v2.domain.member.query.model.QueriedMember;
+import com.yunseojin.MyLittleHomepage.v2.domain.member.query.repository.QueriedMemberRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

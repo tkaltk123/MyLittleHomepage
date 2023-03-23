@@ -10,8 +10,8 @@ import com.yunseojin.MyLittleHomepage.evaluation.repository.CommentEvaluationRep
 import com.yunseojin.MyLittleHomepage.evaluation.repository.PostEvaluationRepository;
 import com.yunseojin.MyLittleHomepage.post.entity.PostEntity;
 import com.yunseojin.MyLittleHomepage.post.service.InternalPostService;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.command.aggregate.Member;
-import com.yunseojin.MyLittleHomepage.v2.member.domain.command.repository.MemberRepository;
+import com.yunseojin.MyLittleHomepage.v2.domain.member.command.model.Member;
+import com.yunseojin.MyLittleHomepage.v2.domain.member.command.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,6 @@
 package com.yunseojin.MyLittleHomepage.v2.infrastructure.auth;
 
-import com.yunseojin.MyLittleHomepage.v2.member.domain.query.entity.QueriedMember;
+import com.yunseojin.MyLittleHomepage.v2.domain.member.query.model.QueriedMember;
 import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
