@@ -95,18 +95,18 @@ CREATE TABLE hashtags
     FOREIGN KEY (post_id) REFERENCES posts (id) ON DELETE CASCADE
 );
 
-DROP TABLE IF EXISTS evaluations CASCADE;
-CREATE TABLE evaluations
+DROP TABLE IF EXISTS feedbacks CASCADE;
+CREATE TABLE feedbacks
 (
-    dtype           VARCHAR(31)  NOT NULL,
-    id              BIGINT AUTO_INCREMENT PRIMARY KEY,
-    created_at      TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    updated_at      TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
-    is_deleted      TINYINT(1)   NOT NULL DEFAULT 0,
-    post_id         BIGINT,
-    comment_id      BIGINT,
-    writer_id       BIGINT,
-    evaluation_type VARCHAR(255) NOT NULL,
+    dtype         VARCHAR(31)  NOT NULL,
+    id            BIGINT AUTO_INCREMENT PRIMARY KEY,
+    created_at    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    updated_at    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
+    is_deleted    TINYINT(1)   NOT NULL DEFAULT 0,
+    post_id       BIGINT,
+    comment_id    BIGINT,
+    writer_id     BIGINT,
+    feedback_type VARCHAR(255) NOT NULL,
     FOREIGN KEY (post_id) REFERENCES posts (id) ON DELETE CASCADE,
     FOREIGN KEY (comment_id) REFERENCES comments (id) ON DELETE CASCADE,
     FOREIGN KEY (writer_id) REFERENCES members (id) ON DELETE SET NULL

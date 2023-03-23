@@ -1,8 +1,8 @@
 package com.yunseojin.MyLittleHomepage.v2.application.member.dto.query;
 
 import com.yunseojin.MyLittleHomepage.v2.application.contract.dto.Query;
-import com.yunseojin.MyLittleHomepage.v2.application.member.dto.MemberContainer;
 import com.yunseojin.MyLittleHomepage.v2.application.member.dto.response.MemberResponse;
+import com.yunseojin.MyLittleHomepage.v2.domain.member.query.model.MemberContainer;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

@@ -1,7 +1,6 @@
-package com.yunseojin.MyLittleHomepage.v2.application.member.dto;
+package com.yunseojin.MyLittleHomepage.v2.domain.member.query.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.yunseojin.MyLittleHomepage.v2.domain.member.query.model.QueriedMember;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Data;

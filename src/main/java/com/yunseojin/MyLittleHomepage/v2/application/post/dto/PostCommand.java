@@ -2,7 +2,7 @@ package com.yunseojin.MyLittleHomepage.v2.application.post.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.yunseojin.MyLittleHomepage.v2.application.contract.dto.Command;
-import com.yunseojin.MyLittleHomepage.v2.application.member.dto.MemberContainer;
+import com.yunseojin.MyLittleHomepage.v2.domain.member.query.model.MemberContainer;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Data;
