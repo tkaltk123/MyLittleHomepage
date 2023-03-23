@@ -1,8 +1,8 @@
 package com.yunseojin.MyLittleHomepage.v2.application.post.dto.query;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.yunseojin.MyLittleHomepage.etc.enums.PostSearchType;
 import com.yunseojin.MyLittleHomepage.v2.application.post.dto.PostSearchQuery;
+import com.yunseojin.MyLittleHomepage.v2.domain.post.vo.PostSearchType;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;

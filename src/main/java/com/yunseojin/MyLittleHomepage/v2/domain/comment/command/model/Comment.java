@@ -1,6 +1,5 @@
 package com.yunseojin.MyLittleHomepage.v2.domain.comment.command.model;
 
-import com.yunseojin.MyLittleHomepage.comment.entity.CommentEntity;
 import com.yunseojin.MyLittleHomepage.v2.domain.comment.command.event.CommentCreatedEvent;
 import com.yunseojin.MyLittleHomepage.v2.domain.comment.command.event.CommentDeletedEvent;
 import com.yunseojin.MyLittleHomepage.v2.domain.comment.command.event.CommentUpdatedEvent;
@@ -60,7 +59,7 @@ public class Comment extends BaseAggregateRoot<Comment> {
     @OrderBy("id asc")
     @OneToMany
     @JoinColumn(name = "parent_id")
-    private final List<CommentEntity> children = new ArrayList<>();
+    private final List<Comment> children = new ArrayList<>();
 
     protected Comment(QueriedComment commentInfo) {
         this.postId = commentInfo.getPostId();

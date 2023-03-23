@@ -1,82 +1,85 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<nav th:fragment="bodyHeader" class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+<nav th:fragment="bodyHeader"
+     class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
-    <!-- Sidebar Toggle (Topbar) -->
-    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-        <i class="fa fa-bars"></i>
-    </button>
+  <!-- Sidebar Toggle (Topbar) -->
+  <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+    <i class="fa fa-bars"></i>
+  </button>
 
-    <form class="d-none d-sm-inline-block form-inline w-75 mr-auto p-0 ml-md-3 my-2 my-md-0 navbar-search"
-          th:action="@{/posts/search}"
-          th:object="${fullPostSearch}">
-        <div class="row">
-            <select class="form-control d-none d-lg-inline-block mr-1" th:field="*{boardId}">
-                <option th:value="null"
-                        th:text="전체게시판"></option>
-                <option th:each="board:${boards}"
-                        th:value="${board.id}"
-                        th:text="${board.name}"></option>
-            </select>
-            <select class="form-control d-none d-md-inline-block mr-1" th:field="*{isAsc}">
-                <option th:value="false"
-                        th:text="최근순"></option>
-                <option th:value="true"
-                        th:text="오래된순"></option>
-            </select>
-            <select class="form-control mr-1 small" th:field="*{postSearchType}">
-                <option th:each="type:${T(com.yunseojin.MyLittleHomepage.etc.enums.PostSearchType).values()}"
-                        th:value="${type}"
-                        th:text="${type.getDisplayName()}"></option>
-            </select>
-            <div class="input-group">
-                <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
-                       th:field="*{keyword}"
-                       aria-label="Search" aria-describedby="basic-addon2">
-                <div class="input-group-append">
-                    <button class="btn btn-primary" type="submit">
-                        <i class="fas fa-search fa-sm"></i>
-                    </button>
-                </div>
-            </div>
+  <form
+      class="d-none d-sm-inline-block form-inline w-75 mr-auto p-0 ml-md-3 my-2 my-md-0 navbar-search"
+      th:action="@{/posts/search}"
+      th:object="${fullPostSearch}">
+    <div class="row">
+      <select class="form-control d-none d-lg-inline-block mr-1" th:field="*{boardId}">
+        <option th:value="null"
+                th:text="전체게시판"></option>
+        <option th:each="board:${boards}"
+                th:value="${board.id}"
+                th:text="${board.name}"></option>
+      </select>
+      <select class="form-control d-none d-md-inline-block mr-1" th:field="*{isAsc}">
+        <option th:value="false"
+                th:text="최근순"></option>
+        <option th:value="true"
+                th:text="오래된순"></option>
+      </select>
+      <select class="form-control mr-1 small" th:field="*{postSearchType}">
+        <option
+            th:each="type:${T(com.yunseojin.MyLittleHomepage.v2.domain.post.vo.PostSearchType).values()}"
+            th:value="${type}"
+            th:text="${type.getDisplayName()}"></option>
+      </select>
+      <div class="input-group">
+        <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
+               th:field="*{keyword}"
+               aria-label="Search" aria-describedby="basic-addon2">
+        <div class="input-group-append">
+          <button class="btn btn-primary" type="submit">
+            <i class="fas fa-search fa-sm"></i>
+          </button>
         </div>
-    </form>
-
-    <div class="navbar-nav my-2 my-md-0">
-
-        <!-- Login Button-->
-        <a th:if="${nickname == null}"
-           class="nav-item btn btn-primary align-self-center" href="/login">
-            <i class="fas fa-sign-in-alt text-white-50"></i>
-            Login
-        </a>
-
-        <!-- Nav Item - User Information -->
-        <div th:if="${nickname != null}" class="nav-item dropdown no-arrow">
-            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 normal">[[${nickname}]]</span>
-                <img class="img-profile rounded-circle"
-                     src="/img/undraw_profile.svg">
-            </a>
-            <!-- Dropdown - User Information -->
-            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                 aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="/modify">
-                    <i class="bi bi-pencil-square fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Edit Profile
-                </a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="/logout">
-                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Logout
-                </a>
-            </div>
-        </div>
+      </div>
     </div>
+  </form>
 
-    <!-- Scroll to Top Button-->
-    <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
+  <div class="navbar-nav my-2 my-md-0">
+
+    <!-- Login Button-->
+    <a th:if="${nickname == null}"
+       class="nav-item btn btn-primary align-self-center" href="/login">
+      <i class="fas fa-sign-in-alt text-white-50"></i>
+      Login
     </a>
+
+    <!-- Nav Item - User Information -->
+    <div th:if="${nickname != null}" class="nav-item dropdown no-arrow">
+      <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="mr-2 d-none d-lg-inline text-gray-600 normal">[[${nickname}]]</span>
+        <img class="img-profile rounded-circle"
+             src="/img/undraw_profile.svg">
+      </a>
+      <!-- Dropdown - User Information -->
+      <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+           aria-labelledby="userDropdown">
+        <a class="dropdown-item" href="/modify">
+          <i class="bi bi-pencil-square fa-sm fa-fw mr-2 text-gray-400"></i>
+          Edit Profile
+        </a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="/logout">
+          <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+          Logout
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
 </nav>

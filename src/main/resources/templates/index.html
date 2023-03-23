@@ -6,322 +6,328 @@
 <!-- Page Wrapper -->
 <div id="wrapper">
 
-    <!-- Sidebar -->
-    <div th:replace="fragments/sidebar :: sidebar"></div>
+  <!-- Sidebar -->
+  <div th:replace="fragments/sidebar :: sidebar"></div>
 
-    <!-- Content Wrapper -->
-    <div id="content-wrapper" class="d-flex flex-column">
+  <!-- Content Wrapper -->
+  <div id="content-wrapper" class="d-flex flex-column">
 
-        <!-- Main Content -->
-        <div id="content">
+    <!-- Main Content -->
+    <div id="content">
 
-            <!-- Topbar -->
-            <nav th:replace="fragments/bodyHeader :: bodyHeader"></nav>
+      <!-- Topbar -->
+      <nav th:replace="fragments/bodyHeader :: bodyHeader"></nav>
 
-            <div class="container">
+      <div class="container">
+        <div class="row">
+
+          <!-- Free board new posts -->
+          <div class="col-xl-6 mb-4">
+            <div class="card shadow h-100 py-2">
+              <div class="card-header">
                 <div class="row">
-
-                    <!-- Free board new posts -->
-                    <div class="col-xl-6 mb-4">
-                        <div class="card shadow h-100 py-2">
-                            <div class="card-header">
-                                <div class="row">
-                                    <h6 class="col font-weight-bold">자유 게시판 최신글</h6>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <table class="table table-striped text-center">
-                                        <thead>
-                                        <tr>
-                                            <th class="col-2">작성자</th>
-                                            <th class="col-6">제목</th>
-                                            <th class="col-2">조회수</th>
-                                            <th class="col-2">좋아요</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr th:each="post : ${freePostsOrderedNew}"
-                                            th:href="@{/posts/{postId}(postId=${post.id})}">
-                                            <td th:text="${post.writerName}"></td>
-                                            <td>
-                                                <a th:href="@{/posts/{postId}(postId=${post.id})}"
-                                                   th:text="${post.title}"></a>
-                                                <span th:if="${post.commentCount} != 0"
-                                                      th:text="${' [' + post.commentCount + ']'}"></span>
-                                            </td>
-                                            <td th:text="${post.viewCount}"></td>
-                                            <td th:text="${post.likeCount}"></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Free board best posts -->
-                    <div class="col-xl-6 mb-4">
-                        <div class="card shadow h-100 py-2">
-                            <div class="card-header">
-                                <div class="row">
-                                    <h6 class="col font-weight-bold">자유 게시판 인기글</h6>
-                                    <div class="col">
-                                        <div class="row justify-content-end">
-                                            <span id="test"></span>
-                                            <select class="col-auto border-0 bg-light" onchange="changeBestFreePosts(value)">
-                                                <option th:each="type:${T(com.yunseojin.MyLittleHomepage.etc.enums.PostOrderType).values()}" th:value="${type.code}"
-                                                        th:text="${type.displayName}"></option>
-                                            </select>
-                                        </div>
-
-
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <table id="bestFreePosts0" class="table table-striped text-center">
-                                        <thead>
-                                        <tr>
-                                            <th class="col-2">작성자</th>
-                                            <th class="col-6">제목</th>
-                                            <th class="col-2">조회수</th>
-                                            <th class="col-2">좋아요</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr th:each="post : ${freePostsOrderedLike}"
-                                            th:href="@{/posts/{postId}(postId=${post.id})}">
-                                            <td th:text="${post.writerName}"></td>
-                                            <td>
-                                                <a th:href="@{/posts/{postId}(postId=${post.id})}"
-                                                   th:text="${post.title}"></a>
-                                                <span th:if="${post.commentCount} != 0"
-                                                      th:text="${' [' + post.commentCount + ']'}"></span>
-                                            </td>
-                                            <td th:text="${post.viewCount}"></td>
-                                            <td th:text="${post.likeCount}"></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                    <table id="bestFreePosts1" class="table table-striped text-center" hidden>
-                                        <thead>
-                                        <tr>
-                                            <th class="col-2">작성자</th>
-                                            <th class="col-6">제목</th>
-                                            <th class="col-2">조회수</th>
-                                            <th class="col-2">좋아요</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr th:each="post : ${freePostsOrderedComment}"
-                                            th:href="@{/posts/{postId}(postId=${post.id})}">
-                                            <td th:text="${post.writerName}"></td>
-                                            <td>
-                                                <a th:href="@{/posts/{postId}(postId=${post.id})}"
-                                                   th:text="${post.title}"></a>
-                                                <span th:if="${post.commentCount} != 0"
-                                                      th:text="${' [' + post.commentCount + ']'}"></span>
-                                            </td>
-                                            <td th:text="${post.viewCount}"></td>
-                                            <td th:text="${post.likeCount}"></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                    <table id="bestFreePosts2" class="table table-striped text-center" hidden>
-                                        <thead>
-                                        <tr>
-                                            <th class="col-2">작성자</th>
-                                            <th class="col-6">제목</th>
-                                            <th class="col-2">조회수</th>
-                                            <th class="col-2">좋아요</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr th:each="post : ${freePostsOrderedView}"
-                                            th:href="@{/posts/{postId}(postId=${post.id})}">
-                                            <td th:text="${post.writerName}"></td>
-                                            <td>
-                                                <a th:href="@{/posts/{postId}(postId=${post.id})}"
-                                                   th:text="${post.title}"></a>
-                                                <span th:if="${post.commentCount} != 0"
-                                                      th:text="${' [' + post.commentCount + ']'}"></span>
-                                            </td>
-                                            <td th:text="${post.viewCount}"></td>
-                                            <td th:text="${post.likeCount}"></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Humor board new posts -->
-                    <div class="col-xl-6 mb-4">
-                        <div class="card shadow h-100 py-2">
-                            <div class="card-header">
-                                <div class="row">
-                                    <h6 class="col font-weight-bold">유머 게시판 최신글</h6>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <table class="table table-striped text-center">
-                                        <thead>
-                                        <tr>
-                                            <th class="col-2">작성자</th>
-                                            <th class="col-6">제목</th>
-                                            <th class="col-2">조회수</th>
-                                            <th class="col-2">좋아요</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr th:each="post : ${humorPostsOrderedNew}"
-                                            th:href="@{/posts/{postId}(postId=${post.id})}">
-                                            <td th:text="${post.writerName}"></td>
-                                            <td>
-                                                <a th:href="@{/posts/{postId}(postId=${post.id})}"
-                                                   th:text="${post.title}"></a>
-                                                <span th:if="${post.commentCount} != 0"
-                                                      th:text="${' [' + post.commentCount + ']'}"></span>
-                                            </td>
-                                            <td th:text="${post.viewCount}"></td>
-                                            <td th:text="${post.likeCount}"></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Humor board best posts -->
-                    <div class="col-xl-6 mb-4">
-                        <div class="card shadow h-100 py-2">
-                            <div class="card-header">
-                                <div class="row">
-                                    <h6 class="col font-weight-bold">유머 게시판 인기글</h6>
-                                    <div class="col">
-                                        <div class="row justify-content-end">
-                                            <select class="col-auto border-0 bg-light" onchange="changeBestHumorPosts(value)">
-                                                <option th:each="type:${T(com.yunseojin.MyLittleHomepage.etc.enums.PostOrderType).values()}" th:value="${type.code}"
-                                                        th:text="${type.displayName}"></option>
-                                            </select>
-                                        </div>
-
-
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <table id="bestHumorPosts0" class="table table-striped text-center">
-                                        <thead>
-                                        <tr>
-                                            <th class="col-2">작성자</th>
-                                            <th class="col-6">제목</th>
-                                            <th class="col-2">조회수</th>
-                                            <th class="col-2">좋아요</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr th:each="post : ${humorPostsOrderedLike}"
-                                            th:href="@{/posts/{postId}(postId=${post.id})}">
-                                            <td th:text="${post.writerName}"></td>
-                                            <td>
-                                                <a th:href="@{/posts/{postId}(postId=${post.id})}"
-                                                   th:text="${post.title}"></a>
-                                                <span th:if="${post.commentCount} != 0"
-                                                      th:text="${' [' + post.commentCount + ']'}"></span>
-                                            </td>
-                                            <td th:text="${post.viewCount}"></td>
-                                            <td th:text="${post.likeCount}"></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                    <table id="bestHumorPosts1" class="table table-striped text-center" hidden>
-                                        <thead>
-                                        <tr>
-                                            <th class="col-2">작성자</th>
-                                            <th class="col-6">제목</th>
-                                            <th class="col-2">조회수</th>
-                                            <th class="col-2">좋아요</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr th:each="post : ${humorPostsOrderedComment}"
-                                            th:href="@{/posts/{postId}(postId=${post.id})}">
-                                            <td th:text="${post.writerName}"></td>
-                                            <td>
-                                                <a th:href="@{/posts/{postId}(postId=${post.id})}"
-                                                   th:text="${post.title}"></a>
-                                                <span th:if="${post.commentCount} != 0"
-                                                      th:text="${' [' + post.commentCount + ']'}"></span>
-                                            </td>
-                                            <td th:text="${post.viewCount}"></td>
-                                            <td th:text="${post.likeCount}"></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                    <table id="bestHumorPosts2" class="table table-striped text-center" hidden>
-                                        <thead>
-                                        <tr>
-                                            <th class="col-2">작성자</th>
-                                            <th class="col-6">제목</th>
-                                            <th class="col-2">조회수</th>
-                                            <th class="col-2">좋아요</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr th:each="post : ${humorPostsOrderedView}"
-                                            th:href="@{/posts/{postId}(postId=${post.id})}">
-                                            <td th:text="${post.writerName}"></td>
-                                            <td>
-                                                <a th:href="@{/posts/{postId}(postId=${post.id})}"
-                                                   th:text="${post.title}"></a>
-                                                <span th:if="${post.commentCount} != 0"
-                                                      th:text="${' [' + post.commentCount + ']'}"></span>
-                                            </td>
-                                            <td th:text="${post.viewCount}"></td>
-                                            <td th:text="${post.likeCount}"></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                  <h6 class="col font-weight-bold">자유 게시판 최신글</h6>
                 </div>
+              </div>
+              <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                  <table class="table table-striped text-center">
+                    <thead>
+                    <tr>
+                      <th class="col-2">작성자</th>
+                      <th class="col-6">제목</th>
+                      <th class="col-2">조회수</th>
+                      <th class="col-2">좋아요</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="post : ${freePostsOrderedNew}"
+                        th:href="@{/posts/{postId}(postId=${post.id})}">
+                      <td th:text="${post.writerName}"></td>
+                      <td>
+                        <a th:href="@{/posts/{postId}(postId=${post.id})}"
+                           th:text="${post.title}"></a>
+                        <span th:if="${post.commentCount} != 0"
+                              th:text="${' [' + post.commentCount + ']'}"></span>
+                      </td>
+                      <td th:text="${post.viewCount}"></td>
+                      <td th:text="${post.likeCount}"></td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
+          </div>
 
-            <!-- Footer -->
-            <footer th:replace="fragments/footer :: footer"></footer>
+          <!-- Free board best posts -->
+          <div class="col-xl-6 mb-4">
+            <div class="card shadow h-100 py-2">
+              <div class="card-header">
+                <div class="row">
+                  <h6 class="col font-weight-bold">자유 게시판 인기글</h6>
+                  <div class="col">
+                    <div class="row justify-content-end">
+                      <span id="test"></span>
+                      <select class="col-auto border-0 bg-light"
+                              onchange="changeBestFreePosts(value)">
+                        <option
+                            th:each="type:${T(com.yunseojin.MyLittleHomepage.v2.domain.post.vo.PostOrderType).values()}"
+                            th:value="${type.code}"
+                            th:text="${type.displayName}"></option>
+                      </select>
+                    </div>
 
+
+                  </div>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                  <table id="bestFreePosts0" class="table table-striped text-center">
+                    <thead>
+                    <tr>
+                      <th class="col-2">작성자</th>
+                      <th class="col-6">제목</th>
+                      <th class="col-2">조회수</th>
+                      <th class="col-2">좋아요</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="post : ${freePostsOrderedLike}"
+                        th:href="@{/posts/{postId}(postId=${post.id})}">
+                      <td th:text="${post.writerName}"></td>
+                      <td>
+                        <a th:href="@{/posts/{postId}(postId=${post.id})}"
+                           th:text="${post.title}"></a>
+                        <span th:if="${post.commentCount} != 0"
+                              th:text="${' [' + post.commentCount + ']'}"></span>
+                      </td>
+                      <td th:text="${post.viewCount}"></td>
+                      <td th:text="${post.likeCount}"></td>
+                    </tr>
+                    </tbody>
+                  </table>
+                  <table id="bestFreePosts1" class="table table-striped text-center" hidden>
+                    <thead>
+                    <tr>
+                      <th class="col-2">작성자</th>
+                      <th class="col-6">제목</th>
+                      <th class="col-2">조회수</th>
+                      <th class="col-2">좋아요</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="post : ${freePostsOrderedComment}"
+                        th:href="@{/posts/{postId}(postId=${post.id})}">
+                      <td th:text="${post.writerName}"></td>
+                      <td>
+                        <a th:href="@{/posts/{postId}(postId=${post.id})}"
+                           th:text="${post.title}"></a>
+                        <span th:if="${post.commentCount} != 0"
+                              th:text="${' [' + post.commentCount + ']'}"></span>
+                      </td>
+                      <td th:text="${post.viewCount}"></td>
+                      <td th:text="${post.likeCount}"></td>
+                    </tr>
+                    </tbody>
+                  </table>
+                  <table id="bestFreePosts2" class="table table-striped text-center" hidden>
+                    <thead>
+                    <tr>
+                      <th class="col-2">작성자</th>
+                      <th class="col-6">제목</th>
+                      <th class="col-2">조회수</th>
+                      <th class="col-2">좋아요</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="post : ${freePostsOrderedView}"
+                        th:href="@{/posts/{postId}(postId=${post.id})}">
+                      <td th:text="${post.writerName}"></td>
+                      <td>
+                        <a th:href="@{/posts/{postId}(postId=${post.id})}"
+                           th:text="${post.title}"></a>
+                        <span th:if="${post.commentCount} != 0"
+                              th:text="${' [' + post.commentCount + ']'}"></span>
+                      </td>
+                      <td th:text="${post.viewCount}"></td>
+                      <td th:text="${post.likeCount}"></td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Humor board new posts -->
+          <div class="col-xl-6 mb-4">
+            <div class="card shadow h-100 py-2">
+              <div class="card-header">
+                <div class="row">
+                  <h6 class="col font-weight-bold">유머 게시판 최신글</h6>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                  <table class="table table-striped text-center">
+                    <thead>
+                    <tr>
+                      <th class="col-2">작성자</th>
+                      <th class="col-6">제목</th>
+                      <th class="col-2">조회수</th>
+                      <th class="col-2">좋아요</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="post : ${humorPostsOrderedNew}"
+                        th:href="@{/posts/{postId}(postId=${post.id})}">
+                      <td th:text="${post.writerName}"></td>
+                      <td>
+                        <a th:href="@{/posts/{postId}(postId=${post.id})}"
+                           th:text="${post.title}"></a>
+                        <span th:if="${post.commentCount} != 0"
+                              th:text="${' [' + post.commentCount + ']'}"></span>
+                      </td>
+                      <td th:text="${post.viewCount}"></td>
+                      <td th:text="${post.likeCount}"></td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Humor board best posts -->
+          <div class="col-xl-6 mb-4">
+            <div class="card shadow h-100 py-2">
+              <div class="card-header">
+                <div class="row">
+                  <h6 class="col font-weight-bold">유머 게시판 인기글</h6>
+                  <div class="col">
+                    <div class="row justify-content-end">
+                      <select class="col-auto border-0 bg-light"
+                              onchange="changeBestHumorPosts(value)">
+                        <option
+                            th:each="type:${T(com.yunseojin.MyLittleHomepage.v2.domain.post.vo.PostOrderType).values()}"
+                            th:value="${type.code}"
+                            th:text="${type.displayName}"></option>
+                      </select>
+                    </div>
+
+
+                  </div>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                  <table id="bestHumorPosts0" class="table table-striped text-center">
+                    <thead>
+                    <tr>
+                      <th class="col-2">작성자</th>
+                      <th class="col-6">제목</th>
+                      <th class="col-2">조회수</th>
+                      <th class="col-2">좋아요</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="post : ${humorPostsOrderedLike}"
+                        th:href="@{/posts/{postId}(postId=${post.id})}">
+                      <td th:text="${post.writerName}"></td>
+                      <td>
+                        <a th:href="@{/posts/{postId}(postId=${post.id})}"
+                           th:text="${post.title}"></a>
+                        <span th:if="${post.commentCount} != 0"
+                              th:text="${' [' + post.commentCount + ']'}"></span>
+                      </td>
+                      <td th:text="${post.viewCount}"></td>
+                      <td th:text="${post.likeCount}"></td>
+                    </tr>
+                    </tbody>
+                  </table>
+                  <table id="bestHumorPosts1" class="table table-striped text-center" hidden>
+                    <thead>
+                    <tr>
+                      <th class="col-2">작성자</th>
+                      <th class="col-6">제목</th>
+                      <th class="col-2">조회수</th>
+                      <th class="col-2">좋아요</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="post : ${humorPostsOrderedComment}"
+                        th:href="@{/posts/{postId}(postId=${post.id})}">
+                      <td th:text="${post.writerName}"></td>
+                      <td>
+                        <a th:href="@{/posts/{postId}(postId=${post.id})}"
+                           th:text="${post.title}"></a>
+                        <span th:if="${post.commentCount} != 0"
+                              th:text="${' [' + post.commentCount + ']'}"></span>
+                      </td>
+                      <td th:text="${post.viewCount}"></td>
+                      <td th:text="${post.likeCount}"></td>
+                    </tr>
+                    </tbody>
+                  </table>
+                  <table id="bestHumorPosts2" class="table table-striped text-center" hidden>
+                    <thead>
+                    <tr>
+                      <th class="col-2">작성자</th>
+                      <th class="col-6">제목</th>
+                      <th class="col-2">조회수</th>
+                      <th class="col-2">좋아요</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="post : ${humorPostsOrderedView}"
+                        th:href="@{/posts/{postId}(postId=${post.id})}">
+                      <td th:text="${post.writerName}"></td>
+                      <td>
+                        <a th:href="@{/posts/{postId}(postId=${post.id})}"
+                           th:text="${post.title}"></a>
+                        <span th:if="${post.commentCount} != 0"
+                              th:text="${' [' + post.commentCount + ']'}"></span>
+                      </td>
+                      <td th:text="${post.viewCount}"></td>
+                      <td th:text="${post.likeCount}"></td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <!-- End of Content Wrapper -->
+      </div>
+
+      <!-- Footer -->
+      <footer th:replace="fragments/footer :: footer"></footer>
 
     </div>
-    <!-- End of Page Wrapper -->
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
 </div>
 
 </body>
 
 <script>
-    function changeBestFreePosts(index){
-        document.getElementById('bestFreePosts0').hidden = true;
-        document.getElementById('bestFreePosts1').hidden = true;
-        document.getElementById('bestFreePosts2').hidden = true;
-        document.getElementById('bestFreePosts'+index).hidden = false;
-    }
+  function changeBestFreePosts(index) {
+    document.getElementById('bestFreePosts0').hidden = true;
+    document.getElementById('bestFreePosts1').hidden = true;
+    document.getElementById('bestFreePosts2').hidden = true;
+    document.getElementById('bestFreePosts' + index).hidden = false;
+  }
 
-    function changeBestHumorPosts(index){
-        document.getElementById('bestHumorPosts0').hidden = true;
-        document.getElementById('bestHumorPosts1').hidden = true;
-        document.getElementById('bestHumorPosts2').hidden = true;
-        document.getElementById('bestHumorPosts'+index).hidden = false;
-    }
+  function changeBestHumorPosts(index) {
+    document.getElementById('bestHumorPosts0').hidden = true;
+    document.getElementById('bestHumorPosts1').hidden = true;
+    document.getElementById('bestHumorPosts2').hidden = true;
+    document.getElementById('bestHumorPosts' + index).hidden = false;
+  }
 </script>
 
 </html>

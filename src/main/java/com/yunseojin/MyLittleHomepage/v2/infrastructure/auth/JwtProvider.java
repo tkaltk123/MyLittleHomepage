@@ -1,6 +1,5 @@
 package com.yunseojin.MyLittleHomepage.v2.infrastructure.auth;
 
-import com.yunseojin.MyLittleHomepage.util.PasswordUtil;
 import com.yunseojin.MyLittleHomepage.v2.domain.auth.service.AuthService;
 import com.yunseojin.MyLittleHomepage.v2.domain.auth.vo.Token;
 import com.yunseojin.MyLittleHomepage.v2.domain.member.query.model.QueriedMember;
@@ -21,6 +20,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,7 +72,9 @@ public class JwtProvider implements UserDetailsService, AuthService {
     }
 
     private void validatePassword(UserDetails user, String password) {
-        if (Objects.isNull(user) || !PasswordUtil.equals(password, user.getPassword())) {
+        ;
+        if (Objects.isNull(user) || !(password != null && BCrypt.checkpw(password,
+                user.getPassword()))) {
             throw new BadCredentialsException("잘못된 계정정보입니다.");
         }
     }

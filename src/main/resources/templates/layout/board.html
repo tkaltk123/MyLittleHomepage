@@ -6,132 +6,135 @@
 <!-- Page Wrapper -->
 <div id="wrapper">
 
-    <!-- Sidebar -->
-    <div th:replace="fragments/sidebar :: sidebar"></div>
+  <!-- Sidebar -->
+  <div th:replace="fragments/sidebar :: sidebar"></div>
 
-    <!-- Content Wrapper -->
-    <div id="content-wrapper" class="d-flex flex-column">
-        <!-- Main Content -->
-        <div id="content">
+  <!-- Content Wrapper -->
+  <div id="content-wrapper" class="d-flex flex-column">
+    <!-- Main Content -->
+    <div id="content">
 
-            <!-- Topbar -->
-            <nav th:replace="fragments/bodyHeader :: bodyHeader"></nav>
+      <!-- Topbar -->
+      <nav th:replace="fragments/bodyHeader :: bodyHeader"></nav>
 
-            <div class="container">
-                <table class="table table-striped text-center">
-                    <thead>
-                    <tr>
-                        <th class="col-1">번호</th>
-                        <th class="col-5">제목</th>
-                        <th class="col-1">작성자</th>
-                        <th class="col-1">조회수</th>
-                        <th class="col-1">좋아요</th>
-                        <th class="col-1">싫어요</th>
-                        <th class="col-2">작성일자</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="post : ${posts}" th:href="@{/posts/{postId}(postId=${post.id})}">
-                        <td th:text="${post.id}"></td>
-                        <td>
-                            <a th:href="@{/posts/{postId}(postId=${post.id})}"
-                               th:text="${post.title}"></a>
-                            <span th:if="${post.commentCount} != 0"
-                                  th:text="${' [' + post.commentCount + ']'}"></span>
-                        </td>
-                        <td th:text="${post.writerName}"></td>
-                        <td th:text="${post.viewCount}"></td>
-                        <td th:text="${post.likeCount}"></td>
-                        <td th:text="${post.dislikeCount}"></td>
-                        <td th:text="${#dates.format(post.createdAt,'yyyy-MM-dd HH:mm')}"></td>
-                    </tr>
-                    </tbody>
-                </table>
-                <hr/>
-                <div class="row justify-content-center white">
+      <div class="container">
+        <table class="table table-striped text-center">
+          <thead>
+          <tr>
+            <th class="col-1">번호</th>
+            <th class="col-5">제목</th>
+            <th class="col-1">작성자</th>
+            <th class="col-1">조회수</th>
+            <th class="col-1">좋아요</th>
+            <th class="col-1">싫어요</th>
+            <th class="col-2">작성일자</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="post : ${posts}" th:href="@{/posts/{postId}(postId=${post.id})}">
+            <td th:text="${post.id}"></td>
+            <td>
+              <a th:href="@{/posts/{postId}(postId=${post.id})}"
+                 th:text="${post.title}"></a>
+              <span th:if="${post.commentCount} != 0"
+                    th:text="${' [' + post.commentCount + ']'}"></span>
+            </td>
+            <td th:text="${post.writerName}"></td>
+            <td th:text="${post.viewCount}"></td>
+            <td th:text="${post.likeCount}"></td>
+            <td th:text="${post.dislikeCount}"></td>
+            <td th:text="${#dates.format(post.createdAt,'yyyy-MM-dd HH:mm')}"></td>
+          </tr>
+          </tbody>
+        </table>
+        <hr/>
+        <div class="row justify-content-center white">
 
-                    <a class="nav-item btn btn-primary align-self-center mr-4"
-                       th:href="@{/boards/{board_id}/write_post(board_id = ${board_id})}">
-                        <i class="bi bi-pencil-square"></i>
-                        글쓰기
-                    </a>
-                    <form class="navbar-search mr-4" th:object="${postSearch}">
-                        <div class="input-group">
-                            <select class="form-control bg-light small w-25" th:field="*{postSearchType}">
-                                <option th:each="type:${T(com.yunseojin.MyLittleHomepage.etc.enums.PostSearchType).values()}" th:value="${type}"
-                                        th:text="${type.getDisplayName()}"></option>
-                            </select>
-                            <input type="text" class="form-control bg-light small w-50" placeholder="Search for..."
-                                   th:field="*{keyword}"
-                                   aria-label="Search" aria-describedby="basic-addon2">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary" type="submit">
-                                    <i class="fas fa-search fa-sm"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-
-                    <div>
-                        <div class="pagination">
-
-                            <!--Prev button-->
-                            <div class="page-item" th:if="${startPage}>0">
-                                <a class="page-link"
-                                   th:href="@{/boards/{board_id}(board_id=${board_id}, page=${startPage - 1}, postSearchType=${postSearch.postSearchType}, keyword=${postSearch.keyword})}">
-                                    Prev
-                                </a>
-                            </div>
-
-                            <!--If first page-->
-                            <div class="page-item disabled" th:if="${startPage}<=0">
-                                <a class="page-link">
-                                    Prev
-                                </a>
-                            </div>
-
-                            <!--Page Buttons-->
-                            <th:block th:each="page : ${#numbers.sequence(startPage,endPage)}">
-                                <li th:if="${page}!=${postSearch.page}" class="page-item">
-                                    <a class="page-link"
-                                       th:href="@{/boards/{board_id}(board_id=${board_id}, page=${page}, postSearchType=${postSearch.postSearchType}, keyword=${postSearch.keyword})}"
-                                       th:text="${page+1}"></a>
-                                </li>
-
-                                <!-- If current page-->
-                                <li th:if="${page}==${postSearch.page}" class="page-item active">
-                                    <a class="page-link" th:text="${page+1}"></a>
-                                </li>
-                            </th:block>
-
-                            <!--Next button-->
-                            <div class="page-item" th:if="${endPage}<${totalPage - 1}">
-                                <a class="page-link"
-                                   th:href="@{/boards/{board_id}(board_id=${board_id}, page=${endPage+1}, postSearchType=${postSearch.postSearchType}, keyword=${postSearch.keyword})}">
-                                    Next
-                                </a>
-                            </div>
-
-                            <!--If last page-->
-                            <div class="page-item disabled" th:if="${endPage}>=${totalPage - 1}">
-                                <a class="page-link">
-                                    Next
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+          <a class="nav-item btn btn-primary align-self-center mr-4"
+             th:href="@{/boards/{board_id}/write_post(board_id = ${board_id})}">
+            <i class="bi bi-pencil-square"></i>
+            글쓰기
+          </a>
+          <form class="navbar-search mr-4" th:object="${postSearch}">
+            <div class="input-group">
+              <select class="form-control bg-light small w-25" th:field="*{postSearchType}">
+                <option
+                    th:each="type:${T(com.yunseojin.MyLittleHomepage.v2.domain.post.vo.PostSearchType).values()}"
+                    th:value="${type}"
+                    th:text="${type.getDisplayName()}"></option>
+              </select>
+              <input type="text" class="form-control bg-light small w-50"
+                     placeholder="Search for..."
+                     th:field="*{keyword}"
+                     aria-label="Search" aria-describedby="basic-addon2">
+              <div class="input-group-append">
+                <button class="btn btn-primary" type="submit">
+                  <i class="fas fa-search fa-sm"></i>
+                </button>
+              </div>
             </div>
+          </form>
 
+          <div>
+            <div class="pagination">
 
+              <!--Prev button-->
+              <div class="page-item" th:if="${startPage}>0">
+                <a class="page-link"
+                   th:href="@{/boards/{board_id}(board_id=${board_id}, page=${startPage - 1}, postSearchType=${postSearch.postSearchType}, keyword=${postSearch.keyword})}">
+                  Prev
+                </a>
+              </div>
+
+              <!--If first page-->
+              <div class="page-item disabled" th:if="${startPage}<=0">
+                <a class="page-link">
+                  Prev
+                </a>
+              </div>
+
+              <!--Page Buttons-->
+              <th:block th:each="page : ${#numbers.sequence(startPage,endPage)}">
+                <li th:if="${page}!=${postSearch.page}" class="page-item">
+                  <a class="page-link"
+                     th:href="@{/boards/{board_id}(board_id=${board_id}, page=${page}, postSearchType=${postSearch.postSearchType}, keyword=${postSearch.keyword})}"
+                     th:text="${page+1}"></a>
+                </li>
+
+                <!-- If current page-->
+                <li th:if="${page}==${postSearch.page}" class="page-item active">
+                  <a class="page-link" th:text="${page+1}"></a>
+                </li>
+              </th:block>
+
+              <!--Next button-->
+              <div class="page-item" th:if="${endPage}<${totalPage - 1}">
+                <a class="page-link"
+                   th:href="@{/boards/{board_id}(board_id=${board_id}, page=${endPage+1}, postSearchType=${postSearch.postSearchType}, keyword=${postSearch.keyword})}">
+                  Next
+                </a>
+              </div>
+
+              <!--If last page-->
+              <div class="page-item disabled" th:if="${endPage}>=${totalPage - 1}">
+                <a class="page-link">
+                  Next
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
-        <!-- End of Main Content -->
+      </div>
 
-        <!-- Footer -->
-        <footer th:replace="fragments/footer :: footer"></footer>
 
     </div>
-    <!-- End of Content Wrapper -->
+    <!-- End of Main Content -->
+
+    <!-- Footer -->
+    <footer th:replace="fragments/footer :: footer"></footer>
+
+  </div>
+  <!-- End of Content Wrapper -->
 
 </div>
 <!-- End of Page Wrapper -->

@@ -1,8 +1,5 @@
 package com.yunseojin.MyLittleHomepage.v2.controller.member;
 
-import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
-import com.yunseojin.MyLittleHomepage.etc.enums.ErrorMessage;
-import com.yunseojin.MyLittleHomepage.etc.exception.BadRequestException;
 import com.yunseojin.MyLittleHomepage.v2.application.auth.dto.command.LoginCommand;
 import com.yunseojin.MyLittleHomepage.v2.application.auth.dto.command.RefreshCommand;
 import com.yunseojin.MyLittleHomepage.v2.application.auth.dto.response.TokenResponse;
@@ -12,6 +9,8 @@ import com.yunseojin.MyLittleHomepage.v2.application.member.dto.command.DeleteMe
 import com.yunseojin.MyLittleHomepage.v2.application.member.dto.command.UpdateMemberCommand;
 import com.yunseojin.MyLittleHomepage.v2.application.member.dto.query.GetMemberQuery;
 import com.yunseojin.MyLittleHomepage.v2.application.member.dto.response.MemberResponse;
+import com.yunseojin.MyLittleHomepage.v2.domain.contract.command.exception.BaseErrorMessage;
+import com.yunseojin.MyLittleHomepage.v2.domain.contract.command.exception.BaseException;
 import io.swagger.annotations.ApiOperation;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +35,6 @@ public class ApiMemberController {
     @Value("${jwt.refresh.name}")
     private String refreshTokenName;
 
-    @Login(required = false)
     @PostMapping("/register")
     @ApiOperation(value = "회원가입", notes = "회원 정보를 생성합니다.")
     public ResponseEntity<MemberResponse> register(@RequestBody CreateMemberCommand command) {
@@ -55,7 +53,6 @@ public class ApiMemberController {
         return ResponseEntity.ok(applicationService.executeCommand(command));
     }
 
-    @Login(required = false)
     @PostMapping("/login")
     @ApiOperation(value = "로그인", notes = "토큰을 사용해 로그인합니다.")
     public ResponseEntity<TokenResponse> login(@RequestBody LoginCommand command) {
@@ -81,7 +78,7 @@ public class ApiMemberController {
         }
 
         if (!bearerToken.startsWith("Bearer ")) {
-            throw new BadRequestException(ErrorMessage.INVALID_TOKEN_EXCEPTION);
+            throw new BaseException(BaseErrorMessage.INVALID_TOKEN_EXCEPTION);
         }
 
         return bearerToken.substring(7);

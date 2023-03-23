@@ -1,7 +1,7 @@
 package com.yunseojin.MyLittleHomepage.v2.application.post.dto.query;
 
-import com.yunseojin.MyLittleHomepage.etc.enums.PostSearchType;
 import com.yunseojin.MyLittleHomepage.v2.application.post.dto.PostSearchQuery;
+import com.yunseojin.MyLittleHomepage.v2.domain.post.vo.PostSearchType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

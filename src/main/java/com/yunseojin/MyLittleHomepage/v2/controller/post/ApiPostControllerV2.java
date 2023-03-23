@@ -1,6 +1,5 @@
 package com.yunseojin.MyLittleHomepage.v2.controller.post;
 
-import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
 import com.yunseojin.MyLittleHomepage.v2.application.contract.service.ApplicationService;
 import com.yunseojin.MyLittleHomepage.v2.application.post.dto.command.CreatePostCommand;
 import com.yunseojin.MyLittleHomepage.v2.application.post.dto.command.DeletePostCommand;
@@ -40,7 +39,6 @@ public class ApiPostControllerV2 {
         return ResponseEntity.ok(applicationService.executeQuery(query));
     }
 
-    @Login
     @DeleteMapping("/{post_id}")
     @ApiOperation(value = "게시글 삭제", notes = "게시글을 삭제합니다.")
     public ResponseEntity<Void> delete(@PathVariable("post_id") Long postId) {
@@ -51,7 +49,6 @@ public class ApiPostControllerV2 {
         return ResponseEntity.ok(applicationService.executeCommand(command));
     }
 
-    @Login
     @PatchMapping("/{post_id}")
     @ApiOperation(value = "게시글 수정", notes = "게시글을 수정합니다.")
     public ResponseEntity<PostResponse> update(
@@ -82,7 +79,6 @@ public class ApiPostControllerV2 {
         return ResponseEntity.ok(applicationService.executeQuery(query));
     }
 
-    @Login
     @PostMapping("/boards/{board_id}")
     @ApiOperation(value = "게시글 작성", notes = "게시판에 게시글을 작성합니다.")
     public ResponseEntity<PostResponse> create(

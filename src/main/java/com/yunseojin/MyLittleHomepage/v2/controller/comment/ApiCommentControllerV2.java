@@ -1,6 +1,5 @@
 package com.yunseojin.MyLittleHomepage.v2.controller.comment;
 
-import com.yunseojin.MyLittleHomepage.etc.annotation.Login;
 import com.yunseojin.MyLittleHomepage.v2.application.comment.dto.command.CreateCommentCommand;
 import com.yunseojin.MyLittleHomepage.v2.application.comment.dto.command.DeleteCommentCommand;
 import com.yunseojin.MyLittleHomepage.v2.application.comment.dto.command.UpdateCommentCommand;
@@ -40,7 +39,6 @@ public class ApiCommentControllerV2 {
         return ResponseEntity.ok(applicationService.executeQuery(query));
     }
 
-    @Login
     @PostMapping("/posts/{post_id}")
     @ApiOperation(value = "댓글 작성", notes = "게시글에 댓글을 작성합니다.")
     public ResponseEntity<CommentResponse> create(
@@ -52,7 +50,6 @@ public class ApiCommentControllerV2 {
         return ResponseEntity.ok(applicationService.executeCommand(command));
     }
 
-    @Login
     @DeleteMapping("/{comment_id}")
     @ApiOperation(value = "댓글 삭제", notes = "댓글을 삭제합니다.")
     public ResponseEntity<Void> delete(
@@ -63,7 +60,6 @@ public class ApiCommentControllerV2 {
         return ResponseEntity.ok(applicationService.executeCommand(command));
     }
 
-    @Login
     @PatchMapping("/{comment_id}")
     @ApiOperation(value = "댓글 수정", notes = "댓글을 수정합니다.")
     public ResponseEntity<CommentResponse> update(
