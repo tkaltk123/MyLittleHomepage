@@ -59,7 +59,7 @@
             <div class="input-group">
               <select class="form-control bg-light small w-25" th:field="*{postSearchType}">
                 <option
-                    th:each="type:${T(com.yunseojin.MyLittleHomepage.v2.domain.post.vo.PostSearchType).values()}"
+                    th:each="type:${T(com.yunseojin.MyLittleHomepage.domain.post.vo.PostSearchType).values()}"
                     th:value="${type}"
                     th:text="${type.getDisplayName()}"></option>
               </select>

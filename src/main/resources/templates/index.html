@@ -72,7 +72,7 @@
                       <select class="col-auto border-0 bg-light"
                               onchange="changeBestFreePosts(value)">
                         <option
-                            th:each="type:${T(com.yunseojin.MyLittleHomepage.v2.domain.post.vo.PostOrderType).values()}"
+                            th:each="type:${T(com.yunseojin.MyLittleHomepage.domain.post.vo.PostOrderType).values()}"
                             th:value="${type.code}"
                             th:text="${type.displayName}"></option>
                       </select>
@@ -211,7 +211,7 @@
                       <select class="col-auto border-0 bg-light"
                               onchange="changeBestHumorPosts(value)">
                         <option
-                            th:each="type:${T(com.yunseojin.MyLittleHomepage.v2.domain.post.vo.PostOrderType).values()}"
+                            th:each="type:${T(com.yunseojin.MyLittleHomepage.domain.post.vo.PostOrderType).values()}"
                             th:value="${type.code}"
                             th:text="${type.displayName}"></option>
                       </select>
