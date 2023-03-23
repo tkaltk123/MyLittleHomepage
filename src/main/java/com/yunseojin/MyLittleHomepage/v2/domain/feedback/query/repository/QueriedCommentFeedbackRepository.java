@@ -8,6 +8,4 @@ import org.springframework.stereotype.Repository;
 public interface QueriedCommentFeedbackRepository extends
         ReadOnlyRepository<QueriedCommentFeedback> {
 
-    QueriedCommentFeedback getByWriterIdAndCommentId(Long writerId, Long commentId);
-
 }

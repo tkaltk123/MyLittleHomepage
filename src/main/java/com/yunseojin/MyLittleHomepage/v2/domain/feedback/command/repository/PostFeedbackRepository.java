@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PostFeedbackRepository extends FeedbackRepository<PostFeedback> {
 
+    PostFeedback getByWriterIdAndPostId(Long writerId, Long postId);
 }

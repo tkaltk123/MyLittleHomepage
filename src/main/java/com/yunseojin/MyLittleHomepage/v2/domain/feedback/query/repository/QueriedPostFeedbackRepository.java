@@ -7,6 +7,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface QueriedPostFeedbackRepository extends ReadOnlyRepository<QueriedPostFeedback> {
 
-    QueriedPostFeedback getByWriterIdAndPostId(Long writerId, Long postId);
-
 }
