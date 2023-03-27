@@ -2,7 +2,6 @@ package com.yunseojin.MyLittleHomepage.infrastructure.auth;
 
 import com.yunseojin.MyLittleHomepage.domain.auth.service.SecurityContextAccessor;
 import com.yunseojin.MyLittleHomepage.domain.member.query.model.QueriedMember;
-import java.util.Objects;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -12,14 +11,13 @@ public class SecurityContextAccessorImpl implements SecurityContextAccessor {
     @Override
     public QueriedMember getMember() {
 
-        var principal = SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
-
-        if (Objects.nonNull(principal) && principal instanceof UserDetailsImpl) {
-            return ((UserDetailsImpl) principal).getMember();
+        try {
+            return ((UserDetailsImpl) SecurityContextHolder.getContext()
+                    .getAuthentication()
+                    .getPrincipal())
+                    .getMember();
+        } catch (Exception ignore) {
         }
-
         return null;
     }
 }

@@ -20,8 +20,9 @@ public class SecurityContextBinder {
     @Around("execution(* handle( com.yunseojin.MyLittleHomepage.domain.member.query.model.MemberContainer+))")
     public Object bindMember(ProceedingJoinPoint joinPoint) throws Throwable {
         var authOperation = getMemberContainer(joinPoint);
-        if (Objects.nonNull(authOperation)) {
-            authOperation.setMember(contextAccessor.getMember());
+        var member = contextAccessor.getMember();
+        if (Objects.nonNull(authOperation) && Objects.nonNull(member)) {
+            authOperation.setMember(member);
         }
         return joinPoint.proceed(new Object[]{authOperation});
     }

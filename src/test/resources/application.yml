@@ -1,0 +1,19 @@
+spring:
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+  flyway:
+    enabled: true
+
+
+jwt:
+  secret: asdfasdfasdfasdf
+  loginUserAttribute: loginUser
+  access:
+    name: Authorization
+    exp: 360000
+  refresh:
+    name: RefreshToken
+    exp: 999900
